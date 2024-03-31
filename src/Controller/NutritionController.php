@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Entity\Nutrition;
@@ -22,7 +21,5 @@ class NutritionController extends AbstractController{
         ]);
 
     }
-
-
 
 }

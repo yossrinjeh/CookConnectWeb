@@ -1,0 +1,52 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block title %}NEW NUTRITION!{% endblock %}
+
+{% block body %}
+
+<form>
+
+    <div class="form-group">
+    <div><label for="recette_idUser" class="required">Id user</label><input type="number" id="recette_idUser" name="recette[idUser]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_nom" class="required">Nom</label><input type="text" id="recette_nom" name="recette[nom]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_prix" class="required">Prix</label><input type="number" id="recette_prix" name="recette[prix]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_description" class="required">Description</label><textarea id="recette_description" name="recette[description]" required="required" class="form-control"></textarea></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_idIngredients" class="required">Id ingredients</label><input type="number" id="recette_idIngredients" name="recette[idIngredients]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_idNutrition" class="required">Id nutrition</label><input type="number" id="recette_idNutrition" name="recette[idNutrition]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_etat" class="required">Etat</label><input type="text" id="recette_etat" name="recette[etat]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="recette_image" class="required">Image</label><input type="file" id="recette_image" name="recette[image]" required="required" class="form-control-file" /></div>
+    </div>
+
+    <button class="btn btn-primary">Ajouter</button>
+
+
+
+
+
+
+</form>
+
+
+
+{% endblock %} 

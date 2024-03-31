@@ -1,0 +1,50 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block title %}NEW NUTRITION!{% endblock %}
+
+{% block body %}
+
+<form>
+    <div class="form-group">
+    <div><label for="ingredient_userId" class="required">User id</label><input type="number" id="ingredient_userId" name="ingredient[userId]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_nom" class="required">Nom</label><input type="text" id="ingredient_nom" name="ingredient[nom]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_qte" class="required">Qte</label><input type="number" id="ingredient_qte" name="ingredient[qte]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_prixVente" class="required">Prix vente</label><input type="number" id="ingredient_prixVente" name="ingredient[prixVente]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_prixAchat" class="required">Prix achat</label><input type="number" id="ingredient_prixAchat" name="ingredient[prixAchat]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_idNutrition" class="required">Id nutrition</label><input type="number" id="ingredient_idNutrition" name="ingredient[idNutrition]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_etat" class="required">Etat</label><input type="text" id="ingredient_etat" name="ingredient[etat]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_quantiteThreshold" class="required">Quantite threshold</label><input type="number" id="ingredient_quantiteThreshold" name="ingredient[quantiteThreshold]" required="required" class="form-control" /></div>
+    </div>
+
+    <div class="form-group">
+    <div><label for="ingredient_image" class="required">Image</label><input type="file" id="ingredient_image" name="ingredient[image]" required="required" class="form-control-file" /></div>
+    </div>
+    
+    <button class="btn btn-primary">Ajouter</button>
+
+
+
+</form>
+
+{% endblock %} 
