@@ -1,178 +1,64 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+{% extends '/frontOffice/base.html.twig' %}
 
-    <!-- Title -->
-    <title>   CookConnect | {% block titel %} Home  {% endblock %}</title>
+{% block title %}NEW NUTRITION!{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" href=" {{ asset( '/img/core-img/favicon.ico')}}">
+{% block body %}
 
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="{{ asset('/style.css' )}}">
-
-</head>
-
-
-<header class="header-area">
-        <!-- Navbar Area -->
-        <div class="delicious-main-menu">
-            <div class="classy-nav-container breakpoint-off">
-                <div class="container">
-                    <!-- Menu -->
-                    <nav class="classy-navbar justify-content-between" id="deliciousNav">
-
-                        <!-- Logo -->
-                        <a class="nav-brand" href="index.html"><img src="img/core-img/logo.png" alt=""></a>
-
-                        <!-- Navbar Toggler -->
-                        <div class="classy-navbar-toggler">
-                            <span class="navbarToggler"><span></span><span></span><span></span></span>
-                        </div>
-
-                        <!-- Menu -->
-                        <div class="classy-menu">
-
-                            <!-- close btn -->
-                            <div class="classycloseIcon">
-                                <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
-                            </div>
-
-                            <!-- Nav Start -->
-                            <div class="classynav">
-                                <ul>
-                                    <li class="active"><a href="index.html">Home</a></li>
-                                    <li><a href="#">Pages</a>
-                                        <ul class="dropdown">
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="about.html">About Us</a></li>
-                                            <li><a href="blog-post.html">Blog Post</a></li>
-                                            <li><a href="receipe-post.html">Receipe Post</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                            <li><a href="elements.html">Elements</a></li>
-                                            <li><a href="#">Dropdown</a>
-                                                <ul class="dropdown">
-                                                    <li><a href="index.html">Home</a></li>
-                                                    <li><a href="about.html">About Us</a></li>
-                                                    <li><a href="blog-post.html">Blog Post</a></li>
-                                                    <li><a href="receipe-post.html">Receipe Post</a></li>
-                                                    <li><a href="contact.html">Contact</a></li>
-                                                    <li><a href="elements.html">Elements</a></li>
-                                                    <li><a href="#">Dropdown</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="index.html">Home</a></li>
-                                                            <li><a href="about.html">About Us</a></li>
-                                                            <li><a href="blog-post.html">Blog Post</a></li>
-                                                            <li><a href="receipe-post.html">Receipe Post</a></li>
-                                                            <li><a href="contact.html">Contact</a></li>
-                                                            <li><a href="elements.html">Elements</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#">Mega Menu</a>
-                                        <div class="megamenu">
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Catagory</li>
-                                                <li><a href="index.html">Home</a></li>
-                                                <li><a href="about.html">About Us</a></li>
-                                                <li><a href="blog-post.html">Blog Post</a></li>
-                                                <li><a href="receipe-post.html">Receipe Post</a></li>
-                                                <li><a href="contact.html">Contact</a></li>
-                                                <li><a href="elements.html">Elements</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Catagory</li>
-                                                <li><a href="index.html">Home</a></li>
-                                                <li><a href="about.html">About Us</a></li>
-                                                <li><a href="blog-post.html">Blog Post</a></li>
-                                                <li><a href="receipe-post.html">Receipe Post</a></li>
-                                                <li><a href="contact.html">Contact</a></li>
-                                                <li><a href="elements.html">Elements</a></li>
-                                            </ul>
-                                            <ul class="single-mega cn-col-4">
-                                                <li class="title">Catagory</li>
-                                                <li><a href="index.html">Home</a></li>
-                                                <li><a href="about.html">About Us</a></li>
-                                                <li><a href="blog-post.html">Blog Post</a></li>
-                                                <li><a href="receipe-post.html">Receipe Post</a></li>
-                                                <li><a href="contact.html">Contact</a></li>
-                                                <li><a href="elements.html">Elements</a></li>
-                                            </ul>
-                                            <div class="single-mega cn-col-4">
-                                                <div class="receipe-slider owl-carousel">
-                                                    <a href="#"><img src="img/bg-img/bg1.jpg" alt=""></a>
-                                                    <a href="#"><img src="img/bg-img/bg6.jpg" alt=""></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li><a href="receipe-post.html">Receipies</a></li>
-                                    <li><a href="receipe-post.html">4 Vegans</a></li>
-                                    <li><a href="contact.html">Contact</a></li>
-                                </ul>
-
-                                <!-- Newsletter Form -->
-                                <div class="search-btn">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </div>
-
-                            </div>
-                            <!-- Nav End -->
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </header>
-
-
-    <body>
-    
     <h1>hello</h1>
     
 
     <form>
 
+         <div class="form-group">
+        <div><label for="nutrition_userId" class="required">User id</label><input type="number" id="nutrition_userId" name="nutrition[userId]" required="required" class="form-control" /></div>
+        </div>
+
         <div class="form-group">
-        {{form_row(form.userId)}}
+        <div><label for="nutrition_idIngredient" class="required">Id ingredient</label><input type="text" id="nutrition_idIngredient" name="nutrition[idIngredient]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.idIngredient)}}
+        <div><label for="nutrition_idRecette" class="required">Id recette</label><input type="text" id="nutrition_idRecette" name="nutrition[idRecette]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.idRecette)}}
+        <div><label for="nutrition_calories" class="required">Calories</label><input type="text" id="nutrition_calories" name="nutrition[calories]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.calories)}}
+        <div><label for="nutrition_carbs" class="required">Carbs</label><input type="text" id="nutrition_carbs" name="nutrition[carbs]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.carbs)}}
+        <div><label for="nutrition_fat" class="required">Fat</label><input type="text" id="nutrition_fat" name="nutrition[fat]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.fat)}}
+        <div><label for="nutrition_fiber" class="required">Fiber</label><input type="text" id="nutrition_fiber" name="nutrition[fiber]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.fiber)}}
+        <div><label for="nutrition_protein" class="required">Protein</label><input type="text" id="nutrition_protein" name="nutrition[protein]" required="required" class="form-control" /></div>
         </div>
+
+
         <div class="form-group">
-        {{form_row(form.protein)}}
+        <div><label for="nutrition_vitamines" class="required">Vitamines</label><input type="text" id="nutrition_vitamines" name="nutrition[vitamines]" required="required" class="form-control" /></div>
         </div>
+        
+
         <div class="form-group">
-        {{form_row(form.vitamines)}}
+        <div><label for="nutrition_image" class="required">Image</label><input type="file" id="nutrition_image" name="nutrition[image]" required="required" class="form-control-file" /></div>
         </div>
-        <div class="form-group-file">
-        {{form_row(form.image)}}
-        </div>
+
     </form>
 
-        
     
-    
-    
-    </body>
+
+{% endblock %}       
