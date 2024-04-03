@@ -27,7 +27,7 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\AppCustomAuthenticator
-
+            access_denied_handler: App\Security\CustomAccessDeniedHandler
             # Configure logout
             logout:
                 path: app_logout
@@ -41,4 +41,4 @@ security:
 
     # Access control configuration
     access_control:
-        # Define access control rules as needed
+    

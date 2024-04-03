@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<title>InformationPersonnele</title>
+
+{% block body %}
+    <h1>InformationPersonnele</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ information_personnele.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ information_personnele.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ information_personnele.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Sexe</th>
+                <td>{{ information_personnele.sexe }}</td>
+            </tr>
+            <tr>
+                <th>Taille</th>
+                <td>{{ information_personnele.taille }}</td>
+            </tr>
+            <tr>
+                <th>Poids</th>
+                <td>{{ information_personnele.poids }}</td>
+            </tr>
+            <tr>
+                <th>Maladie</th>
+                <td>{{ information_personnele.maladie }}</td>
+            </tr>
+            <tr>
+                <th>NumTel</th>
+                <td>{{ information_personnele.numTel }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ information_personnele.adresse }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_information_personnele_index') }}">back to list</a>
+
+    <a href="{{ path('app_information_personnele_edit', {'id': information_personnele.id}) }}">edit</a>
+
+    {{ include('information_personnele/_delete_form.html.twig') }}
+{% endblock %}

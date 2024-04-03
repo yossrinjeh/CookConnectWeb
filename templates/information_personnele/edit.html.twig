@@ -1,0 +1,13 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block title %}Edit InformationPersonnele!{% endblock %}
+
+{% block body %}
+    <h1>Edit InformationPersonnele</h1>
+
+    {{ include('information_personnele/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_information_personnele_index') }}">back to list</a>
+
+    {{ include('information_personnele/_delete_form.html.twig') }}
+{% endblock %}

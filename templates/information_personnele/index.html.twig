@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<title>InformationPersonnele index</title>
+
+{% block body %}
+    <h1>InformationPersonnele index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Sexe</th>
+                <th>Taille</th>
+                <th>Poids</th>
+                <th>Maladie</th>
+                <th>NumTel</th>
+                <th>Adresse</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for information_personnele in information_personneles %}
+            <tr>
+                <td>{{ information_personnele.id }}</td>
+                <td>{{ information_personnele.nom }}</td>
+                <td>{{ information_personnele.prenom }}</td>
+                <td>{{ information_personnele.sexe }}</td>
+                <td>{{ information_personnele.taille }}</td>
+                <td>{{ information_personnele.poids }}</td>
+                <td>{{ information_personnele.maladie }}</td>
+                <td>{{ information_personnele.numTel }}</td>
+                <td>{{ information_personnele.adresse }}</td>
+                <td>
+                    <a href="{{ path('app_information_personnele_show', {'id': information_personnele.id}) }}">Show</a>
+
+                    <a href="{{ path('app_information_personnele_edit', {'id': information_personnele.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_information_personnele_new') }}">Create new</a>
+{% endblock %}
