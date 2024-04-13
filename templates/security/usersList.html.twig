@@ -1,0 +1,74 @@
+{% extends 'backOffice/base.html.twig' %}
+
+{% block title %}Users List{% endblock %}
+
+{% block body %} 
+ <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Users List</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for user in users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ informationPersonnelles[user.id].nom | default('Not available') }}</td>
+                    <td>{{ informationPersonnelles[user.id].prenom | default('Not available') }}</td>
+                    <td>{{ informationPersonnelles[user.id].phone | default('Not available') }}</td>
+                     <td style="color: {{ user.isActive ? 'green' : 'red' }}">
+                        {{ user.isActive ? 'Active' : 'Inactive' }}
+                    </td>
+                   <td>
+                        <a href="{{ path('toggle_user_active', {'id': user.id}) }}">
+                            {% if user.isActive %}
+                                <i class="fa fa-lock" style="color: green;"></i>
+                            {% else %}
+                                <i class="fa fa-unlock" style="color: red;"></i>
+                            {% endif %}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+                  </tbody>
+                  <tfoot> 
+                  <tr>
+                      <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+           
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+{% endblock %}

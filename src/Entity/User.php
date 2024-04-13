@@ -193,4 +193,14 @@ class User implements UserInterface
     {
         return $this->email;
     }
+     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\InformationPersonnele", mappedBy="user")
+     */
+    private $informationPersonnelle;
+
+    public function getInformationPersonnelle(): ?InformationPersonnele
+    {
+        return $this->informationPersonnelle;
+    }
+
 }
