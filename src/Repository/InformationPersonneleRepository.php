@@ -45,4 +45,15 @@ class InformationPersonneleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+public function findByUserId($id): array
+  {
+     return $this->createQueryBuilder('i')
+          ->andWhere('i.user = :val')
+        ->setParameter('val', $id)
+         ->orderBy('i.id', 'ASC')
+      ->setMaxResults(10)
+        ->getQuery()
+        ->getResult()
+    ;
+  }
 }

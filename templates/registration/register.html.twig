@@ -7,16 +7,31 @@
     <h1>Register</h1>
 
     {# Render form errors #}
-    {{ form_errors(registrationForm) }}
+  
 
     {{ form_start(registrationForm) }}
     <div class="form-group col-6">
         {{ form_label(registrationForm.email) }}
         {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Email'}}) }}
+       {% if form_errors(registrationForm.email) %}
+    <div class="alert alert-danger">
+        <ul>
+           {{ form_errors(registrationForm.email) }}
+        </ul>
+    </div>
+    {% endif %}
     </div>
     <div class="form-group col-6" >
         {{ form_label(registrationForm.plainPassword, 'Password') }}
         {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control custom-input', 'placeholder': 'Password'}}) }}
+       {% if form_errors(registrationForm.plainPassword) %}
+    <div class="alert alert-danger">
+        <ul>
+           {{ form_errors(registrationForm.plainPassword) }}
+        </ul>
+    </div>
+    {% endif %}
+
     </div>
      <div class="form-group col-6" >
     <button type="submit" class="btn btn-primary " style="background-color: #40ba37;">Register</button>

@@ -189,4 +189,8 @@ class User implements UserInterface
     {
         return $this->email;
     }
+    public function getUserIdentifier():string
+    {
+        return $this->email;
+    }
 }

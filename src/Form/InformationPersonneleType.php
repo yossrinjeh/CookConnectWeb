@@ -29,13 +29,8 @@ class InformationPersonneleType extends AbstractType
                 'required' => false,
             ])
             ->add('numTel', TextType::class)
-            ->add('adresse', TextType::class)
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email', // Assuming email is the user identifier
-                'placeholder' => 'Select a user',
-                'required' => true, // Adjust as needed
-            ]);
+            ->add('adresse', TextType::class);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,50 +1,172 @@
-<!DOCTYPE html>
+{% extends '/frontOffice/base.html.twig' %}
+{% block title %}Profile{% endblock %}
 
-<title>InformationPersonnele index</title>
 
+
+{% block stylesheets %}
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info p {
+            text-align: center;
+        }
+        .profile-info p span {
+            font-weight: bold;
+        }
+        /* Adjust input width */
+        input[type="text"] {
+            max-width: 200px; /* Adjust as needed */
+        }
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+ input[type="text"] {
+            max-width: 200px;
+        }
+       .profile-image {
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 50%; 
+    overflow: hidden;
+}
+
+    </style>
+{% endblock %}
 {% block body %}
-    <h1>InformationPersonnele index</h1>
+    <div class="container">
+         
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Sexe</th>
-                <th>Taille</th>
-                <th>Poids</th>
-                <th>Maladie</th>
-                <th>NumTel</th>
-                <th>Adresse</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for information_personnele in information_personneles %}
-            <tr>
-                <td>{{ information_personnele.id }}</td>
-                <td>{{ information_personnele.nom }}</td>
-                <td>{{ information_personnele.prenom }}</td>
-                <td>{{ information_personnele.sexe }}</td>
-                <td>{{ information_personnele.taille }}</td>
-                <td>{{ information_personnele.poids }}</td>
-                <td>{{ information_personnele.maladie }}</td>
-                <td>{{ information_personnele.numTel }}</td>
-                <td>{{ information_personnele.adresse }}</td>
-                <td>
-                    <a href="{{ path('app_information_personnele_show', {'id': information_personnele.id}) }}">Show</a>
+        <h1 class="text-center">User Profile</h1>
+           <div class="row">
+            <div class="col-md-4">
+      {% if app.user.image %}
+    <label for="image">
+        <img src="{{ asset('/images/' ~ app.user.image) }}" alt="Profile Image" class="profile-image" style="border-radius: 50%; overflow: hidden;">
+    </label>
+{% else %}
+    <label for="image">
+        <img src="{{ asset('/images/avatar.png') }}" alt="Profile Image" class="profile-image" style="border-radius: 50%; overflow: hidden;">
+    </label>
+{% endif %}
 
-                    <a href="{{ path('app_information_personnele_edit', {'id': information_personnele.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+         <div class="form-group" >
+                <label for="image">Email: {{app.user.email}}</label>
+          </div>
+            </div>
+             
+            <div class="col-md-8">
 
-    <a href="{{ path('app_information_personnele_new') }}">Create new</a>
+        <form id="profileForm" action="/profile/edit" method="POST" enctype="multipart/form-data">
+         <div class="form-group" hidden>
+                <label for="image">Profile Image:</label>
+                <input type="file" class="form-control-file" id="image" name="image" >
+          </div>
+          <div class="form-group row" hidden>
+                <label for="id" class="col-sm-2 col-form-label">Id:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="id" name="id" value="{{ information_personnele.id }}" class="form-control" >
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="nom" class="col-sm-2 col-form-label">Nom:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="nom" name="nom" value="{{ information_personnele.nom }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="prenom" class="col-sm-2 col-form-label">Prénom:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="prenom" name="prenom" value="{{ information_personnele.prenom }}" class="form-control" disabled>
+                </div>
+            </div>
+           <div class="form-group row">
+            <label for="sexe" class="col-sm-2 col-form-label">Sexe:</label>
+            <div class="col-sm-10" >
+                <select id="sexe" name="sexe" class="form-control" >
+                    <option value="male" {{ information_personnele.sexe == 'male' ? 'selected' : '' }}>Male</option>
+                    <option value="female" {{ information_personnele.sexe == 'female' ? 'selected' : '' }}>Female</option>
+                </select>
+            </div>
+        </div>
+
+            <div class="form-group row">
+                <label for="taille" class="col-sm-2 col-form-label">Taille:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="taille" name="taille" value="{{ information_personnele.taille }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="poids" class="col-sm-2 col-form-label">Poids:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="poids" name="poids" value="{{ information_personnele.poids }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="maladie" class="col-sm-2 col-form-label">Maladie:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="maladie" name="maladie" value="{{ information_personnele.maladie }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="numTel" class="col-sm-2 col-form-label">Numéro de Téléphone:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="numTel" name="numTel" value="{{ information_personnele.numTel }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="adresse" class="col-sm-2 col-form-label">Adresse:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="adresse" name="adresse" value="{{ information_personnele.adresse }}" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <button type="button" id="editBtn" class="btn btn-primary">Edit Profile</button>
+                    <button type="submit" id="saveBtn" class="btn btn-success" style="display: none;">Save</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+$(document).ready(function(){
+    $('#editBtn').click(function(){
+        $('#profileForm :input').prop('disabled', false); 
+
+        $('#saveBtn').show();
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+        const image = document.querySelector('.profile-image');
+        const fileInput = document.getElementById('imageUpload');
+
+        if (image) {
+            image.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+    });
+
+
+    </script>
 {% endblock %}

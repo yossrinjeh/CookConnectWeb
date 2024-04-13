@@ -14,127 +14,73 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-#[Route('/information/personnele')]
+#[Route('/profile')]
 class InformationPersonneleController extends AbstractController
 {
     #[Route('/', name: 'app_information_personnele_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()){
         $informationPersonneles = $entityManager
             ->getRepository(InformationPersonnele::class)
-            ->findAll();
+            ->findOneByUser($this->getUser());
 
         return $this->render('information_personnele/index.html.twig', [
-            'information_personneles' => $informationPersonneles,
+            'information_personnele' => $informationPersonneles,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
     }
-
-    #[Route('/new', name: 'app_information_personnele_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $informationPersonnele = new InformationPersonnele();
-        $form = $this->createForm(InformationPersonneleType::class, $informationPersonnele);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($informationPersonnele);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('information_personnele/new.html.twig', [
-            'information_personnele' => $informationPersonnele,
-            'form' => $form,
-        ]);
     }
-
-    #[Route('/{id}', name: 'app_information_personnele_show', methods: ['GET'])]
-    public function show(int $id,EntityManagerInterface $entityManager): Response
-    {
-        $informationPersonnele = $entityManager->getRepository(InformationPersonnele::class)->find($id);
-
-        return $this->render('information_personnele/show.html.twig', [
-            'information_personnele' => $informationPersonnele,
-        ]);
-    }
-    /*
-    #[Route('/{id}/edit', name: 'app_information_personnele_edit', methods: ['GET', 'POST'])]
-    public function edit(int $id,Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/edit', name: 'app_information_personnele_edit', methods: ['POST'])]
+    public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {   
-        $informationPersonnele = $entityManager->getRepository(InformationPersonnele::class)->find($id);
-
-        $form = $this->createForm(InformationPersonneleType::class, $informationPersonnele);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('information_personnele/edit.html.twig', [
-            'information_personnele' => $informationPersonnele,
-            'form' => $form,
-        ]);
-    }
-*/
-
-
-#[Route('/{id}/edit', name: 'app_information_personnele_edit', methods: ['GET', 'POST'])]
-public function edit(int $id, Request $request, EntityManagerInterface $entityManager , UserRepository $userRepository): Response
-{   
-    $informationPersonnele = $entityManager->getRepository(InformationPersonnele::class)->find($id);
-
-    // Get the associated user entity
-   
         if($this->getUser()){
-            $user = $informationPersonnele->getUser();
-            if($this->getUser()->getUsername() != $user->getUsername()){
-              //  throw new AccessDeniedHttpException('Access denied.');
-                return $this->renderForm('frontOffice/403.html.twig', [
-                   
-                ]);
-            }
-        }else{
-            return $this->redirectToRoute('app_login');
+        $informationPersonneleId = $request->request->get('id');
+
+        $informationPersonnele = $entityManager->getRepository(InformationPersonnele::class)->find($informationPersonneleId);
+
+        if (!$informationPersonnele) {
+            $informationPersonnele = new InformationPersonnele();
+            $informationPersonnele->setId($informationPersonneleId); 
         }
-  
-   
 
-    // Create a form for both entities
-    $form = $this->createForm(InformationPersonneleType::class, $informationPersonnele);
-    $form->handleRequest($request);
+        $informationPersonnele->setNom($request->request->get('nom'));
+        $informationPersonnele->setPrenom($request->request->get('prenom'));
+        $informationPersonnele->setSexe($request->request->get('sexe'));
+        $informationPersonnele->setTaille($request->request->get('taille'));
+        $informationPersonnele->setPoids($request->request->get('poids'));
+        $informationPersonnele->setMaladie($request->request->get('maladie'));
+        $informationPersonnele->setNumTel($request->request->get('numTel'));
+        $informationPersonnele->setAdresse($request->request->get('adresse'));
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Update user information
-        $userFormData = $form->get('user')->getData();
-        $user->setEmail($userFormData->getEmail()); // Assuming email is editable
-        // You can add more setters for other user fields here
-        
-        // Update personal information
         $entityManager->persist($informationPersonnele);
         $entityManager->flush();
-
-        return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    return $this->renderForm('information_personnele/edit.html.twig', [
-        'information_personnele' => $informationPersonnele,
-        'form' => $form,
-    ]);
-}
-
-    #[Route('/{id}', name: 'app_information_personnele_delete', methods: ['POST'])]
-    public function delete(Request $request,int $id, EntityManagerInterface $entityManager): Response
-    {
-        $informationPersonnele = $entityManager->getRepository(InformationPersonnele::class)->find($id);
-
-        if ($this->isCsrfTokenValid('delete'.$informationPersonnele->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($informationPersonnele);
+        if ($request->files->get('image')) {
+            $file = $request->files->get('image');
+            $filePath = $file->getPathname();
+        
+            // Generate a unique name for the file
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+        
+            // Move the file to the directory where your images are stored
+            $file->move(
+                $this->getParameter('your_images_directory'),
+                $fileName
+            );
+        
+            $user = $entityManager->getRepository(User::class)->find($this->getUser());
+            $user->setImage($fileName);
+            $entityManager->persist($user);
             $entityManager->flush();
         }
-
+        
         return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
+    }else{
+        return $this->redirectToRoute('app_login');
     }
+    }
+
+
+
 }
