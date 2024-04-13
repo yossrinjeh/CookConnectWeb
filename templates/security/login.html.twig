@@ -16,7 +16,17 @@
 <div class="container col-6" >
     <form method="post" class="mx-auto"> 
      {% for flashError in app.flashes('error') %}
-        <div class="alert alert-danger">{{ flashError }}</div>
+      <div class="alert alert-danger" id = "error-flash-message" >{{ flashError }}
+         <script>
+        // Add a timeout to hide the success flash message after 3 seconds
+        setTimeout(function() {
+            var successFlashMessage = document.getElementById('error-flash-message');
+            if (successFlashMessage) {
+                successFlashMessage.remove();
+            }
+        }, 1500);
+    </script>
+        </div>
     {% endfor %}
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>

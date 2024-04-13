@@ -78,6 +78,7 @@ class InformationPersonneleController extends AbstractController
         return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
     }else{
                 $request->getSession()->getFlashBag()->add('error', 'all fields are required');
+        return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
 
     }
     }else{
