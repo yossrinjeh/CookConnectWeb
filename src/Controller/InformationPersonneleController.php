@@ -32,7 +32,7 @@ class InformationPersonneleController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
     }
-    #[Route('/edit', name: 'app_information_personnele_edit', methods: ['POST'])]
+ #[Route('/edit', name: 'app_information_personnele_edit', methods: ['POST'])]
     public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {   
         if($this->getUser()){
@@ -42,9 +42,8 @@ class InformationPersonneleController extends AbstractController
 
         if (!$informationPersonnele) {
             $informationPersonnele = new InformationPersonnele();
-            $informationPersonnele->setId($informationPersonneleId); 
         }
-
+        if( $request->request->get('nom') && $request->request->get('prenom') && $request->request->get('sexe') && $request->request->get('taille') && $request->request->get('poids') && $request->request->get('numTel') && $request->request->get('adresse')){
         $informationPersonnele->setNom($request->request->get('nom'));
         $informationPersonnele->setPrenom($request->request->get('prenom'));
         $informationPersonnele->setSexe($request->request->get('sexe'));
@@ -53,7 +52,7 @@ class InformationPersonneleController extends AbstractController
         $informationPersonnele->setMaladie($request->request->get('maladie'));
         $informationPersonnele->setNumTel($request->request->get('numTel'));
         $informationPersonnele->setAdresse($request->request->get('adresse'));
-
+        $informationPersonnele->setUser($this->getUser());
         $entityManager->persist($informationPersonnele);
         $entityManager->flush();
         if ($request->files->get('image')) {
@@ -74,12 +73,19 @@ class InformationPersonneleController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
         }
-        
+        $request->getSession()->getFlashBag()->add('success', 'Profile updated successfully');
+
         return $this->redirectToRoute('app_information_personnele_index', [], Response::HTTP_SEE_OTHER);
+    }else{
+                $request->getSession()->getFlashBag()->add('error', 'all fields are required');
+
+    }
     }else{
         return $this->redirectToRoute('app_login');
     }
     }
+
+
 
 
 

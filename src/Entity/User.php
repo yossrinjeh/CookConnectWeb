@@ -45,14 +45,14 @@ class User implements UserInterface
      *
      * @ORM\Column(name="image", type="string", length=300, nullable=false)
      */
-    private $image="test";
+    private $image;
 
     /**
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=300, nullable=false)
      */
-    private $role="test";
+    private $role;
 
     /**
      * @var string

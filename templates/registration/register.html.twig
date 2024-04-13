@@ -3,12 +3,8 @@
 {% block title %}Register!{% endblock %}
 
 {% block body %}
-<div class="container"> <!-- Centering container -->
+<div class="container"> 
     <h1>Register</h1>
-
-    {# Render form errors #}
-  
-
     {{ form_start(registrationForm) }}
     <div class="form-group col-6">
         {{ form_label(registrationForm.email) }}
@@ -31,7 +27,16 @@
         </ul>
     </div>
     {% endif %}
-
+    <div class="form-group col-6">
+        <label for="role" class="form-label">Role</label>
+        {{ form_widget(registrationForm.role, {'attr': {'class': 'form-control'}}) }}
+        {% if form_errors(registrationForm.role) %}
+            <div class="alert alert-danger mt-2">
+                <ul>
+                    {{ form_errors(registrationForm.role) }}
+                </ul>
+            </div>
+        {% endif %}
     </div>
      <div class="form-group col-6" >
     <button type="submit" class="btn btn-primary " style="background-color: #40ba37;">Register</button>

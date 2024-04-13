@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -29,18 +31,27 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
-
+        $password = $request->request->get('password', '');
+        $csrfToken = $request->request->get('_csrf_token', '');
+    
+        // Check if required form fields are present and not empty
+        if (empty($email) || empty($password) || empty($csrfToken)) {
+            // Throw an authentication exception indicating bad request
+            $request->getSession()->getFlashBag()->add('error', 'all fields are required');
+        }
+    
         $request->getSession()->set(Security::LAST_USERNAME, $email);
-
+        
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->request->get('password', '')),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+                new CsrfTokenBadge('authenticate', $csrfToken),
                 new RememberMeBadge(),
             ]
         );
     }
+    
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
@@ -57,4 +68,16 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    {
+        // Customize the response for authentication failure
+        if ($request->getSession()->getFlashBag()->has('error')) {
+            // If form errors exist, redirect back to login page
+            return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
+        }
+    
+        // Otherwise, proceed with default behavior (display "Invalid credentials" error message)
+        return parent::onAuthenticationFailure($request, $exception);
+    }
+    
 }

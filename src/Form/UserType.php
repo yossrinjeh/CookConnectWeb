@@ -39,11 +39,7 @@ class UserType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('image')
-            ->add('role')
-            ->add('verificationCode')
-            ->add('isactive')
-            ->add('date')
+          
         ;
     }
 
