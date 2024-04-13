@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,11 +53,31 @@ class SecurityController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-
+ 
         // Toggle isActive status
         $user->setIsActive(!$user->isIsactive());
         $entityManager->flush();
 
         return $this->redirectToRoute('backoffice_users_list');
+    }
+    #[Route(path: '/search-users', name: 'search_users')]
+    public function fetchUsers(Request $request):Response
+    {
+        // Handle search request
+        $search = $request->request->get('searchValue');
+        
+        // Fetch users based on search query
+        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $users = $userRepository->searchUsers($search); 
+        $informationPersonnelles = [];
+        foreach ($users as $user) {
+            $informationPersonnelles[$user->getId()] = $user->getInformationPersonnelle();
+        }
+        return $this->render('security/usersList.html.twig', [
+            'users' => $users,
+            'informationPersonnelles' => $informationPersonnelles,
+        ]);
+        
+       
     }
 }
