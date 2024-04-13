@@ -29,6 +29,11 @@ class HomeController extends AbstractController
     #[Route('/backoffice', name: 'app_back')]
     public function back(): Response
     {
+        if ($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
+            
         return $this->render('BackOffice/base.html.twig');
+        }else{
+            return $this->render('frontOffice/403.html.twig');
+        }
     }
 }

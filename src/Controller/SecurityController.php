@@ -34,6 +34,7 @@ class SecurityController extends AbstractController
     }
     #[Route(path: '/backoffice/users', name: 'backoffice_users_list')]
     public function getusersList() : Response{
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
         $informationPersonnelles = [];
         foreach ($users as $user) {
@@ -43,6 +44,9 @@ class SecurityController extends AbstractController
             'users' => $users,
             'informationPersonnelles' => $informationPersonnelles,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
     #[Route(path: '/toggle-active/{id}', name: 'toggle_user_active')]
     public function toggleUserActive($id): RedirectResponse
