@@ -29,7 +29,6 @@ class ResetPasswordController extends AbstractController
             if ($user && $user->getVerificationCode() == $form->get('verificationCode')->getData()) {
                 return $this->redirectToRoute('app_change_password', ['email' => $user->getEmail()]);
             } else {
-                // Handle case where user is not found or verification code doesn't match
                 return new Response("Invalid email or verification code!", Response::HTTP_BAD_REQUEST);
             }
         }
@@ -49,7 +48,6 @@ class ResetPasswordController extends AbstractController
         $user = $userRepository->findOneByEmail($email);
     
         if (!$user) {
-            // Handle case where user is not found
             return new Response("User not found!", Response::HTTP_NOT_FOUND);
         }
     
