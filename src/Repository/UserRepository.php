@@ -32,6 +32,31 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    public function findAllRegistrationDates()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.date')
+            ->orderBy('u.date' )
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByRegistrationMonth(string $month)
+    {
+        $startOfMonth = new \DateTime('first day of ' . $month);
+        $endOfMonth = new \DateTime('last day of ' . $month);
+        $statdate=  date('Y') ."-01-01";
+        $enddate= date('Y')."-12-31";
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.date BETWEEN :start AND :end')
+            ->andWhere('u.date BETWEEN :startdate AND :enddate')
+            ->setParameter('start', $startOfMonth)
+            ->setParameter('end', $endOfMonth)
+            ->setParameter('startdate', $statdate)
+            ->setParameter('enddate', $enddate)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

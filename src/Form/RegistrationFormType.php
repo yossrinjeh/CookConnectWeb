@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -42,6 +43,8 @@ class RegistrationFormType extends AbstractType
                 ]),
             ],
         ])
+        ->add("recaptcha", ReCaptchaType::class)
+
         ->add('role', ChoiceType::class, [
             'choices' => [
                 'User' => 'USER',
