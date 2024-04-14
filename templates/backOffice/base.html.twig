@@ -527,7 +527,9 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <!-- ./wrapper -->
+{% block js %}
 <script>
+
   // Line Chart
   
   /* Chart.js Charts */
@@ -596,6 +598,7 @@
 
   
 </script>
+{% endblock %} 
 <!-- jQuery -->
 <script src="{{ asset( 'plugins/jquery/jquery.min.js ')}}"></script>
 <!-- jQuery UI 1.11.4 -->
