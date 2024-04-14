@@ -47,6 +47,8 @@ class HomeController extends AbstractController
             }
     
             $monthLabels = array_unique($monthLabels);
+            $auser =  count($userRepository->findByIsactive(true));
+            $iuser= count($userRepository->findByIsactive(false));
             foreach ($monthLabels as $month) {
                 $users = $userRepository->findByRegistrationMonth($month);
     
@@ -57,20 +59,32 @@ class HomeController extends AbstractController
                 foreach ($users as $user) {
                     if ($user->isIsActive()) {
                         $activeCount++;
+                       
                     }else{
                         $inactive ++;
+                       
                     }
                 }
     
                 $activeUser[] = $activeCount;
             $inactiveUser[] = $inactive;
             }
+            
             //dd($activeUser ,$inactiveUser );
+            $sessionDir = ini_get('session.save_path');
 
+            // Count session files
+            $sessionFiles = glob($sessionDir . '/*');
+            $sessionCount = count($sessionFiles);
+            
         return $this->render('BackOffice/base.html.twig', [
             'months' => array_values($monthLabels),
             'dataActive'=>$activeUser,
             'dataInactive'=>$inactiveUser,
+            'session'=>$sessionCount,
+            'Actuser'=>$auser,
+            'Inuser'=>$iuser,
+            'cnumber'=>count($userRepository->findByRole("CLIENT"))
 
         ]);
         }else{
