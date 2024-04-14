@@ -19,6 +19,7 @@ class ResetPasswordController extends AbstractController
     #[Route('/reset_password', name: 'app_reset_password')]
     public function index(MailerController $mailer, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository, MailerInterface $test, Request $request): Response
     {
+         //$mailer->sendEmail($test,'yossrinjeh46@gmail.com','1234');
         $form = $this->createForm(ResetPassType::class);
         $form->handleRequest($request);
     
