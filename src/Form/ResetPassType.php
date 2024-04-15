@@ -16,7 +16,13 @@ class ResetPassType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email')
+        ->add('email', null, [
+            'constraints' => [
+                new NotBlank([
+                    'message' => 'Please enter an email',
+                ]),
+            ],
+        ])
            
             ->add("recaptcha", ReCaptchaType::class)
 

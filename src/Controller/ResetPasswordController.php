@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -57,11 +58,14 @@ class ResetPasswordController extends AbstractController
     
                 // Send email with reset password URL
                 $mailer->sendEmail($test, $email, $resetUrl);
-    
-                return new Response("Password reset link has been sent to your email.", Response::HTTP_OK);
-            } else {
-                return new Response("User not found!", Response::HTTP_NOT_FOUND);
-            }
+                $request->getSession()->getFlashBag()->add('success', 'Password reset link has been sent to your email.');
+                //dd($flashBag);
+                return $this->redirectToRoute('app_reset_password');
+                        } else {
+                            $request->getSession()->getFlashBag()->add('error', 'User not found!');
+
+                            return $this->redirectToRoute('app_reset_password');
+                        }
         }
     
         return $this->render('reset_password/index.html.twig', [
@@ -77,12 +81,15 @@ class ResetPasswordController extends AbstractController
         $user = $userRepository->findOneByEmail($email);
     
         if (!$user) {
-            return new Response("User not found!", Response::HTTP_NOT_FOUND);
-        }
+            $request->getSession()->getFlashBag()->add('error', 'User not found!');
+
+                            return $this->redirectToRoute('app_reset_password');        }
     
         // Ensure the provided code matches the user's activation code
         if ($user->getVerificationCode() != $code) {
-            return new Response("Invalid activation code!", Response::HTTP_BAD_REQUEST);
+            $request->getSession()->getFlashBag()->add('error', 'Invalid activation code');
+
+            return $this->redirectToRoute('app_reset_password');  
         }
     
         $form = $this->createForm(ChangePasswordType::class);
