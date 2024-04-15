@@ -1,15 +1,11 @@
-{% extends '/frontOffice/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}NEW NUTRITION!{% endblock %}
+{% block title %}New Ajoutingredientrequest{% endblock %}
 
 {% block body %}
+    <h1>Create new Ajoutingredientrequest</h1>
 
-<form>
+    {{ include('ajoutingredientrequest/_form.html.twig') }}
 
-
-
-
-
-</form>
-
-{% endblock %} 
+    <a href="{{ path('app_ajoutingredientrequest_index') }}">back to list</a>
+{% endblock %}
