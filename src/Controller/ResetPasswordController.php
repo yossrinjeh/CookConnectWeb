@@ -13,10 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class ResetPasswordController extends AbstractController
 {
-    #[Route('/reset_password', name: 'app_reset_password')]
+    /*#[Route('/reset_password', name: 'app_reset_password')]
     public function index(MailerController $mailer, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository, MailerInterface $test, Request $request): Response
     {
          //$mailer->sendEmail($test,'yossrinjeh46@gmail.com','1234');
@@ -37,31 +39,69 @@ class ResetPasswordController extends AbstractController
             'controller_name' => 'ResetPasswordController',
             'form' => $form->createView(),
         ]);
-    }
-    
-    #[Route('/change/{email}', name: 'app_change_password')]
-    public function change(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository, EntityManagerInterface $entityManager, string $email): Response
+    }*/
+    #[Route('/reset_password', name: 'app_reset_password')]
+    public function index(MailerController $mailer, UserRepository $userRepository, MailerInterface $test, Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
-        $form = $this->createForm(ChangePasswordType::class);
+        $form = $this->createForm(ResetPassType::class);
         $form->handleRequest($request);
     
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('email')->getData();
+            $user = $userRepository->findOneByEmail($email);
+    
+            if ($user) {
+                // Generate a 6-digit activation code
+                $activationCode = $user->getVerificationCode();
+                $resetUrl = $urlGenerator->generate('app_change_password', ['email' => $email, 'code' => $activationCode], UrlGeneratorInterface::ABSOLUTE_URL);
+    
+                // Send email with reset password URL
+                $mailer->sendEmail($test, $email, $resetUrl);
+    
+                return new Response("Password reset link has been sent to your email.", Response::HTTP_OK);
+            } else {
+                return new Response("User not found!", Response::HTTP_NOT_FOUND);
+            }
+        }
+    
+        return $this->render('reset_password/index.html.twig', [
+            'controller_name' => 'ResetPasswordController',
+            'form' => $form->createView(),
+        ]);
+    }
+    
+
+    #[Route('/change/{email}/{code}', name: 'app_change_password')]
+    public function change(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, string $email, string $code, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
         $user = $userRepository->findOneByEmail($email);
     
         if (!$user) {
             return new Response("User not found!", Response::HTTP_NOT_FOUND);
         }
     
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
+        // Ensure the provided code matches the user's activation code
+        if ($user->getVerificationCode() != $code) {
+            return new Response("Invalid activation code!", Response::HTTP_BAD_REQUEST);
+        }
     
+        $form = $this->createForm(ChangePasswordType::class);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Encode and set the new password
+            $newPassword = $form->get('password')->getData();
+            $encodedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setPassword($encodedPassword);
+    
+            // Clear the activation code
+            $activationCode = rand(100000, 999999);
+            $user->setVerificationCode($activationCode);    
+            // Persist changes
             $entityManager->persist($user);
             $entityManager->flush();
     
+            // Redirect to login page
             return $this->redirectToRoute('app_login');
         }
     
@@ -70,6 +110,7 @@ class ResetPasswordController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    
     
 
 }
