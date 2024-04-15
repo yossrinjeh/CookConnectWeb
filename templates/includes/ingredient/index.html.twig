@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ingredient index{% endblock %}
+
+{% block body %}
+    <h1>Ingredient index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>UserId</th>
+                <th>Nom</th>
+                <th>Qte</th>
+                <th>PrixVente</th>
+                <th>PrixAchat</th>
+                <th>IdNutrition</th>
+                <th>Etat</th>
+                <th>QuantiteThreshold</th>
+                <th>Image</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.id }}</td>
+                <td>{{ ingredient.userId }}</td>
+                <td>{{ ingredient.nom }}</td>
+                <td>{{ ingredient.qte }}</td>
+                <td>{{ ingredient.prixVente }}</td>
+                <td>{{ ingredient.prixAchat }}</td>
+                <td>{{ ingredient.idNutrition }}</td>
+                <td>{{ ingredient.etat }}</td>
+                <td>{{ ingredient.quantiteThreshold }}</td>
+                <td>{{ ingredient.image }}</td>
+                <td>
+                    <a href="{{ path('app_ingredient_show', {'id': ingredient.id}) }}">show</a>
+                    <a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ingredient_new') }}">Create new</a>
+{% endblock %}
