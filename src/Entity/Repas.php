@@ -61,6 +61,13 @@ class Repas
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email;
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", length=300, nullable=false)
+     */
+    private $image;
+
 
     public function getId(): ?int
     {
@@ -138,7 +145,17 @@ class Repas
 
         return $this;
     }
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
 
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
     public function __toString()
     {
         return (string) $this->getId();
