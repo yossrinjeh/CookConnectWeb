@@ -1,0 +1,75 @@
+
+{% extends '/frontOffice/base.html.twig'  %}
+{% block title %}Repas{% endblock %}
+{% block body %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Repas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #back-to-list {
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        #back-to-list:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create new Repas</h1>
+
+        {{ include('repas/_form.html.twig') }}
+
+        <a href="#" id="back-to-list">Back to list</a>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            document.getElementById('back-to-list').addEventListener('click', function(event) {
+                event.preventDefault();
+                if (confirm('Are you sure you want to go back to the list?')) {
+                    window.location.href = "{{ path('app_repas_index') }}";
+                }
+            });
+        </script>
+    {% endblock %}
+</body>
+{% endblock %}
+

@@ -257,6 +257,13 @@
             </div>
 
             <div class="row">
+                {# Loop through each repas and render homeRepasComponent #}
+                {% for repasItem in repas %}
+                {% include 'repas/homeRepasComponent/homeRepasComponent.html.twig' with {'repas': repasItem} %}
+                {% endfor %}
+            </div>
+
+            {# <div class="row">
                 <!-- Single Best Receipe Area -->
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
@@ -370,7 +377,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> #}
         </div>
     </section>
     <!-- ##### Best Receipe Area End ##### -->

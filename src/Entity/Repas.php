@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Entity;
-
+use App\Repository\RepasRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Repas
- *
  * @ORM\Table(name="repas", indexes={@ORM\Index(name="id_user", columns={"id_user"}), @ORM\Index(name="id_recette", columns={"id_recette"})})
  * @ORM\Entity
+ */
+/**
+ * @ORM\Entity(repositoryClass=RepasRepository::class)
  */
 class Repas
 {
@@ -22,18 +23,16 @@ class Repas
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_recette", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Recette")
+     * @ORM\JoinColumn(name="id_recette", referencedColumnName="id", nullable=false)
      */
-    private $idRecette;
+    private $recette;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
-    private $idUser;
+    private $user;
 
     /**
      * @var string
@@ -68,26 +67,26 @@ class Repas
         return $this->id;
     }
 
-    public function getIdRecette(): ?int
+    public function getRecette(): ?Recette
     {
-        return $this->idRecette;
+        return $this->recette;
     }
 
-    public function setIdRecette(int $idRecette): static
+    public function setRecette(?Recette $recette): self
     {
-        $this->idRecette = $idRecette;
+        $this->recette = $recette;
 
         return $this;
     }
 
-    public function getIdUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
-
-    public function setIdUser(int $idUser): static
+    
+    public function setUser(?User $user): self
     {
-        $this->idUser = $idUser;
+        $this->user = $user;
 
         return $this;
     }
@@ -97,7 +96,7 @@ class Repas
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(string $nom): self
     {
         $this->nom = $nom;
 
@@ -109,7 +108,7 @@ class Repas
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -121,7 +120,7 @@ class Repas
         return $this->tags;
     }
 
-    public function setTags(string $tags): static
+    public function setTags(string $tags): self
     {
         $this->tags = $tags;
 
@@ -133,12 +132,15 @@ class Repas
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
         return $this;
     }
 
-
+    public function __toString()
+    {
+        return (string) $this->getId();
+    }
 }

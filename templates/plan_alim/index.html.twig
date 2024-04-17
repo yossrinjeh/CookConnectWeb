@@ -1,0 +1,39 @@
+
+{% extends '/frontOffice/base.html.twig'  %}
+{% block title %}Repas{% endblock %}
+{% block body %}
+<title>PlanAlim index</title>
+
+
+    <h1>PlanAlim index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IdNut</th>
+                <th>IdUser</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for plan_alim in plan_alims %}
+            <tr>
+                <td>{{ plan_alim.id }}</td>
+                <td>{{ plan_alim.getNutrition.id }}</td>
+                <td>{{ plan_alim.getUser.id }}</td>
+                <td>
+                    <a href="{{ path('app_plan_alim_show', {'id': plan_alim.id}) }}">show</a>
+                    <a href="{{ path('app_plan_alim_edit', {'id': plan_alim.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_plan_alim_new') }}">Create new</a>
+{% endblock %}

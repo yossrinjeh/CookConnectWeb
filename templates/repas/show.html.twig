@@ -1,0 +1,50 @@
+{% extends 'frontOffice/base.html.twig' %}
+
+{% block title %}Repas{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Repas Details</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">{{ repas.id }}</dd>
+
+                        <dt class="col-sm-4">Recette</dt>
+                        <dd class="col-sm-8">{{ repas.Recette.id }}</dd>
+
+                        <dt class="col-sm-4">User</dt>
+                        <dd class="col-sm-8">{{ repas.User.id }}</dd>
+
+                        <dt class="col-sm-4">Nom</dt>
+                        <dd class="col-sm-8">{{ repas.nom }}</dd>
+
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">{{ repas.type }}</dd>
+
+                        <dt class="col-sm-4">Tags</dt>
+                        <dd class="col-sm-8">
+                            {% for tag in repas.tags %}
+                                <span class="badge badge-secondary">{{ tag }}</span>
+                            {% endfor %}
+                        </dd>
+
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ repas.email }}</dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_repas_index') }}" class="btn btn-secondary">Back to List</a>
+                    <a href="{{ path('app_repas_edit', {'id': repas.id}) }}" class="btn btn-primary">Edit</a>
+                    {{ include('repas/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

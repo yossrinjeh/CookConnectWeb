@@ -1,0 +1,49 @@
+{# homeRepasComponent.html.twig #}
+
+<div class="col-12 col-sm-6 col-lg-4">
+    <div class="single-best-receipe-area mb-30">
+        {# <img src="{{ repasItem.image }}" alt="{{ repasItem.name }}"> #}
+        <img src="img/bg-img/r1.jpg" alt="">
+        <div class="receipe-content">
+            <a href="{{ path('app_repas_show', {'id': repasItem.id}) }}">
+                <h5>{{ repasItem.nom }}</h5>
+            </a>
+            <div class="ratings">
+                {# {% for i in 1..5 %}
+                    {% if i <= repasItem.rating %}
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                    {% endif %}
+                {% endfor %} #}
+
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{# <div class="col-12 col-sm-6 col-lg-4">
+    <div class="single-best-receipe-area mb-30">
+        <img src="img/bg-img/r1.jpg" alt="">
+        <div class="receipe-content">
+            <a href="receipe-post.html">
+                <h5>Sushi Easy Receipy</h5>
+            </a>
+            <div class="ratings">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star-o" aria-hidden="true"></i>
+            </div>
+            </div>
+    </div>
+</div> #}
