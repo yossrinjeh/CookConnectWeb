@@ -35,6 +35,8 @@ class IngredientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient->setUserId(100);
+            $ingredient->setEtat("desactivee"); 
             $entityManager->persist($ingredient);
             $entityManager->flush();
 

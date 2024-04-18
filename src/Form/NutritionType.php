@@ -5,6 +5,10 @@ namespace App\Form;
 use App\Entity\Nutrition;
 use App\Entity\Ingredient;
 use App\Entity\Recette;
+use App\Repository\IngredientRepository;
+use App\Repository\RecetteRepository;
+use App\Repository\NutritionRepository;
+use SebastianBergmann\Environment\Console;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -19,6 +23,17 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class NutritionType extends AbstractType
 {
+    private $recetteRepository;
+    private $ingredientRepository;
+    private $nutritionRepository;
+
+    public function __construct(RecetteRepository $recetteRepository, IngredientRepository $ingredientRepository, NutritionRepository $nutritionRepository)
+    {
+        $this->recetteRepository = $recetteRepository;
+        $this->ingredientRepository = $ingredientRepository;
+        $this->nutritionRepository= $nutritionRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -33,7 +48,6 @@ class NutritionType extends AbstractType
                 'label' => 'Ingredient ID',
                 'required' => false, // Make it optional
                 'constraints' => [
-                    new Callback([$this, 'IngredientsAndRecetteInput']),
                     new Callback([$this, 'IngredientOrRecetteExists']),
                 ],
             ])
@@ -41,7 +55,6 @@ class NutritionType extends AbstractType
                 'label' => 'Recipe ID',
                 'required' => false, // Make it optional
                 'constraints' => [
-                    new Callback([$this, 'IngredientsAndRecetteInput']),
                     new Callback([$this, 'IngredientOrRecetteExists']),
                 ],
             ])
@@ -85,32 +98,15 @@ class NutritionType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('vitamines', ChoiceType::class, [
+            ->add('vitamines', TextType::class, [
                 'label' => 'Vitamins',
-                'choices' => [
-                    'A' => 'A',
-                    'B' => 'B',
-                    'C' => 'C',
-                    'D' => 'D',
-                ],
-                'multiple' => true,
-                'expanded' => true,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please choose vitamines',
                     ]),
                 ],
             ])
-            ->add('image', FileType::class, [
-                'label' => 'Image',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please put Image',
-                    ]),
-                ],
-            ]);
+;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -121,40 +117,37 @@ class NutritionType extends AbstractType
     }
 
 
-
-    public function IngredientsAndRecetteInput($data, ExecutionContextInterface $context): void
+    public function IngredientOrRecetteExists($data, ExecutionContextInterface $context): void
 {
-    $ingredientId = $context->getObject()->getIdIngredient();
-    $recipeId = $context->getObject()->getIdRecette();
+    $nutritionId = $data;
+    dump($data);
+    $recetteId = $this->recetteRepository->findOneBy(['idNutrition' => $nutritionId]);
+    
+    $ingredientId = $this->ingredientRepository->findOneBy(['idNutrition' => $nutritionId]);
+    
 
-    if (($ingredientId && $recipeId) || (!$ingredientId && !$recipeId)) {
+
+    if ($ingredientId && $recetteId) {
         $context->buildViolation('Choose either Ingredient ID or Recipe ID, not both.')
             ->atPath('idIngredient')
             ->addViolation();
     }
-}
-
-    public function IngredientOrRecetteExists($data, ExecutionContextInterface $context): void
-{
-    $entityManager = $context->getObject()->getEntityManager();
-    $ingredientId = $context->getObject()->getIdIngredient();
-    $recipeId = $context->getObject()->getIdRecette();
 
     if ($ingredientId) {
-        $ingredient = $entityManager->getRepository(Ingredient::class)->find($ingredientId);
+        $ingredient = $this->ingredientRepository->find($ingredientId);
         if (!$ingredient) {
             $context->buildViolation('Ingredient with ID {{ id }} does not exist.')
-                ->setParameter('{{ id }}', $ingredientId)
+                ->setParameter('{{ id }}', (string)$ingredientId)
                 ->atPath('idIngredient')
                 ->addViolation();
         }
     }
 
-    if ($recipeId) {
-        $recipe = $entityManager->getRepository(Recette::class)->find($recipeId);
-        if (!$recipe) {
+    if ($recetteId) {
+        $recette = $this->recetteRepository->find($recetteId);
+        if (!$recette) {
             $context->buildViolation('Recipe with ID {{ id }} does not exist.')
-                ->setParameter('{{ id }}', $recipeId)
+                ->setParameter('{{ id }}', (string)$recetteId)
                 ->atPath('idRecette')
                 ->addViolation();
         }

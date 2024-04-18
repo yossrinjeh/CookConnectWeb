@@ -57,16 +57,16 @@ class IngredientType extends AbstractType
                 ],
             ])
             // this will be removed and will be assinged in a new form 
-            ->add('idNutrition', IntegerType::class, [
-                'label' => 'Nutrition ID',
-                'constraints' => [
-                    new Callback([$this, 'NutritionIdExists'])
-                ]
-            ])
+           // ->add('idNutrition', IntegerType::class, [
+           //     'label' => 'Nutrition ID',
+           //     'constraints' => [
+           //         new Callback([$this, 'NutritionIdExists'])
+           //     ]
+           // ])
             // this is auto assigned at the new form(ingredient/Nutrition forum)
-            ->add('etat', TextType::class, [
-                'label' => 'State',
-            ])
+           // ->add('etat', TextType::class, [
+           //     'label' => 'State',
+           // ])
             ->add('quantiteThreshold', IntegerType::class, [
                 'label' => 'Quantity Threshold',
                 'constraints' => [
