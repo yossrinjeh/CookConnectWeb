@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints\Image;  
 
 class IngredientType extends AbstractType
 {
@@ -81,7 +82,16 @@ class IngredientType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please put Calories',
+                        'message' => 'Please choose an image',
+                    ]),
+                    new Image([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image au format JPEG, PNG ou JPG valide.',
                     ]),
                 ],
             ]);

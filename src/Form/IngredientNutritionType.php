@@ -26,8 +26,7 @@ class IngredientNutritionType extends AbstractType
         $builder
             
             ->add('idNutrition', IntegerType::class, [
-                'label' => 'Ingredient ID',
-                'required' => false, 
+                'label' => 'Nutrition ID', 
                 'constraints' => [
                     new Callback([$this, 'nutritionExist']),
                 ],
@@ -49,7 +48,7 @@ class IngredientNutritionType extends AbstractType
         $nutrition = $this->nutritionRpository->find($nutritionId);
 
         if(!$nutrition){
-            $context->buildViolation('Ingredient with ID {{ id }} does not exist.')
+            $context->buildViolation('Nutrition with ID {{ id }} does not exist.')
                 ->setParameter('{{ id }}', (string)$nutritionId)
                 ->atPath('idIngredient')
                 ->addViolation();

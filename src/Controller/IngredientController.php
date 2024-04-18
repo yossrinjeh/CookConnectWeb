@@ -8,6 +8,7 @@ use App\Form\IngredientNutritionType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,8 +38,24 @@ class IngredientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $media = $form['image']->getData();
+            if($media){
+                $filename = uniqid() . '.' . $media->guessExtension();
+
+                try{
+                    $media->move($this->getParameter('ingredient_image_dir'), $filename);
+                }catch(FileException $e){
+                    return new Response('Failed to upload the image.', Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+
+            }
+
             $ingredient->setUserId(100);
-            $ingredient->setEtat("desactivee"); 
+            if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
+                $ingredient->setEtat("disabled");
+            }else{
+                $ingredient->setEtat("enabled");
+            }
             $entityManager->persist($ingredient);
             $entityManager->flush();
 
@@ -66,7 +83,14 @@ class IngredientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient->setImage((string)($ingredient->getImage()));
+            if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
+                $ingredient->setEtat("disabled");
+            }else{
+                $ingredient->setEtat("enabled");
+            }
             $entityManager->flush();
+
 
             return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
