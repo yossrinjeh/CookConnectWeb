@@ -29,6 +29,7 @@ class RecetteController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $recette = new Recette();
+        $recette->setEtat("desactivé");
         $form = $this->createForm(RecetteType::class, $recette);
         $form->handleRequest($request);
 

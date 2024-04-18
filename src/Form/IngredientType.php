@@ -3,6 +3,7 @@
 namespace App\Form;
 use App\Entity\Ingredient;
 use App\Entity\Nutrition;
+use App\Entity\Recette;
 use App\Repository\NutritionRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
