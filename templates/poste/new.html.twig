@@ -1,0 +1,101 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block stylesheets %}
+    {# Add any additional CSS styles specific to the new post page #}
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+        }
+        /* Adjust input width */
+        input[type="text"] {
+            width: 100%; /* Adjust as needed */
+        }
+        .form-container, .upload-container {
+            flex: 1;
+            padding: 0 20px;
+        }
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .upload-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="form-container">
+            <h1>Create new Post</h1>
+
+            {{ include('poste/_form.html.twig') }}
+
+            <a href="{{ path('app_poste_index') }}" class="back-link">Back to List</a>
+        </div>
+        <div class="upload-container">
+            <div>
+                {# Placeholder for image or video upload #}
+                <img src="{{ asset('placeholder.jpg') }}" alt="Placeholder" style="max-width: 100%;">
+            </div>
+            <input type="file" id="fileInput" style="display: none;">
+            <button class="upload-button" id="uploadButton">Upload Image/Video</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#uploadButton').click(function() {
+                $('#fileInput').click();
+            });
+
+            $('#fileInput').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // Submit the form with the selected file
+                    const formData = new FormData();
+                    formData.append('media', file);
+
+                    $.ajax({
+                        url: '/new',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            // Redirect to the index page or wherever you want
+                            window.location.href = '/feed';
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to upload file');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      /*height: 650px;*/
+    }
+    
+    .container-md-flex-row {
+      display: flex;
+    }
+
+    .item-left {
+      flex: 1;
+      background-color: #000;
+      height: 600px;
+    }
+
+    .item-left img {
+      width: 100%;
+      height: 600px;
+      background-color: white; 
+      object-fit: cover;
+      padding: 20px 20px 20px 45px;
+    }
+
+    .item-right {
+      flex: 1;
+      background-color: white; 
+      padding: 20px 45px 20px 20px;
+      overflow-y: auto;
+    }
+
+    .info-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .item-left video {
+      width: 100%;
+      height: 600px;
+      background-color: black;
+      object-fit: contain;
+    }
+
+    .username {
+      font-weight: bold;
+      color: black;
+    }
+
+    .timestamp {
+      color: #696868;
+      font-size: 14px; 
+    }
+
+    .likes-btn {
+      color: #40ba37; 
+    }
+
+    .description {
+      color: #686868;
+      margin-bottom: 1rem;
+    }
+
+    .stats-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      color: #5d5c5c;
+    }
+
+    .stats-container span {
+      margin-right: 0.5rem;
+    }
+
+    .comment-input {
+      width: 100%;
+      background-color: white; 
+      padding: 0.5rem;
+      border: 2px solid #40ba37;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .comment {
+      color: black;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      padding: 5px;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+    .user-comment-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .comment-username {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .comment-info {
+      display: flex;
+      align-items: center;
+      color: #4d4d4d;
+      font-size: 0.875rem;
+    }
+
+    .comment-info button {
+      margin-left: 0.5rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container" data-post="{{ post|json_encode|e('html_attr') }}">
+    <div class="container-md-flex-row">
+      {# <div class="item-left"> #}
+        {# <img src="public/images/4.jpg" alt="Video Content"> #}
+        {# <img src="{{ post.image }}" alt="Video Content"> #}
+      {# </div> #}
+
+      <div class="item-left">
+        {% if post.image is not null %}
+            <img src="{{ post.image }}" alt="Image Content">
+        {% elseif post.video is not null %}
+            <video controls>
+                <source src="{{ post.video }}" type="video/mp4">
+                {# Your browser does not support the video tag. #}
+            </video>
+        {% endif %}
+      </div>
+
+      <div class="item-right">
+        <div class="info-container">
+          <div class="user-info">
+            <img src="..." alt="User Avatar">
+            <div class="username" id="username-placeholder"></div>
+          </div>
+          <div class="timestamp">{{ post.date|date("Y-m-d H:i:s") }}</div>
+        </div>
+        <div class="title">
+          <h4>{{ post.titre }}</h4>
+        </div>
+        <div class="description">
+          <p>{{ post.description }}</p>
+        </div>
+        <div class="stats-container">
+          <div class="likes-section">
+              <button class="likes-btn">Like</button>
+              <span class="likes-count">1.5k</span>
+          </div>
+          <div class="comments-section">
+              <button class="comments-btn">Comments</button>
+              <span class="likes-count">1.5k</span>
+          </div>
+        </div>
+        <input type="text" class="comment-input" placeholder="Add comment...">
+
+        <div class="comments" style="height: 400px; overflow-y: auto; border: 1px solid black">
+          <div class="comment">
+            <div class="user-info">
+                <div class="user-comment-info">
+                    <img src="https://placehold.co/40x40" alt="User Avatar">
+                    <div class="comment-username">Username</div>
+                </div>
+              <div>User comment...</div>
+            </div>
+            <div class="comment-info">
+              <span>22h ago</span>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="user-info">
+                <div class="user-comment-info">
+                    <img src="https://placehold.co/40x40" alt="User Avatar">
+                    <div class="comment-username">FoodieGirl123</div>
+                </div>
+                <div>Burgers are my favorite comfort food!</div>
+            </div>
+            <div class="comment-info">
+                <span>1h ago</span>
+            </div>
+        </div>
+        
+        <div class="comment">
+            <div class="user-info">
+                <div class="user-comment-info">
+                    <img src="https://placehold.co/40x40" alt="User Avatar">
+                    <div class="comment-username">TasteBuds99</div>
+                </div>
+                <div>Just had the most delicious pizza for lunch!</div>
+            </div>
+            <div class="comment-info">
+                <span>3h ago</span>
+            </div>
+        </div>
+        
+        <div class="comment">
+              <div class="user-info">
+                  <div class="user-comment-info">
+                      <img src="https://placehold.co/40x40" alt="User Avatar">
+                      <div class="comment-username">CookingQueen</div>
+                  </div>
+                  <div>Nothing beats homemade chocolate chip cookies!</div>
+              </div>
+              <div class="comment-info">
+                  <span>5h ago</span>
+              </div>
+          </div>
+          
+          <div class="comment">
+              <div class="user-info">
+                  <div class="user-comment-info">
+                      <img src="https://placehold.co/40x40" alt="User Avatar">
+                      <div class="comment-username">HealthyEater22</div>
+                  </div>
+                  <div>Starting my day with a refreshing fruit salad!</div>
+              </div>
+              <div class="comment-info">
+                  <span>8h ago</span>
+              </div>
+          </div>
+          
+          <div class="comment">
+              <div class="user-info">
+                  <div class="user-comment-info">
+                      <img src="https://placehold.co/40x40" alt="User Avatar">
+                      <div class="comment-username">SpiceMaster</div>
+                  </div>
+                  <div>Curry night at my place tonight! Who's in?</div>
+              </div>
+              <div class="comment-info">
+                  <span>12h ago</span>
+              </div>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+
+  {% verbatim %}
+  <script>
+
+    $(document).ready(function() {
+      var postData = $('.container').data('post');
+
+      console.log("here is the data");
+      console.log(postData); 
+  
+      var id_user = postData.id_user;
+  
+      $.ajax({
+        url: '/get_username',
+        method: 'GET',
+        data: {id_user: id_user},
+        success: function(response) {
+          $('#username-placeholder').text(response.username);
+  
+          var id_post = postData.id_post;
+  
+          $.ajax({
+            url: '/get_comments',
+            method: 'GET',
+            data: {id_post: id_post},
+            success: function(response) {
+              response.forEach(function(comment) {
+                var commentHtml = `
+                  <div class="comment">
+                    <div class="user-info">
+                      <div class="user-comment-info">
+                        <img src="${comment.userAvatar}" alt="User Avatar">
+                        <div class="comment-username">${comment.username}</div>
+                      </div>
+                      <div>${comment.commentText}</div>
+                    </div>
+                    <div class="comment-info">
+                      <span>${comment.timestamp}</span>
+                      <button>Reply</button>
+                    </div>
+                  </div>
+                `;
+                $('.comment-section').append(commentHtml);
+              });
+            },
+            error: function() {
+              console.error('Failed to fetch comments');
+            }
+          });
+        },
+        error: function() {
+          $('#username-placeholder').text('Unknown User');
+          console.error('Failed to get username');
+        }
+      });
+    });
+
+  </script>
+  {% endverbatim %}
+  
+
+</body>
+</html>
