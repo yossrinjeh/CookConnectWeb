@@ -33,41 +33,30 @@ class PosteController extends AbstractController
     }
 
     #[Route('/new', name: 'app_poste_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $doctrine) // Inject ManagerRegistry
+    public function new(Request $request, ManagerRegistry $doctrine) 
     {
-        // Create a new Post instance
         $post = new Poste();
 
-        // Create the form using the PosteType form class
         $form = $this->createForm(PosteType::class, $post);
 
-        // Handle the form submission
         $form->handleRequest($request);
 
-        // Check if the form is submitted and valid
         if ($form->isSubmitted() && $form->isValid()) {
-            // Get the uploaded file
             $file = $form->get('media')->getData();
 
-            // Check if a file is uploaded
             if ($file instanceof UploadedFile) {
-                // Generate a unique filename with extension
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
 
-                // Move the file to the media directory
                 $file->move(
                     $this->getParameter('media_directory'),
                     $fileName
                 );
 
-                // Get the file extension
                 $fileExtension = $file->guessExtension();
 
-                // Define allowed extensions
                 $allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                 $allowedVideoExtensions = ['mp4', 'avi', 'mov', 'mkv'];
 
-                // Check file extension and set appropriate property
                 if (in_array($fileExtension, $allowedImageExtensions)) {
                     $post->setImage($fileName);
                 } elseif (in_array($fileExtension, $allowedVideoExtensions)) {
@@ -77,16 +66,13 @@ class PosteController extends AbstractController
                 }
             }
 
-            // Save the post to the database
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
 
-            // Redirect to the index page or wherever you want
             return $this->redirectToRoute('app_post_index');
         }
 
-        // Render the new post form
         return $this->render('poste/new.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
