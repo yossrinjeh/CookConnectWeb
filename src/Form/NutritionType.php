@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class NutritionType extends AbstractType
@@ -46,18 +47,43 @@ class NutritionType extends AbstractType
             ])
             ->add('calories', NumberType::class, [
                 'label' => 'Calories',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Calories',
+                    ]),
+                ],
             ])
             ->add('carbs', NumberType::class, [
                 'label' => 'Carbohydrates',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Carbohydrates',
+                    ]),
+                ],
             ])
             ->add('fat', NumberType::class, [
                 'label' => 'Fat',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Fat',
+                    ]),
+                ],
             ])
             ->add('fiber', NumberType::class, [
                 'label' => 'Fiber',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Fiber',
+                    ]),
+                ],
             ])
             ->add('protein', NumberType::class, [
                 'label' => 'Protein',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Protein',
+                    ]),
+                ],
             ])
             ->add('vitamines', ChoiceType::class, [
                 'label' => 'Vitamins',
@@ -69,11 +95,21 @@ class NutritionType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => true,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please choose vitamines',
+                    ]),
+                ],
             ])
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Image',
+                    ]),
+                ],
             ]);
     }
 

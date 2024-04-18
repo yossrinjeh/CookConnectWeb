@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class IngredientType extends AbstractType
@@ -25,32 +26,64 @@ class IngredientType extends AbstractType
 
             ->add('nom', TextType::class, [
                 'label' => 'Name',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Name',
+                    ]),
+                ],
             ])
             ->add('qte', IntegerType::class, [
                 'label' => 'Quantity',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Quantity',
+                    ]),
+                ],
             ])
             ->add('prixVente', NumberType::class, [
                 'label' => 'Selling Price',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Selling Price',
+                    ]),
+                ],
             ])
             ->add('prixAchat', NumberType::class, [
                 'label' => 'Purchase Price',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Purchaase Price',
+                    ]),
+                ],
             ])
+            // this will be removed and will be assinged in a new form 
             ->add('idNutrition', IntegerType::class, [
                 'label' => 'Nutrition ID',
                 'constraints' => [
                     new Callback([$this, 'NutritionIdExists'])
                 ]
             ])
+            // this is auto assigned at the new form(ingredient/Nutrition forum)
             ->add('etat', TextType::class, [
                 'label' => 'State',
             ])
             ->add('quantiteThreshold', IntegerType::class, [
                 'label' => 'Quantity Threshold',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Calories',
+                    ]),
+                ],
             ])
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Calories',
+                    ]),
+                ],
             ]);
     }
 

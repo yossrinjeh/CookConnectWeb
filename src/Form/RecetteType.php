@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,12 +22,27 @@ class RecetteType extends AbstractType
             // Assuming idUser is set dynamically in the controller
             ->add('nom', TextType::class, [
                 'label' => 'Name',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Name',
+                    ]),
+                ],
             ])
             ->add('prix', NumberType::class, [
                 'label' => 'Price',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Price',
+                    ]),
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please put Description',
+                    ]),
+                ],
             ])
             // ingredients, quantites et nutrition dans un autre form 
             //->add('idNutrition', IntegerType::class, [
@@ -41,6 +57,9 @@ class RecetteType extends AbstractType
                 'mapped' => false, // Set to false if you're handling file upload separately
                 'required' => false, // Set to true if the image is required
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please select an Image',
+                    ]),
                     new Image([
                         'maxSize' => '5M',
                         'mimeTypes' => [
