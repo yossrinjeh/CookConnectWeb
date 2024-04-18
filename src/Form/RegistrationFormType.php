@@ -50,7 +50,7 @@ class RegistrationFormType extends AbstractType
                 'User' => 'USER',
                 'CHEF' => 'CHEF',
             ],
-            'placeholder' => 'Select a role', // Optional placeholder text
+            'placeholder' => 'Select Type', // Optional placeholder text
             'attr' => [
                 'class' => 'form-control' , // Add custom CSS class
             ],

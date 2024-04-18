@@ -34,6 +34,8 @@ class RegistrationController extends AbstractController
             );
             $user->setImage('avatar.png');
             $user->setDate(new DateTime());
+            $activationCode = rand(100000, 999999);
+            $user->setVerificationCode($activationCode);
             $entityManager->persist($user);
             $entityManager->flush();
             

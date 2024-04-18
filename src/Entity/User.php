@@ -59,7 +59,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="verification_code", type="string", length=300, nullable=false)
      */
-    private $verificationCode="1234";
+    private $verificationCode;
 
     /**
      * @var bool|null
