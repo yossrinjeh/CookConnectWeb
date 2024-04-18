@@ -46,14 +46,14 @@ class NutritionType extends AbstractType
 
             ->add('idIngredient', IntegerType::class, [
                 'label' => 'Ingredient ID',
-                'required' => false, // Make it optional
+                'required' => false, 
                 'constraints' => [
                     new Callback([$this, 'IngredientOrRecetteExists']),
                 ],
             ])
             ->add('idRecette', IntegerType::class, [
                 'label' => 'Recipe ID',
-                'required' => false, // Make it optional
+                'required' => false, 
                 'constraints' => [
                     new Callback([$this, 'IngredientOrRecetteExists']),
                 ],

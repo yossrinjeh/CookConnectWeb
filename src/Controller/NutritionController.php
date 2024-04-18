@@ -33,8 +33,6 @@ class NutritionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nutrition->setIdIngredient(1);
-            $nutrition->setIdRecette(1);
             $entityManager->persist($nutrition);
             $entityManager->flush();
 
@@ -85,7 +83,4 @@ class NutritionController extends AbstractController
     }
 
     
-
-
-
 }
