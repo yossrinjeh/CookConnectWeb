@@ -44,7 +44,7 @@ class NutritionType extends AbstractType
             //     'label' => 'User ID',
             // ])
 
-            ->add('idIngredient', IntegerType::class, [
+          /*  ->add('idIngredient', IntegerType::class, [
                 'label' => 'Ingredient ID',
                 'required' => false, 
                 'constraints' => [
@@ -57,7 +57,7 @@ class NutritionType extends AbstractType
                 'constraints' => [
                     new Callback([$this, 'IngredientOrRecetteExists']),
                 ],
-            ])
+            ])*/
             ->add('calories', NumberType::class, [
                 'label' => 'Calories',
                 'constraints' => [
@@ -117,7 +117,7 @@ class NutritionType extends AbstractType
     }
 
 
-    public function IngredientOrRecetteExists($data, ExecutionContextInterface $context): void
+    /*public function IngredientOrRecetteExists($data, ExecutionContextInterface $context): void
 {
     $nutritionId = $data;
     dump($data);
@@ -152,5 +152,5 @@ class NutritionType extends AbstractType
                 ->addViolation();
         }
     }
-}
+}*/
 }
