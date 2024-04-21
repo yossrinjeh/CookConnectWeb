@@ -59,6 +59,13 @@ class Recette
     /**
      * @var string
      *
+     * @ORM\Column(name="Quantite_Ingredients", type="string", length=256, nullable=false)
+     */
+    private $quantiteIngredients;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="id_nutrition", type="string", length=256, nullable=false)
      */
     private $idNutrition;
@@ -139,6 +146,17 @@ class Recette
     {
         $this->idIngredients = $idIngredients;
 
+        return $this;
+    }
+
+    public function getquantiteIngredients(): ?string
+    {
+        return $this->quantiteIngredients;
+    }
+
+    public function setquantiteIngredients(string $quantiteIngredients): static
+    {
+        $this->quantiteIngredients = $quantiteIngredients;
         return $this;
     }
 

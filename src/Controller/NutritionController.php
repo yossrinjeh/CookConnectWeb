@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Nutrition;
+use App\Entity\Ingredient;
+use App\Entity\Recette;
 use App\Form\NutritionRecetteIngredientType;
 use App\Form\NutritionType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -90,7 +92,21 @@ class NutritionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $idIngredient = $nutrition->getIdIngredient();
+            $idRecette = $nutrition->getIdRecette();
+
+            if($idIngredient!=null and $idIngredient!=0){
+                $ingredient = $entityManager->getRepository(Ingredient::class)->find($idIngredient);
+                $ingredient->setIdNutrition($nutrition->getId());
+                $entityManager->persist($ingredient);
+            }
+            if($idRecette!=null and $idRecette!=0){
+                $recette = $entityManager->getRepository(Recette::class)->find($idRecette);
+                $recette->setIdNutrition($nutrition->getId());
+                $entityManager->persist($recette);
+            }    
             $entityManager->flush();
+
 
             return $this->redirectToRoute('app_nutrition_index', [], Response::HTTP_SEE_OTHER);
         }

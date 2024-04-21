@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\IsNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class NutritionRecetteIngredientType extends AbstractType
