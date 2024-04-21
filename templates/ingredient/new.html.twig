@@ -3,9 +3,43 @@
 {% block title %}New Ingredient{% endblock %}
 
 {% block body %}
-    <h1>Create new Ingredient</h1>
+    <h1>Create New Ingredient</h1>
 
-    {{ include('ingredient/_form.html.twig') }}
-
-    <a href="{{ path('app_ingredient_index') }}">back to list</a>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Name') }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.qte, 'Quantity') }}
+                    {{ form_widget(form.qte, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.qte) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prixVente, 'Selling Price') }}
+                    {{ form_widget(form.prixVente, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prixVente) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prixAchat, 'Purchase Price') }}
+                    {{ form_widget(form.prixAchat, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prixAchat) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.quantiteThreshold, 'Quantity Threshold') }}
+                    {{ form_widget(form.quantiteThreshold, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.quantiteThreshold) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.image, 'Image') }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                    {{ form_errors(form.image) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

@@ -81,9 +81,6 @@ class IngredientType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please choose an image',
-                    ]),
                     new Image([
                         'maxSize' => '5M',
                         'mimeTypes' => [

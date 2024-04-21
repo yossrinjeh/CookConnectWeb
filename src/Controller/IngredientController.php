@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Ingredient;
+use App\Entity\Nutrition;
 use App\Form\IngredientType;
 use App\Form\IngredientNutritionType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,24 +34,28 @@ class IngredientController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $ingredient = new Ingredient();
-
-
         $form = $this->createForm(IngredientType::class, $ingredient);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $media = $form['image']->getData();
-            if($media){
-                $filename = uniqid() . '.' . $media->guessExtension();
+            /** @var UploadedFile $image */
+            $image = $form['image']->getData();
 
-                try{
-                    $media->move($this->getParameter('ingredient_image_dir'), $filename);
-                }catch(FileException $e){
+            if ($image) {
+                $fileName = uniqid() . '.' . $image->guessExtension();
+
+                try {
+                    $image->move($this->getParameter('image_dir'), $fileName); // Move the uploaded file to the configured directory
+                } catch (FileException $e) {
+                    // Handle file exception
+                    // You might want to log the error or show an error message to the user
                     return new Response('Failed to upload the image.', Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
 
+                $ingredient->setImage($fileName);
             }
 
+            
             $ingredient->setUserId(100);
             if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
                 $ingredient->setEtat("disabled");
@@ -115,15 +121,18 @@ class IngredientController extends AbstractController
     #[Route('/{id}/accordNutrition', name: 'app_ingredient_nutrition_accord', methods:['GET','POST'])]
     public function nutritionAccord(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(IngredientNutritionType::class);
+        $form = $this->createForm(IngredientNutritionType::class, $ingredient);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $idNutrition = $ingredient->getIdNutrition();
+            $nutrition = $entityManager->getRepository(Nutrition::class)->find($idNutrition);
+            $nutrition->setIdIngredient($ingredient->getId());
+            $entityManager->persist($nutrition);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
-        //twig
+
         return $this->renderForm('ingredient/ingredientNutrition.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
