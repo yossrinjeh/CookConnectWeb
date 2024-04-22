@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Recette;
+use App\Form\RecetteNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,5 +83,23 @@ class RecetteController extends AbstractController
         }
 
         return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/accordNutrition', name: 'app_recette_accordNutrition', methods: ['GET', 'POST'])]
+    public function accordNutrition(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(RecetteNutritionType::class, $recette);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('recette/edit.html.twig', [
+            'recette' => $recette,
+            'form' => $form,
+        ]);
     }
 }
