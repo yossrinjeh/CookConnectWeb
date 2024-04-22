@@ -30,6 +30,7 @@ class RecetteController extends AbstractController
     {
         $recette = new Recette();
         $recette->setEtat("desactivé");
+        $recette->setIdUser(99);
         $form = $this->createForm(RecetteType::class, $recette);
         $form->handleRequest($request);
 

@@ -50,23 +50,23 @@ class Recette
     private $description;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="id_ingredients", type="string", length=256, nullable=false)
+     * @ORM\Column(name="id_ingredients", type="string", length=256, nullable=true)
      */
     private $idIngredients;
 
     /**
-     * @var string
+     * @var string|true
      *
-     * @ORM\Column(name="Quantite_Ingredients", type="string", length=256, nullable=false)
+     * @ORM\Column(name="Quantite_Ingredients", type="string", length=256, nullable=true)
      */
     private $quantiteIngredients;
 
     /**
-     * @var string
+     * @var string|string
      *
-     * @ORM\Column(name="id_nutrition", type="string", length=256, nullable=false)
+     * @ORM\Column(name="id_nutrition", type="string", length=256, nullable=true)
      */
     private $idNutrition;
 
