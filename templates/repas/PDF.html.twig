@@ -6,27 +6,29 @@
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Image</th>
-                        <th>Nom_Restaurant</th>
-                        <th>Adresse_Restaurant</th>
-                        <th>Num_Tel_Restaurant</th>
-                        <th>Description_Restaurant</th>
+                        <th>id_user</th>
+                        <th>id_recette</th>
+                        <th>nom</th>
+                        <th>type</th>
+                        <th>tags</th>
+                        <th>email</th>
                        
                     </tr>
                     </thead>
                     <tbody>
                     {% for repa in repas %}
                         <tr>
-                            <td></td>
+                           
 
                       
                            
-                        <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                              <td></td>
-                                <td></td>
+                       <td>{{ repa.id }}</td>
+            <td>{{ repa.getRecette.id }}</td>
+            <td>{{ repa.getUser.id }}</td>
+            <td>{{ repa.nom }}</td>
+            <td>{{ repa.type }}</td>
+            <td>{{ repa.tags }}</td>
+            <td>{{ repa.email }}</td>
      
        <td></td>
      

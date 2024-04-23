@@ -1,0 +1,42 @@
+
+{% extends '/frontOffice/base.html.twig'  %}
+{% block body %}
+<br><br><br>
+    <table class="table">
+        <tbody>
+           
+            <tr>
+                <td>{{ repas.id }}</td>
+            </tr>
+            <tr>
+                <th>id_recette</th>
+                <td>{{ repas.id_recette }}</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>{{ repas.id_user }}</td>
+            </tr>
+            <tr>
+                <th>nom</th>
+                <td>{{ repas.nom }}</td>
+            </tr>
+            <tr>
+                <th>type</th>
+                <td>{{ repas.type }}</td>
+            </tr>
+           
+            <tr>
+                <th>tags</th>
+                 <td>{{ repas.tags}}</td>
+             </tr>
+             <tr>
+                <th>email</th>
+                 <td>{{ repas.email}}</td>
+             </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_repas_front') }}">back to list</a>
+
+    
+{% endblock %}

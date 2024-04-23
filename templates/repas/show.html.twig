@@ -9,6 +9,8 @@
             <div class="card mt-4">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">Repas Details</h3>
+                    <a href="{{ path('PDF_Seance') }}" class="btn btn-primary">exporter pdf</a>
+
                 </div>
                 <div class="card-body">
                     <dl class="row">
@@ -28,14 +30,13 @@
                         <dd class="col-sm-8">{{ repas.type }}</dd>
 
                         <dt class="col-sm-4">Tags</dt>
-                        <dd class="col-sm-8">
-                            {% for tag in repas.tags %}
-                                <span class="badge badge-secondary">{{ tag }}</span>
-                            {% endfor %}
-                        </dd>
-
+                        <dd class="col-sm-8">{{ repas.tags }}</dd>
                         <dt class="col-sm-4">Email</dt>
                         <dd class="col-sm-8">{{ repas.email }}</dd>
+                           
+                        </dd>
+
+                       
                     </dl>
                 </div>
                 <div class="card-footer">

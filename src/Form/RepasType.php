@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 class RepasType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,6 +28,7 @@ class RepasType extends AbstractType
                 ]),
             ],
         ])
+        
             ->add('user', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'id', // Or any other property of User you want to display
@@ -42,20 +44,23 @@ class RepasType extends AbstractType
                     'message' => 'Please enter an name',
                 ]),new Assert\Type([
                     'type' => 'string',
-                    'message' => 'The role field must be a string.'
+                    'message' => 'The nom field must be a string.'
                 ])
             ]])
             ->add('type',null , ['constraints' => [
                 new NotBlank([
                     'message' => 'Please enter an type',
-                ]),
+                ]),new Assert\Type([
+                    'type' => 'string',
+                    'message' => 'The type field must be a string.'
+                ])
             ]])
             ->add('tags',null , ['constraints' => [
                 new NotBlank([
                     'message' => 'Please enter an tags',
                 ]),new Assert\Type([
                     'type' => 'string',
-                    'message' => 'The role field must be a string.'
+                    'message' => 'The tags field must be a string.'
                 ]),
                 new Length([
                     'min' => 8,
@@ -67,6 +72,9 @@ class RepasType extends AbstractType
             ->add('email',null , ['constraints' => [
                 new NotBlank([
                     'message' => 'Please enter an email',
+                ]),new Assert\Regex([
+                    'pattern' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                    'message' => 'L\'adresse e-mail "{{ value }}" n\'est pas valide.',
                 ]),
             ]])
         ;

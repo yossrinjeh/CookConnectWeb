@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Repository\RepasRepository;
 use App\Entity\Repas;
+
 use App\Form\RepasType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,9 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 #[Route('/repas')]
 class RepasController extends AbstractController
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
     #[Route('/', name: 'app_repas_index', methods: ['GET'])]
     public function index(RepasRepository $repasRepository): Response
     {
@@ -22,7 +31,7 @@ class RepasController extends AbstractController
         $repas = $repasRepository->selectAllRepas();
 
         // Render the template and pass the repas data to it
-        return $this->render('frontOffice/base.html.twig', [
+        return $this->render('repas/index.html.twig', [
             'repas' => $repas,
         ]);
     }
@@ -37,6 +46,12 @@ class RepasController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($repas);
             $entityManager->flush();
+           
+
+            $this->addFlash(
+                'success',
+                'Add successfully!'
+            );
 
             return $this->redirectToRoute('app_repas_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -47,17 +62,27 @@ class RepasController extends AbstractController
         ]);
     }
     #[Route('/backrechercheAjax', name: 'backrechercheAjax')]
-    public function searchAjax(Request $request, RepasRepository $repo)
+    public function searchAjax(Request $request, RepasRepository $repo): Response
     {
-    // Récupérez le paramètre de recherche depuis la requête
-    $query = $request->query->get('q');
-    // Récupérez les plats correspondants depuis la base de données
-    $repas = $repo->findrepasByNom($query);
-    $html = $this->renderView("repas/index.html.twig", [
-    "repas" => $repas,
-    ]);
-    return new Response($html);
-}
+        // Retrieve the search query parameter from the request
+        $query = $request->query->get('q');
+
+        // If the query is empty, return all results
+        if (empty($query)) {
+            $repas = $repo->findAll();
+        } else {
+            // Otherwise, search for meals by name
+            $repas = $repo->findrepasByNom($query);
+        }
+
+        // Render the template with the results
+        $html = $this->renderView("repas/index.html.twig", [
+            "repas" => $repas,
+        ]);
+
+        // Return the HTML response
+        return new Response($html);
+    }
 #[Route('/pdf', name: 'PDF_Seance',methods: ['GET'])]
     public function pdf(repasRepository $RepasRepository)
     {
@@ -91,31 +116,18 @@ class RepasController extends AbstractController
         return new BinaryFileResponse($pdfFilepath);
     }
 
-    #[Route('/{id}', name: 'app_repas_show', methods: ['GET'])]
-    public function show($id, EntityManagerInterface $entityManager): Response
+    #[Route('/repas/{id}', name: 'app_repas_show', methods: ['GET'])]
+    public function show(Repas $repas): Response
     {
-        $repas = $entityManager->getRepository(Repas::class)->find($id);
-    
         if (!$repas) {
-            throw $this->createNotFoundException('Repas not found');
+            throw new NotFoundHttpException('Repas not found');
         }
-    
-        // Add code to fetch related Recette entity
-        $recette = $repas->getRecette();
-    
-        // Check if Recette entity exists
-        if (!$recette) {
-            
-            throw $this->createNotFoundException('Recette not found');
-        }
-    
+
         return $this->render('repas/show.html.twig', [
             'repas' => $repas,
-            'recette' => $recette, // Pass the Recette entity to the template
         ]);
     }
-    
-    #[Route('/{id}/edit', name: 'app_repas_edit', methods: ['GET', 'POST'])]
+        #[Route('/{id}/edit', name: 'app_repas_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, $id, EntityManagerInterface $entityManager): Response
 {
     $repas = $entityManager->getRepository(Repas::class)->find($id);
@@ -128,6 +140,10 @@ public function edit(Request $request, $id, EntityManagerInterface $entityManage
 
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->flush();
+        $this->addFlash(
+            'info',
+            'update successfully!'
+        );
 
         return $this->redirectToRoute('app_repas_index', [], Response::HTTP_SEE_OTHER);
     }
@@ -137,15 +153,15 @@ public function edit(Request $request, $id, EntityManagerInterface $entityManage
         'form' => $form,
     ]);
 }
-#[Route('/read', name: 'app_repas_i', methods: ['GET'])]
-    public function read(): Response
-    {
+// #[Route('/read', name: 'app_repas_i', methods: ['GET'])]
+//     public function read(): Response
+//     {
     
-        $repository= $this->getDoctrine()->getRepository(Repas::class)->findAll();
+//         $repository= $this->getDoctrine()->getRepository(Repas::class)->findAll();
      
-        return $this->render('repas/read.html.twig',['Repas'=>$repository,
-    ]);
-    }
+//         return $this->render('repas/read.html.twig',['Repas'=>$repository,
+//     ]);
+//     }
 
 #[Route('/{id}', name: 'app_repas_delete', methods: ['POST'])]
 public function delete(Request $request, $id, EntityManagerInterface $entityManager): Response
@@ -159,8 +175,60 @@ public function delete(Request $request, $id, EntityManagerInterface $entityMana
     if ($this->isCsrfTokenValid('delete'.$repas->getId(), $request->request->get('_token'))) {
         $entityManager->remove($repas);
         $entityManager->flush();
+        $this->addFlash(
+            'del',
+            'delet successfully!'
+        );
     }
 
     return $this->redirectToRoute('app_repas_index');
+}
+// #[Route('/statistics', name: 'app_statistics', methods: ['GET'])]
+// public function statistics(RepasRepository $repasRepository): Response
+// {
+//     $stats = $repasRepository->getRepasStatistics(); // Call the method on the repository
+
+//     return $this->render('repas/statistics.html.twig', [
+//         'client_repas' => $stats['client'],
+//         'admin_repas' => $stats['admin'],
+//     ]);
+// }
+
+#[Route('/statistics', name: 'statistics', methods: ['GET'])]
+    public function statistics(): Response
+    {
+        $clientCount = $this->countGenderForEvents('client');
+        $adminCount = $this->countGenderForEvents('admin');
+      
+    
+        $data = [
+            'client' => $clientCount,
+            'admin' => $adminCount,
+            
+        ];
+    
+        $jsonData = json_encode($data);
+    
+        return $this->render('repas/statistics.html.twig', [
+            'client' => $clientCount,
+            'admin' => $adminCount,
+           
+            'jsonData' => $jsonData
+        ]);
+    }
+private function countGenderForEvents(string $type): int
+{
+    $entityManager = $this->entityManager;
+
+    // Query the database to count events based on gender
+    $query = $entityManager->createQuery(
+        'SELECT COUNT(e.id) AS repasCount
+        FROM App\Entity\Repas e
+        WHERE e.type = :type'
+    )->setParameter('type', $type);
+
+    $result = $query->getSingleResult();
+    
+    return $result['repasCount'];
 }
 }
