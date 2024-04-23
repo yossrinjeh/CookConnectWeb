@@ -17,6 +17,24 @@ class RecetteController extends AbstractController
     #[Route('/', name: 'app_recette_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        /*
+        // Get the current user
+        $user = $security->getUser();
+        
+        // Check if the user exists and has the role 'chefmaster'
+        if ($user && $this->isGranted('ROLE_CHEFMASTER', $user)) {
+            $recettes = $entityManager
+                ->getRepository(Recette::class)
+                ->findAll();
+        } else {
+            // Filter recettes based on user ID if not 'chefmaster'
+            $recettes = $entityManager
+                ->getRepository(Recette::class)
+                ->findBy(['userId' => $user->getId()]);
+        }*/
+
+
+
         $recettes = $entityManager
             ->getRepository(Recette::class)
             ->findAll();
