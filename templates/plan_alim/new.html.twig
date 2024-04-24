@@ -1,12 +1,74 @@
-
-{% extends '/frontOffice/base.html.twig'  %}
-{% block title %}Repas{% endblock %}
+{% extends '/backOffice/base.html.twig' %}
+{% block title %}New PlanAlim{% endblock %}
 {% block body %}
-<title>New PlanAlim</title>
+    <style>
+        /* Styles spécifiques au formulaire */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    <h1>Create new PlanAlim</h1>
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    {{ include('plan_alim/_form.html.twig') }}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    <a href="{{ path('app_plan_alim_index') }}">back to list</a>
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #28a745; /* Vert */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838; /* Vert plus foncé au survol */
+        }
+
+        .btn-secondary {
+            background-color: #007bff; /* Bleu */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #0056b3; /* Bleu plus foncé au survol */
+        }
+    </style>
+
+    <div class="container">
+        <h1>Create new PlanAlim</h1>
+
+        {{ include('plan_alim/_form.html.twig') }}
+
+        <a href="{{ path('app_plan_alim_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    </div>
+{% endblock %}
+{% block js %}
 {% endblock %}

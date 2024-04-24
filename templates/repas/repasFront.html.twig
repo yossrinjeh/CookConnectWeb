@@ -1,0 +1,50 @@
+{% extends 'frontOffice/base.html.twig' %}
+
+{% block body %}
+<br><br><br>
+
+<div class="container">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <!-- Add your filtering form here if needed -->
+
+    <div class="row">
+        {% for repa in pagination %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Adjust this part to display repas information -->
+                        <h5 class="card-title">{{ repa.nom }}</h5>
+                        <p class="card-text">Type: {{ repa.type }}</p>
+                        <p class="card-text">Tags: {{ repa.tags }}</p>
+                        <p class="card-text">Email: {{ repa.email }}</p>
+                        <!-- Add more fields as needed -->
+                        <!-- Add actions buttons like Show and Edit -->
+                        <a href="{{ path('app_repas_show', {'id': repa.id}) }}" class="btn btn-primary">Show</a>
+                        <!-- Add more action buttons here -->
+                        <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>No repas found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Utilisez knp_pagination_render avec la variable pagination -->
+<span class="badge badge-sm bg-gradient-faded-success-vertical">
+    {{ knp_pagination_render(pagination) }}
+</span>
+
+{% endblock %}

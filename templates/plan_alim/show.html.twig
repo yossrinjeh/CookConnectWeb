@@ -1,32 +1,88 @@
-{% extends '/frontOffice/base.html.twig'  %}
-{% block title %}Repas{% endblock %}
+{% extends '/backOffice/base.html.twig' %}
+{% block title %}PlanAlim{% endblock %}
 {% block body %}
+    <style>
+        /* Styles spécifiques à la mise en forme */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-<title>PlanAlim</title>
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    <h1>PlanAlim</h1>
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ plan_alim.id }}</td>
-            </tr>
-            <tr>
-                <th>IdNut</th>
-                <td>{{ plan_alim.idNut }}</td>
-            </tr>
-            <tr>
-                <th>IdUser</th>
-                <td>{{ plan_alim.idUser }}</td>
-            </tr>
-        </tbody>
-    </table>
+        th {
+            background-color: #f2f2f2;
+        }
 
-    <a href="{{ path('app_plan_alim_index') }}">back to list</a>
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
 
-    <a href="{{ path('app_plan_alim_edit', {'id': plan_alim.id}) }}">edit</a>
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 
-    {{ include('plan_alim/_delete_form.html.twig') }}
+    <div class="container">
+        <h1>PlanAlim</h1>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ plan_alim.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nutrition</th>
+                    <td>
+                        {% if plan_alim.nutrition is not null %}
+                            {% if plan_alim.nutrition.name is defined %}
+                                {{ plan_alim.nutrition.name }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>User</th>
+                    <td>{{ plan_alim.user }}</td> {# Assuming user is an object with properties you want to display #}
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_plan_alim_index') }}">Back to list</a>
+
+        <a href="{{ path('app_plan_alim_edit', {'id': plan_alim.id}) }}">Edit</a>
+
+        {{ include('plan_alim/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
+{% block js %}
 {% endblock %}

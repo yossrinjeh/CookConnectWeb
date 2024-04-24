@@ -14,7 +14,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use Knp\Component\Pager\PaginatorInterface;
 #[Route('/repas')]
 class RepasController extends AbstractController
 {
@@ -24,6 +24,25 @@ class RepasController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
+    #[Route('/p', name: 'app_repas_in', methods: ['GET'])]
+    public function in(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
+    {
+        // Récupérer tous les repas depuis le repository
+        $repasRepository = $entityManager->getRepository(Repas::class);
+        $repasQuery = $repasRepository->findAll();
+
+        // Paginer les résultats
+        $pagination = $paginator->paginate(
+            $repasQuery, // La query à paginer
+            $request->query->getInt('page', 1), // Récupérer le numéro de page à partir de la requête, 1 par défaut
+            3 // Nombre d'éléments par page
+        );
+
+        return $this->render('repas/repasFront.html.twig', [
+            'pagination' => $pagination,
+        ]);
+    }
+  
     #[Route('/', name: 'app_repas_index', methods: ['GET'])]
     public function index(RepasRepository $repasRepository): Response
     {
@@ -35,6 +54,7 @@ class RepasController extends AbstractController
             'repas' => $repas,
         ]);
     }
+    
 
     #[Route('/new', name: 'app_repas_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

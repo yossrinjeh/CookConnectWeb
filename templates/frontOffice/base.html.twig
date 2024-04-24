@@ -79,7 +79,7 @@
                                             <li><a href="about.html">About Us</a></li>
                                             <li><a href="blog-post.html">Blog Post</a></li>
                                             <li><a href="receipe-post.html">Receipe Post</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="{{ path('app_repas_in') }}">Gestion de repas</a></li>
                                             <li><a href="elements.html">Elements</a></li>
                                             <li><a href="#">Dropdown</a>
                                                 <ul class="dropdown">
@@ -256,16 +256,9 @@
                 </div>
             </div>
 
-            <div class="row">
-                {# Loop through each repas and render homeRepasComponent #}
-                {% for repasItem in repas %}
-                {% include 'repas/homeRepasComponent/homeRepasComponent.html.twig' with {'repas': repasItem} %}
-                {% endfor %}
-            </div>
-
-            {# <div class="row">
+           <div class="row">
                 <!-- Single Best Receipe Area -->
-                <div class="col-12 col-sm-6 col-lg-4">
+                <div class=" col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
                         <img src="img/bg-img/r1.jpg" alt="">
                         <div class="receipe-content">
@@ -377,7 +370,7 @@
                         </div>
                     </div>
                 </div>
-            </div> #}
+            </div>
         </div>
     </section>
     <!-- ##### Best Receipe Area End ##### -->

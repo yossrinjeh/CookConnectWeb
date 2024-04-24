@@ -2,8 +2,11 @@
 {% extends '/frontOffice/base.html.twig'  %}
 {% block body %}
 <br><br><br>
+
     <table class="table">
         <tbody>
+        
+          
            
             <tr>
                 <td>{{ repas.id }}</td>
@@ -33,10 +36,24 @@
                 <th>email</th>
                  <td>{{ repas.email}}</td>
              </tr>
+             <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div>
         </tbody>
     </table>
 
     <a href="{{ path('app_repas_front') }}">back to list</a>
 
-    
+    <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div>
+                       
 {% endblock %}

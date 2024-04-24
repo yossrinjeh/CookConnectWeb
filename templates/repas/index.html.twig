@@ -1,4 +1,4 @@
-{% extends '/frontOffice/base.html.twig' %}
+{% extends 'backOffice/base.html.twig' %}
 
 {% block title %}Repas{% endblock %}
 
@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <a href="{{ path('statistics') }}" class="btn btn-success">Statistiques</a>
+    
 
     <input class="form-control" id="search" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
 
@@ -110,5 +110,8 @@
             });
         });
     </script>
+      <a href="{{ path('statistics') }}" class="btn btn-success">Statistiques</a>
 </body>
+{% endblock %}
+{% block js %}
 {% endblock %}
