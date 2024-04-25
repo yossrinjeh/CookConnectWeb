@@ -28,5 +28,13 @@ services:
 
   App\Repository\PosteRepository:
     autowire: true
+
+  # Define the CommentaireRepository service
+  App\Repository\CommentaireRepository:
+    autowire: true
+    # class: App\Repository\CommentaireRepository
+    # factory: ["@doctrine.orm.entity_manager", getRepository]
+    # arguments: [App\Entity\Commentaire]
+
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

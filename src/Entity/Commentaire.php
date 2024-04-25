@@ -68,7 +68,7 @@ class Commentaire
      *
      * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private ?\DateTimeInterface $date;
 
     public function getId(): ?int
     {

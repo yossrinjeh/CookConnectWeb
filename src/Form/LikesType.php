@@ -12,10 +12,9 @@ class LikesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('userId')
-            ->add('posteId')
-            ->add('date')
-        ;
+            ->add('user')
+            ->add('poste')
+            ->add('date');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

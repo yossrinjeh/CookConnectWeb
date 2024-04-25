@@ -1,0 +1,134 @@
+{% extends 'backOffice/base.html.twig' %}
+
+{% block title %}Social Media{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link href="{{ asset('https://cdn.jsdelivr.net/npm/jsdatatables@latest/dist/css/jsdatatables.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Social Media Posts</h1>
+        
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th data-sortable="true" data-sort-dir="asc">ID</th>
+                    <th data-sortable="true" data-sort-dir="asc">Title</th>
+                    <th data-sortable="true" data-sort-dir="asc">Description</th>
+                    <th>Video/Image</th>
+                    <th>Media</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post.id }}</td>
+                        <td>{{ post.titre }}</td>
+                        <td>{{ post.description }}</td>
+                        <td>
+                            {% if post.video %}
+                                <video controls><source src="{{ post.video }}" type="video/mp4"></video>
+                            {% elseif post.image %}
+                                <img src="{{ post.image }}" class="img-fluid">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary view-media" data-toggle="modal" data-target="#mediaModal" data-image="{{ post.image }}" data-video="{{ post.video }}">display</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary view-comments" data-post-id="{{ post.id }}">View Comments</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+    </div>
+
+    <div class="modal fade" id="mediaModal" tabindex="-1" role="dialog" aria-labelledby="mediaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mediaModalLabel">Media</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="mediaContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentsModalLabel">Comments</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="commentsModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% block javascripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="{{ asset('https://cdn.jsdelivr.net/npm/jsdatatables@latest') }}" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function() {
+        $(".view-media").click(function() {
+            var imageSrc = $(this).data('image');
+            var videoSrc = $(this).data('video');
+            var mediaContent = $('#mediaContent');
+    
+            console.log("IMAGE: ", imageSrc);
+            console.log("VIDEO: ", videoSrc);
+    
+            if (imageSrc) {
+                mediaContent.html('<img src="' + imageSrc + '" class="img-fluid">');
+            } else if (videoSrc) {
+                mediaContent.html('<video controls><source src="' + videoSrc + '" type="video/mp4"></video>');
+            }
+        });
+    
+        $(".view-comments").click(function() {
+            const postId = $(this).data("post-id");
+            const commentsModalBody = $("#commentsModalBody");
+    
+            $.ajax({
+                url: "{{ path('app_social_media_comments', {'postId': 'postId'}) }}".replace('postId', postId),
+                type: 'GET',
+                success: function(comments) {
+                    const commentsHtml = comments.map(comment => `<div>${comment.commentaire}</div>`).join('');
+                    commentsModalBody.html(commentsHtml);
+                    $("#commentsModal").modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    
+        const dataTable = new jsdatatables.JSDataTable("#myTable", {
+            searchable: true,
+            fixedHeight: true,
+        });
+    });
+</script>
+
+{% endblock %}
+{% endblock %}

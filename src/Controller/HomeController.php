@@ -13,7 +13,7 @@ class HomeController extends AbstractController
     {
         return $this->render('frontOffice/base.html.twig', [
             'controller_name' => 'HomeController',
-        ]);
+        ]); 
     }
 
     #[Route('/about', name: 'app_about')]
@@ -29,10 +29,10 @@ class HomeController extends AbstractController
     #[Route('/backoffice', name: 'app_back')]
     public function back(): Response
     {
-        if ($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
-            
-        return $this->render('BackOffice/base.html.twig');
-        }else{
+        if ($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())) {
+
+            return $this->render('BackOffice/base.html.twig');
+        } else {
             return $this->render('frontOffice/403.html.twig');
         }
     }

@@ -1,3 +1,12 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+# routes.yaml
+app_social_media_admin:
+  path: /backoffice/socialMedia
+  controller: App\Controller\SocialMediaAdminController::index
+
+app_posts_data:
+  path: /backoffice/posts/data
+  controller: App\Controller\SocialMediaAdminController::getPostsData
