@@ -11,11 +11,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/ajoutingredientrequest')]
-class AjoutingredientrequestController extends AbstractController
+class AjouteingredientrequestController extends AbstractController
 {
     #[Route('/', name: 'app_ajoutingredientrequest_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+
+       /* $user = $security->getUser();
+        
+        // Check if the user exists and has the role 'chefmaster'
+        if ($user && $this->isGranted('ROLE_CHEFMASTER', $user)) {
+            $ajoutingredientrequests = $entityManager
+                ->getRepository(Ajoutingredientrequest::class)
+                ->findAll();
+        } else {
+            // Filter requests based on user ID if not 'chefmaster'
+            $ajoutingredientrequests = $entityManager
+                ->getRepository(Ajoutingredientrequest::class)
+                ->findBy(['userId' => $user->getId()]);
+        }*/
+
+
         $ajoutingredientrequests = $entityManager
             ->getRepository(Ajoutingredientrequest::class)
             ->findAll();
@@ -28,6 +44,10 @@ class AjoutingredientrequestController extends AbstractController
     #[Route('/new', name: 'app_ajoutingredientrequest_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        //$user = $security->getUser();
+
+        
         $ajoutingredientrequest = new Ajoutingredientrequest();
         $form = $this->createForm(AjoutingredientrequestType::class, $ajoutingredientrequest);
         $form->handleRequest($request);

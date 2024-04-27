@@ -6,6 +6,7 @@ use App\Entity\Recette;
 use App\Form\RecetteNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NutritionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -107,6 +108,8 @@ class RecetteController extends AbstractController
     public function accordNutrition(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(RecetteNutritionType::class, $recette);
+
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -115,7 +118,7 @@ class RecetteController extends AbstractController
             return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('recette/edit.html.twig', [
+        return $this->renderForm('recette/accordNutrition.html.twig', [
             'recette' => $recette,
             'form' => $form,
         ]);

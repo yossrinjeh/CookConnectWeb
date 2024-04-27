@@ -19,6 +19,10 @@ class NutritionController extends AbstractController
     #[Route('/', name: 'app_nutrition_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+
+
+
+        
         $nutrition = $entityManager
             ->getRepository(Nutrition::class)
             ->findAll();
