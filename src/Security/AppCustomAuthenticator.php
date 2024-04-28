@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -24,7 +25,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator , private UserProviderInterface $userProvider,)
     {
     }
 
@@ -39,7 +40,11 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             // Throw an authentication exception indicating bad request
             $request->getSession()->getFlashBag()->add('error', 'all fields are required');
         }
-    
+        $user = $this->userProvider->loadUserByIdentifier($email);
+        if (!$user || !$user->isIsactive()) {
+            // Throw an authentication exception indicating inactive user
+            throw new AuthenticationException('User is not active.');
+        }else{
         $request->getSession()->set(Security::LAST_USERNAME, $email);
         
         return new Passport(
@@ -50,6 +55,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
                 new RememberMeBadge(),
             ]
         );
+    }
     }
     
 
