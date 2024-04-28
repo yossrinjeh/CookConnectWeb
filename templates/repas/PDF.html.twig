@@ -1,42 +1,78 @@
-<h1 class="align-center">Bienvenue dans notre application</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des repas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff; /* Bleu */
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2; /* Gris clair */
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Gris clair */
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenue dans notre application</h1>
+    <p>Voici la liste de tous les repas :</p>
+    <!-- Ajouter le logo "Cook Connect" -->
+    <img src="{{ absolute_url(asset('path/vers/votre/logo.png')) }}" alt="Cook Connect" style="width: 200px;">
 
-                                <p>Voila la liste de tout les repass</p>
-
-                <table class="table" border="5">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>id_user</th>
-                        <th>id_recette</th>
-                        <th>nom</th>
-                        <th>type</th>
-                        <th>tags</th>
-                        <th>email</th>
-                       
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for repa in repas %}
-                        <tr>
-                           
-
-                      
-                           
-                       <td>{{ repa.id }}</td>
-            <td>{{ repa.getRecette.id }}</td>
-            <td>{{ repa.getUser.id }}</td>
-            <td>{{ repa.nom }}</td>
-            <td>{{ repa.type }}</td>
-            <td>{{ repa.tags }}</td>
-            <td>{{ repa.email }}</td>
-     
-       <td></td>
-     
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7">no records found</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Id Utilisateur</th>
+                <th>Id Recette</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repas in repas %}
+                <tr>
+                    <td>{{ repas.id }}</td>
+                    <td>{{ repas.getUser.id }}</td>
+                    <td>{{ repas.getRecette.id }}</td>
+                    <td>{{ repas.nom }}</td>
+                    <td>{{ repas.type }}</td>
+                    <td>{{ repas.tags }}</td>
+                    <td>{{ repas.email }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

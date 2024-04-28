@@ -147,6 +147,18 @@ class RepasController extends AbstractController
             'repas' => $repas,
         ]);
     }
+    #[Route('/repass/{id}', name: 'app_repas_showf', methods: ['GET'])]
+    public function showf(Repas $repas): Response
+    {
+        if (!$repas) {
+            throw new NotFoundHttpException('Repas not found');
+        }
+
+         return $this->render('repas/showFront.html.twig', [
+            'repas' => $repas,
+        ]);
+    }
+
         #[Route('/{id}/edit', name: 'app_repas_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, $id, EntityManagerInterface $entityManager): Response
 {

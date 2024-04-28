@@ -45,7 +45,7 @@
 <body>
     
 
-    <input class="form-control" id="search" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+<input class="form-control" id="search" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
 
     <a href="{{ path('PDF_Seance') }}" class="btn btn-primary">exporter pdf</a>
     <a href="{{ path('triespc') }}"><i class="btn btn-danger" data-feather="arrow-down"></i>Nom Ascendant</a>
@@ -90,26 +90,30 @@
     <a href="{{ path('app_repas_new') }}">Create new</a>
 
     <script src="{{ asset('https://code.jquery.com/jquery-3.5.1.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#search').on('keyup', function() {
-                var query = $(this).val();
-                console.log(query);
-                $.ajax({
-                    url: '{{ path('backrechercheAjax') }}',
-                    type: 'GET',
-                    data: { q: query },
-                    success: function(response) {
-                        console.log(response);
-                        $('#tableBodyPlaceholder').html(response); // Update table content with the response
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText); // Log any errors to the console
-                    }
-                });
-            });
+  <script>
+ $(document).ready(function() {
+    $('#search').on('keyup', function() {
+        var query = $(this).val().toLowerCase();
+        
+        // Parcourir chaque ligne du tableau
+        $('#tableBodyPlaceholder tbody tr').each(function() {
+            var rowText = $(this).text().toLowerCase();
+            // Vérifier si la ligne contient le texte de la recherche
+            if (rowText.indexOf(query) === -1) {
+                $(this).hide(); // Masquer la ligne si elle ne correspond pas
+            } else {
+                $(this).show(); // Afficher la ligne si elle correspond
+            }
         });
-    </script>
+
+        // Si la chaîne de recherche est vide, afficher toutes les lignes
+        if (query === '') {
+            $('#tableBodyPlaceholder tbody tr').show();
+        }
+    });
+});
+</script>
+
       <a href="{{ path('statistics') }}" class="btn btn-success">Statistiques</a>
 </body>
 {% endblock %}

@@ -12,18 +12,15 @@
     <!-- Add your filtering form here if needed -->
 
     <div class="row">
-        {% for repa in pagination %}
+        {% for regime in pagination %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <!-- Adjust this part to display repas information -->
-                        <h5 class="card-title">{{ repa.nom }}</h5>
-                        <p class="card-text">Type: {{ repa.type }}</p>
-                        <p class="card-text">Tags: {{ repa.tags }}</p>
-                        <p class="card-text">Email: {{ repa.email }}</p>
+                        <h5 class="card-title">Regime {{ regime.id }}</h5>
+                        <p class="card-text">Date: {{ regime.date ? regime.date|date('Y-m-d') : '' }}</p>
                         <!-- Add more fields as needed -->
                         <!-- Add actions buttons like Show and Edit -->
-                        <a href="{{ path('app_repas_showf', {'id': repa.id}) }}" class="btn btn-primary">Show</a>
+                        <a href="{{ path('app_regime_showf', {'id': regime.id}) }}" class="btn btn-primary">Show</a>
                         <!-- Add more action buttons here -->
                         <div class="ratings">
                             <i class="fa fa-star" aria-hidden="true"></i>
@@ -36,7 +33,7 @@
                 </div>
             </div>
         {% else %}
-            <p>No repas found.</p>
+            <p>No regimes found.</p>
         {% endfor %}
     </div>
 </div>
@@ -49,7 +46,7 @@
             {% if page == pagination.page %}
                 <li class="page-item active"><span class="page-link">{{ page }}</span></li>
             {% else %}
-                <li class="page-item"><a class="page-link" href="{{ path('app_repas_in', {'page': page}) }}">{{ page }}</a></li>
+                <li class="page-item"><a class="page-link" href="{{ path('app_regime_in', {'page': page}) }}">{{ page }}</a></li>
             {% endif %}
         {% endfor %}
     </ul>

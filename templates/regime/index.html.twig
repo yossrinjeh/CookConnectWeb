@@ -1,40 +1,97 @@
+{% extends '/backOffice/base.html.twig' %}
 
-{% extends '/backOffice/base.html.twig'  %}
-{% block title %}Repas{% endblock %}
+{% block title %}Regime{% endblock %}
+
 {% block body %}
-<title>Regime index</title>
+<style>
+    /* Ajoutez vos styles CSS personnalisés ici */
+    body {
+        font-family: Arial, sans-serif;
+    }
 
-    <h1>Regime index</h1>
+    h1 {
+        color: #007bff; /* Bleu */
+        text-align: center;
+    }
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for regime in regimes %}
-            <tr>
-                <td>{{ regime.id }}</td>
-                <td>{{ regime.date ? regime.date|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_regime_show', {'id': regime.id}) }}">show</a>
-                    <a href="{{ path('app_regime_edit', {'id': regime.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-    <a href="{{ path('app_regime_new') }}">Create new</a>
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f8f9fa; /* Gris clair */
+    }
+
+    tr:nth-child(even) {
+        background-color: #f8f9fa; /* Gris clair */
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+    }
+
+    .actions a, .delete-form {
+        margin: 0 5px;
+        text-decoration: none;
+    }
+
+    .show-button {
+        background-color: #007bff; /* Bleu */
+        color: #fff; /* Blanc */
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+
+    .delete-button {
+        background-color: #dc3545; /* Rouge */
+        color: #fff; /* Blanc */
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+</style>
+
+<h1>Regime index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for regime in regimes %}
+        <tr>
+            <td>{{ regime.id }}</td>
+            <td>{{ regime.date ? regime.date|date('Y-m-d') : '' }}</td>
+            <td class="actions">
+                <a href="{{ path('app_regime_show', {'id': regime.id}) }}" class="show-button">Show</a>
+                <a href="{{ path('app_regime_edit', {'id': regime.id}) }}">Edit</a>
+                <div class="delete-form">
+                    {{ include('regime/_delete_form.html.twig') }}
+                </div>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">No records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('app_regime_new') }}" style="display: block; text-align: center; margin-top: 20px;">Create new</a>
 {% endblock %}
+
 {% block js %}
 {% endblock %}
-
-
