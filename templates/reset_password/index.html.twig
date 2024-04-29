@@ -5,6 +5,9 @@
 {% block body %}
 <div class="container"> 
     <h1>Reset Password</h1>
+
+    
+
     {{ form_start(form) }}
     {% if form_errors(form.recaptcha) or form_errors(form.email)  %}
      <div class="alert alert-danger">

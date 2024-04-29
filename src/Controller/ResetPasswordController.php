@@ -6,6 +6,7 @@ use App\Form\ChangePasswordType;
 use App\Form\ResetPassType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use MercurySeries\FlashyBundle\FlashyNotifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class ResetPasswordController extends AbstractController
 {
     #[Route('/reset_password', name: 'app_reset_password')]
-    public function index(MailerController $mailer, UserRepository $userRepository, MailerInterface $test, Request $request, UrlGeneratorInterface $urlGenerator): Response
+    public function index(MailerController $mailer, UserRepository $userRepository, MailerInterface $test, Request $request, UrlGeneratorInterface $urlGenerator ,
+    FlashyNotifier $flashy
+    ): Response
     {
         $form = $this->createForm(ResetPassType::class);
         $form->handleRequest($request);
