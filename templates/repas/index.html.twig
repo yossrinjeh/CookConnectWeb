@@ -47,7 +47,7 @@
 
 <input class="form-control" id="search" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
 
-    <a href="{{ path('PDF_Seance') }}" class="btn btn-primary">exporter pdf</a>
+                        <button class="btn btn-success btn-export-pdf">Export PDF</button>
     <a href="{{ path('triespc') }}"><i class="btn btn-danger" data-feather="arrow-down"></i>Nom Ascendant</a>
     <a href="{{ path('triespcDESC') }}"><i class="btn btn-danger" data-feather="arrow-down"></i>Nom Desendent</a>
 
@@ -113,9 +113,51 @@
     });
 });
 </script>
+<script>document.addEventListener('DOMContentLoaded', function() {
+    const exportPdfBtns = document.querySelectorAll('.btn-export-pdf');
+    exportPdfBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/export-pdf', true); // Route for exporting PDF content
+            xhr.responseType = 'blob';
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const blobUrl = URL.createObjectURL(xhr.response);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = 'booking_details.pdf'; // Set the filename as needed
+                    a.click();
 
+                    // Send request to upload PDF to Dropbox
+                    const uploadXhr = new XMLHttpRequest();
+                    uploadXhr.open('POST', '/upload_pdf_to_dropbox', true); // Route for uploading PDF content to Dropbox
+                    uploadXhr.setRequestHeader('Content-Type', 'application/pdf');
+                    uploadXhr.onload = function() {
+                        if (uploadXhr.status === 200) {
+                            console.log('PDF uploaded to Dropbox successfully');
+                        } else {
+                            console.error('Upload PDF to Dropbox failed:', uploadXhr.status, uploadXhr.statusText);
+                        }
+                    };
+                    uploadXhr.onerror = function() {
+                        console.error('Upload PDF to Dropbox request failed');
+                    };
+                    uploadXhr.send(xhr.response);
+                } else {
+                    console.error('Export PDF request failed:', xhr.status, xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Export PDF request failed');
+            };
+            xhr.send();
+        });
+    });
+});
+</script>
       <a href="{{ path('statistics') }}" class="btn btn-success">Statistiques</a>
 </body>
 {% endblock %}
 {% block js %}
+
 {% endblock %}

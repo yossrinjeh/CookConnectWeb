@@ -17,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Knp\Component\Pager\PaginatorInterface;
 use phpDocumentor\Reflection\Types\Void_;
 use Twilio\Rest\Client;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 #[Route('/repas')]
 class RepasController extends AbstractController
 {
@@ -73,6 +75,7 @@ class RepasController extends AbstractController
                 'success',
                 'Add successfully!'
             );
+            
             $this->envoyerSms();
 
 
@@ -140,40 +143,57 @@ class RepasController extends AbstractController
         // Return the HTML response
         return new Response($html);
     }
-#[Route('/pdf', name: 'PDF_Seance',methods: ['GET'])]
-    public function pdf(repasRepository $RepasRepository)
+    #[Route('/export-pdf', name: 'export_pdf')]
+    public function exportPdf(RepasRepository $repasRepository): Response
     {
-        // Configure Dompdf according to your needs
+        // Fetch all bookings from the database
+        $repas = $repasRepository->findAll();
+    
+        $logoPath = 'C:\Users\mohamed\Documents\GitHub\CookConnectWeb\public\mmmmmmm.png';
+        $logoImage = $this->generateBase64Image($logoPath);
+    
+        // Generate the PDF content for the booking with the logo
+    
+        // Generate the PDF content
+        $html = $this->renderView('repas/PDF.html.twig', [
+            'repas' => $repas,
+            'logoImage' => $logoImage, // Pass the logo image to the template
+
+        ]);
+    
+        // Configure Dompdf
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
     
-        // Instantiate Dompdf with our options
+        // Instantiate Dompdf
         $dompdf = new Dompdf($pdfOptions);
-        // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('repas/PDF.html.twig', [
-            'repas' => $RepasRepository->findAll(),
-        ]);
     
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
-        // Setup the paper size and orientation
-        $dompdf->setPaper('A3', 'portrait');
+    
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
     
         // Render the HTML as PDF
         $dompdf->render();
     
-        // Generate PDF file content
-        $output = $dompdf->output();
+        // Set the file name
+        $fileName = 'NonPaid_bookings_' . date('YmdHis') . '.pdf';
     
-        // Write file to the temporary directory
-        $pdfFilepath = tempnam(sys_get_temp_dir(), 'pdf');
-        file_put_contents($pdfFilepath, $output);
-    
-        // Return the PDF as a response
-        return new BinaryFileResponse($pdfFilepath);
+        // Return the response containing the PDF content
+        return new Response($dompdf->output(), Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 
-    #[Route('/repas/{id}', name: 'app_repas_show', methods: ['GET'])]
+
+private function generateBase64Image($imagePath) {
+    $imageData = file_get_contents($imagePath);
+    $base64Image = 'data:image/png;base64,' . base64_encode($imageData);
+    return $base64Image;
+}
+ #[Route('/repas/{id}', name: 'app_repas_show', methods: ['GET'])]
     public function show(Repas $repas): Response
     {
         if (!$repas) {
@@ -300,4 +320,57 @@ private function countGenderForEvents(string $type): int
     
     return $result['repasCount'];
 }
+#[Route("/upload_pdf_to_dropbox", name: "upload_pdf_to_dropbox", methods: ["POST"])]    
+public function uploadPdfToDropbox(Request $request): Response
+{
+  
+        // Get the PDF content from the request
+        $pdfContent = $request->getContent();
+        
+        // Generate a unique file path on Dropbox
+        $filePath = "/booking_details_" . uniqid() . ".pdf";
+        
+    // Replace with your Dropbox access token
+    $accessToken = 'sl.B0XzJi48ZXKHqcqelkinUdtH5DtMo9eXBEr8cocebkyCNJM_x5lrHdJiG-hPKvVfh9OWJYNxFyR42h53g2gjHvNnfNW5MVkMTxtnM2cLJpTrfnZJqGxMMJHP8l_AsTIYgp-Utmb3ubkq';
+
+    // Create a cURL handle
+    $ch = curl_init();
+
+    // Set the URL for uploading to Dropbox
+    curl_setopt($ch, CURLOPT_URL, 'https://content.dropboxapi.com/2/files/upload');
+
+    // Set the request method to POST
+    curl_setopt($ch, CURLOPT_POST, true);
+
+    // Set the request headers
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type: application/octet-stream',
+        'Dropbox-API-Arg: {"path": "' . $filePath . '"}'
+    ]);
+
+    // Set the request body (PDF content)
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $pdfContent);
+
+    // Disable SSL certificate verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    // Execute the cURL request
+    $response = curl_exec($ch);
+
+    // Check for errors
+    if ($response === false) {
+        $error = curl_error($ch);
+        // Handle the error
+        return new JsonResponse(['error' => $error], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    // Close the cURL handle
+    curl_close($ch);
+
+    // Return a success response
+    return new JsonResponse(['success' => true]);
+}
+
+
 }

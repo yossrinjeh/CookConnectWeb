@@ -32,9 +32,12 @@
         tr:nth-child(even) {
             background-color: #f2f2f2; /* Gris clair */
         }
+       .logo {
+            text-align: center;
+            margin-top: 20px;
+        }
         img {
-            display: block;
-            margin: 0 auto;
+            width: 100px; /* Adjust the width as needed */
         }
     </style>
 </head>
@@ -42,7 +45,9 @@
     <h1>Bienvenue dans notre application</h1>
     <p>Voici la liste de tous les repas :</p>
     <!-- Ajouter le logo "Cook Connect" -->
-    <img src="{{ absolute_url(asset('path/vers/votre/logo.png')) }}" alt="Cook Connect" style="width: 200px;">
+ <div id="logoContainer">
+        <img src="{{ logoImage }}" alt="Logo">
+    </div>
 
     <table border="1">
         <thead>

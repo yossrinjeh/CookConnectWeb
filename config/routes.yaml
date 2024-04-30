@@ -1,3 +1,12 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+# config/routes.yaml
+export_pdf:
+    path: /export-pdf
+    controller: App\Controller\RepasController::exportPdf
+    methods: ['GET']
+upload_pdf_to_dropbox:
+    path: /upload_pdf_to_dropbox
+    controller: App\Controller\RepasController::uploadPdfToDropbox
+    methods: ['POST']
