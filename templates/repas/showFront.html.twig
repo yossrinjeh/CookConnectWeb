@@ -1,0 +1,47 @@
+{% extends 'frontOffice/base.html.twig' %}
+
+{% block title %}Repas{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Repas Details</h3>
+                    <a href="{{ path('PDF_Seance') }}" class="btn btn-primary">exporter pdf</a>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">{{ repas.id }}</dd>
+                         <dt class="col-sm-4">Recette</dt>
+                        <dd class="col-sm-8">{{ repas.Recette.id }}</dd>
+
+                        <dt class="col-sm-4">User</dt>
+                        <dd class="col-sm-8">{{ repas.User.id }}</dd>
+
+                        <dt class="col-sm-4">Nom</dt>
+                        <dd class="col-sm-8">{{ repas.nom }}</dd>
+
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">{{ repas.type }}</dd>
+
+                        <dt class="col-sm-4">Tags</dt>
+                        <dd class="col-sm-8">{{ repas.tags }}</dd>
+
+                        <!-- Ajoutez d'autres informations sur le repas ici -->
+                        <!-- Par exemple, Recette, User, Nom, Type, Tags, Email, etc. -->
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_repas_in', {'id': repas.id}) }}" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}

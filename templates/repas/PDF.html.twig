@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des repas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff; /* Bleu */
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2; /* Gris clair */
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Gris clair */
+        }
+       .logo {
+            text-align: center;
+            margin-top: 20px;
+        }
+        img {
+            width: 100px; /* Adjust the width as needed */
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenue dans notre application</h1>
+    <p>Voici la liste de tous les repas :</p>
+    <!-- Ajouter le logo "Cook Connect" -->
+ <div id="logoContainer">
+        <img src="{{ logoImage }}" alt="Logo">
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Id Utilisateur</th>
+                <th>Id Recette</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repas in repas %}
+                <tr>
+                    <td>{{ repas.id }}</td>
+                    <td>{{ repas.getUser.id }}</td>
+                    <td>{{ repas.getRecette.id }}</td>
+                    <td>{{ repas.nom }}</td>
+                    <td>{{ repas.type }}</td>
+                    <td>{{ repas.tags }}</td>
+                    <td>{{ repas.email }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

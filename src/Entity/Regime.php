@@ -25,12 +25,12 @@ class Regime
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="date", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private $date;
 
     /**
-     * @var \Repas
+     * @var Repas
      *
      * @ORM\ManyToOne(targetEntity="Repas")
      * @ORM\JoinColumns({
@@ -49,10 +49,9 @@ class Regime
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -61,12 +60,13 @@ class Regime
         return $this->idRepas;
     }
 
-    public function setIdRepas(?Repas $idRepas): static
+    public function setIdRepas(?Repas $idRepas): self
     {
         $this->idRepas = $idRepas;
-
         return $this;
     }
-
-
+    public function __toString(): string
+    {
+        return $this->getid(); // Assuming you have a getName() method to return a string property of the Repas entity
+    }
 }

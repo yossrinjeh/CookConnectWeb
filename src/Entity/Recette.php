@@ -195,6 +195,10 @@ class Recette
 
         return $this;
     }
+    public function __toString(): string
+    {
+        return $this->getid(); // Remplacez "getNom()" par la méthode appropriée pour obtenir le nom de la recette
+    }
 
 
 }

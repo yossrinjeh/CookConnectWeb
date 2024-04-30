@@ -1,0 +1,76 @@
+{% extends 'backOffice/base.html.twig' %}
+
+{% block body %}
+ 
+  <style> 
+    .container {
+      margin-top: 100px; /* Adjust this value to match the height of your navbar */
+      margin-left: 200px; /* Adjust this value to match the width of your sidebar */
+      margin-right: auto; /* Center horizontally */
+      width: calc(100% - 500px); /* Adjust the width based on your sidebar and right margin */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center the content horizontally */
+    }
+    .row {
+      margin-top: 10px; /* Adjust this value as needed */
+    }
+    .card {
+      margin-top: 20px; /* Add margin to the top of the cards */
+      margin-right: 15px; /* Add margin between cards */
+    }
+    #repasContainer {
+      display: flex;
+      justify-content: center; /* Center the content horizontally */
+      align-items: center; /* Center the content vertically */
+      margin-top: 50px; /* Adjust this value to add space between the navbar and the chart */
+    }
+    h1 {
+      text-align: center; /* Center the title */
+    }
+  </style>
+  <div class="container">
+    <h1>type Statistics</h1>
+    <div id="repasContainer"> {# Use a div to set the outer dimensions #}
+      <canvas id="repas"></canvas> {# Correct canvas ID #}
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Retrieve data from PHP variables
+    var clientCount = {{client }};
+    var adminCount = {{ admin}};
+   
+
+    // Create pie chart
+    var ctx = document.getElementById('repas').getContext('2d');
+    var repas = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['client', 'admin'],
+        datasets: [{
+          label: 'type Statistics',
+          data: [clientCount, adminCount],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.5)', // Blue for Easy Workout
+            'rgba(255, 99, 132, 0.5)', // Red for Medium Workout
+           
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 99, 132, 1)',
+        
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: false, // Disable responsiveness to keep the chart size fixed
+        maintainAspectRatio: true // Keep the aspect ratio for better rendering
+      }
+    });
+  </script>
+  {% endblock %}
+{% block js %}
+
+{% endblock %}
