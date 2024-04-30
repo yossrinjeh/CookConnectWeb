@@ -15,6 +15,8 @@ use Dompdf\Options;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Knp\Component\Pager\PaginatorInterface;
+use phpDocumentor\Reflection\Types\Void_;
+use Twilio\Rest\Client;
 #[Route('/repas')]
 class RepasController extends AbstractController
 {
@@ -67,13 +69,15 @@ class RepasController extends AbstractController
             $entityManager->persist($repas);
             $entityManager->flush();
            
-
             $this->addFlash(
                 'success',
                 'Add successfully!'
             );
+            $this->envoyerSms();
+
 
             return $this->redirectToRoute('app_repas_index', [], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->renderForm('repas/new.html.twig', [
@@ -81,6 +85,39 @@ class RepasController extends AbstractController
             'form' => $form,
         ]);
     }
+        private function envoyerSms(): void
+        {
+            // Remplacer ces valeurs par vos identifiants Twilio
+            $sid = 'AC23002d58f668196d97bd7b1fc9ab5799';
+            $token = 'be933030f1bdf9a438760e7f4cc08c01';
+            $from = '+13168545234 ';
+    
+    
+            // Initialisez le client Twilio
+            $client = new Client($sid, $token);
+    
+    
+            // Remplacer `votre_numero_destinataire` par le numéro de téléphone du destinataire
+            $numeroDestinataire = '+21698587612';
+    
+    
+            // Message à envoyer
+            $message = 'ajouter repas';
+    
+    
+            // Envoyer le SMS
+            $client->messages->create(
+                $numeroDestinataire,
+                [
+                    'from' => $from,
+                    'body' => $message
+                ]
+            );
+    
+    
+           
+        }
+    
     #[Route('/backrechercheAjax', name: 'backrechercheAjax')]
     public function searchAjax(Request $request, RepasRepository $repo): Response
     {
