@@ -50,16 +50,23 @@ class Recette
     private $description;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="id_ingredients", type="string", length=256, nullable=false)
+     * @ORM\Column(name="id_ingredients", type="string", length=256, nullable=true)
      */
     private $idIngredients;
 
     /**
-     * @var string
+     * @var string|true
      *
-     * @ORM\Column(name="id_nutrition", type="string", length=256, nullable=false)
+     * @ORM\Column(name="Quantite_Ingredients", type="string", length=256, nullable=true)
+     */
+    private $quantiteIngredients;
+
+    /**
+     * @var string|string
+     *
+     * @ORM\Column(name="id_nutrition", type="string", length=256, nullable=true)
      */
     private $idNutrition;
 
@@ -139,6 +146,17 @@ class Recette
     {
         $this->idIngredients = $idIngredients;
 
+        return $this;
+    }
+
+    public function getquantiteIngredients(): ?string
+    {
+        return $this->quantiteIngredients;
+    }
+
+    public function setquantiteIngredients(string $quantiteIngredients): static
+    {
+        $this->quantiteIngredients = $quantiteIngredients;
         return $this;
     }
 

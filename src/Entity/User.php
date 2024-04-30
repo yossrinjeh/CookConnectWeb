@@ -4,14 +4,18 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity
+ * @Orm\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface
 {
     /**
      * @var int
@@ -67,9 +71,9 @@ class User
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="date", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private $date ;
 
     public function getId(): ?int
     {
@@ -160,5 +164,43 @@ class User
         return $this;
     }
 
+    public function getRoles(): array
+    {
+        return [$this->role];
+    }
+
+    public function getSalt(): ?string
+    {
+        // You can leave this method blank or return a salt
+        return null;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+    public function getIdentifier():string
+    {
+        return $this->email;
+    }
+    public function getUserIdentifier():string
+    {
+        return $this->email;
+    }
+     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\InformationPersonnele", mappedBy="user")
+     */
+    private $informationPersonnelle;
+
+    public function getInformationPersonnelle(): ?InformationPersonnele
+    {
+        return $this->informationPersonnelle;
+    }
 
 }

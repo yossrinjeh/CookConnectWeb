@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accord nutrition{% endblock %}
+
+{% block body %}
+    <h1>Accord Nutrition</h1>
+
+    {{ include('nutrition/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_nutrition_index') }}">back to list</a>
+
+
+{% endblock %}

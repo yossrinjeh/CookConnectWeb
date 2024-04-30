@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="information_personnele", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
  * @ORM\Entity
+ * @Orm\Entity(repositoryClass="App\Repository\InformationPersonneleRepository")
  */
 class InformationPersonnele
 {
@@ -91,7 +92,12 @@ class InformationPersonnele
     {
         return $this->id;
     }
+    public function setId(int $id): static
+    {
+        $this->id = $id;
 
+        return $this;
+    }
     public function getNom(): ?string
     {
         return $this->nom;
@@ -157,13 +163,12 @@ class InformationPersonnele
         return $this->maladie;
     }
 
-    public function setMaladie(string $maladie): static
+    public function setMaladie(?string $maladie): static
     {
-        $this->maladie = $maladie;
-
+        $this->maladie = $maladie ?? '';
+    
         return $this;
     }
-
     public function getNumTel(): ?string
     {
         return $this->numTel;

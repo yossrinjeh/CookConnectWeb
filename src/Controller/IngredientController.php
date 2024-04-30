@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Ingredient;
+use App\Entity\Nutrition;
+use App\Form\IngredientType;
+use App\Form\IngredientNutritionType;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/ingredient')]
+class IngredientController extends AbstractController
+{
+    #[Route('/', name: 'app_ingredient_index', methods: ['GET'])]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $ingredients = $entityManager
+            ->getRepository(Ingredient::class)
+            ->findAll();
+
+        return $this->render('ingredient/index.html.twig', [
+            'ingredients' => $ingredients,
+        ]);
+    }
+
+    #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $ingredient = new Ingredient();
+        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $image */
+            $image = $form['image']->getData();
+
+            if ($image) {
+                $fileName = uniqid() . '.' . $image->guessExtension();
+
+                try {
+                    $image->move($this->getParameter('image_dir'), $fileName); // Move the uploaded file to the configured directory
+                } catch (FileException $e) {
+                    // Handle file exception
+                    // You might want to log the error or show an error message to the user
+                    return new Response('Failed to upload the image.', Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+
+                $ingredient->setImage($fileName);
+            }
+
+            
+            $ingredient->setUserId(100);
+            if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
+                $ingredient->setEtat("disabled");
+            }else{
+                $ingredient->setEtat("enabled");
+            }
+            $entityManager->persist($ingredient);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('ingredient/new.html.twig', [
+            'ingredient' => $ingredient,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_ingredient_show', methods: ['GET'])]
+    public function show(Ingredient $ingredient): Response
+    {
+        return $this->render('ingredient/show.html.twig', [
+            'ingredient' => $ingredient,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_ingredient_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient->setImage((string)($ingredient->getImage()));
+            if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
+                $ingredient->setEtat("disabled");
+            }else{
+                $ingredient->setEtat("enabled");
+            }
+            $entityManager->flush();
+
+
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('ingredient/edit.html.twig', [
+            'ingredient' => $ingredient,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_ingredient_delete', methods: ['POST'])]
+    public function delete(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($ingredient);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/accordNutrition', name: 'app_ingredient_nutrition_accord', methods:['GET','POST'])]
+    public function nutritionAccord(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(IngredientNutritionType::class, $ingredient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $idNutrition = $ingredient->getIdNutrition();
+            $nutrition = $entityManager->getRepository(Nutrition::class)->find($idNutrition);
+            $nutrition->setIdIngredient($ingredient->getId());
+            $entityManager->persist($nutrition);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('ingredient/ingredientNutrition.html.twig', [
+            'ingredient' => $ingredient,
+            'form' => $form,
+        ]);
+    }
+
+}
