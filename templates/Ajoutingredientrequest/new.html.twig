@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Ajoutingredientrequest{% endblock %}
+
+{% block body %}
+    <h1>Create new Ajoutingredientrequest</h1>
+
+    {{ include('ajoutingredientrequest/_form.html.twig') }}
+
+    <a href="{{ path('app_ajoutingredientrequest_index') }}">back to list</a>
+{% endblock %}

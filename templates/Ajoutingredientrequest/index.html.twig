@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajoutingredientrequest index{% endblock %}
+
+{% block body %}
+    <h1>Ajoutingredientrequest index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>IdChef</th>
+            <th>NomIngredient</th>
+            <th>NomRecette</th>
+            <th>Description</th>
+            <th>Etat</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ajoutingredientrequest in ajoutingredientrequests %}
+            <tr>
+                <td>{{ ajoutingredientrequest.id }}</td>
+                <td>{{ ajoutingredientrequest.idChef }}</td>
+                <td>{{ ajoutingredientrequest.nomIngredient }}</td>
+                <td>{{ ajoutingredientrequest.nomRecette }}</td>
+                <td>{{ ajoutingredientrequest.description }}</td>
+                <td>{{ ajoutingredientrequest.etat }}</td>
+                <td>
+                    <a href="{{ path('app_ajoutingredientrequest_show', {'id': ajoutingredientrequest.id}) }}">show</a>
+                    <a href="{{ path('app_ajoutingredientrequest_edit', {'id': ajoutingredientrequest.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ajoutingredientrequest_new') }}">Create new</a>
+{% endblock %}

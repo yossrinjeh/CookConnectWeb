@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Ingredient{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .error-message-new-Ingredient {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <h1>Create New Ingredient</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Name') }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.nom) }}</div>
+                    {{ form_errors(form.nom) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.qte, 'Quantity') }}
+                    {{ form_widget(form.qte, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.qte) }}</div>
+                
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prixVente, 'Selling Price') }}
+                    {{ form_widget(form.prixVente, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.prixVente) }}</div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prixAchat, 'Purchase Price') }}
+                    {{ form_widget(form.prixAchat, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.prixAchat) }}</div>
+        
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.quantiteThreshold, 'Quantity Threshold') }}
+                    {{ form_widget(form.quantiteThreshold, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.quantiteThreshold) }}</div>
+                   
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.image, 'Image') }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.image) }}</div>
+            
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
