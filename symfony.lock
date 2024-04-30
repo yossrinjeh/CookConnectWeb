@@ -48,7 +48,7 @@
         }
     },
     "mercuryseries/flashy-bundle": {
-        "version": "v5.1.0"
+        "version": "v5.1.0",
     "knplabs/knp-paginator-bundle": {
         "version": "v5.4.0"
     },
@@ -322,4 +322,5 @@
             "ref": "f604d862b3ce4434d131a0e9b3a2eb7bb1784aff"
         }
     }
+}
 }
