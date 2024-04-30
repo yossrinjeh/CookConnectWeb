@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'backOffice/base.html.twig' %}
 
 {% block title %}Recette index{% endblock %}
 
@@ -49,4 +49,6 @@
     </table>
 
     <a href="{{ path('app_recette_new') }}">Create new</a>
+{% endblock %}
+{% block js %}
 {% endblock %}
