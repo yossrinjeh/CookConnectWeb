@@ -21,15 +21,21 @@ class NutritionController extends AbstractController
     {
 
 
+        if($this->getUser()  && (in_array('CHEFMASTER', $this->getUser()->getRoles()) || in_array('CHEF', $this->getUser()->getRoles()))){
 
+                $nutrition = $entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                return $this->render('nutrition/index.html.twig', [
+                    'nutrition' => $nutrition,
+                ]);
         
-        $nutrition = $entityManager
-            ->getRepository(Nutrition::class)
-            ->findAll();
-
-        return $this->render('nutrition/index.html.twig', [
-            'nutrition' => $nutrition,
-        ]);
+                       
+        }else{
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+        
+        
     }
 
     #[Route('/new', name: 'app_nutrition_new', methods: ['GET', 'POST'])]

@@ -21,14 +21,22 @@ class IngredientController extends AbstractController
     #[Route('/', name: 'app_ingredient_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $ingredients = $entityManager
+        if($this->getUser()  && (in_array('CHEFMASTER', $this->getUser()->getRoles()) || in_array('CHEF', $this->getUser()->getRoles()))){
+                
+            $ingredients = $entityManager
             ->getRepository(Ingredient::class)
             ->findAll();
 
-        return $this->render('ingredient/index.html.twig', [
-            'ingredients' => $ingredients,
+            return $this->render('ingredient/index.html.twig', [
+                'ingredients' => $ingredients,
         ]);
+        }else{
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+
+        
     }
+
 
     #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

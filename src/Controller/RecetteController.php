@@ -7,6 +7,7 @@ use App\Form\RecetteNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NutritionRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,21 +17,33 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecetteController extends AbstractController
 {
     #[Route('/', name: 'app_recette_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
+
         //block acess
-        if ($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
+        if ($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            
+            $recettes = $entityManager
+                ->getRepository(Recette::class)
+                ->findAll();
 
+            return $this->render('recette/index.html.twig', [
+                'recettes' => $recettes,
+            ]);
+            }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
 
+                $email = $this->getUser()->getUserIdentifier();
+                $user = $userRepository->findOneByEmail($email);
+                $id = $user->getId();
+                $recettes = $entityManager
+                ->getRepository(Recette::class)
+                ->findBy(['idUser' => $id]);
 
-        $recettes = $entityManager
-            ->getRepository(Recette::class)
-            ->findAll();
-
-        return $this->render('recette/index.html.twig', [
-            'recettes' => $recettes,
-        ]);
-    }else{
+                return $this->render('recette/index.html.twig', [
+                    'recettes' => $recettes,
+            ]);
+            // else access denied message
+        }else{
         return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
     }
     }
