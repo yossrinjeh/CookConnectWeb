@@ -57,10 +57,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const errorMessage = "{{ error_message }}";
-            if (errorMessage) {
-                alert(errorMessage);
-            }
+            {% if error_message is defined %}
+                const errorMessage = "{{ error_message }}";
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            {% endif %}
         });
     </script>
 {% endblock %}

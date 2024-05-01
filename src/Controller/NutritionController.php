@@ -118,8 +118,37 @@ class NutritionController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_nutrition_delete', methods: ['POST'])]
-    public function delete(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
+        if($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            if ($this->isCsrfTokenValid('delete'.$nutrition->getId(), $request->request->get('_token'))) {
+                $entityManager->remove($nutrition);
+                $entityManager->flush();
+            }    
+        }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($nutrition->getId()==$id){
+                if ($this->isCsrfTokenValid('delete'.$nutrition->getId(), $request->request->get('_token'))) {
+                    $entityManager->remove($nutrition);
+                    $entityManager->flush();
+                } 
+            }else{
+                $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to delete this nutrition.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
+            }
+        }
+
         if ($this->isCsrfTokenValid('delete'.$nutrition->getId(), $request->request->get('_token'))) {
             $entityManager->remove($nutrition);
             $entityManager->flush();
