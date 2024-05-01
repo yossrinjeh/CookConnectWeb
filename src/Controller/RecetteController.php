@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Recette;
+use App\Entity\Ingredient;
 use App\Form\RecetteNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NutritionRepository;
 use App\Repository\UserRepository;
+use App\Repository\IngredientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,18 +51,28 @@ class RecetteController extends AbstractController
     }
 
     #[Route('/new', name: 'app_recette_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository,IngredientRepository $ingredientRepository, NutritionRepository $nutritionRepository): Response
     {
         $email = $this->getUser()->getUserIdentifier();
         $user = $userRepository->findOneByEmail($email);
         $id = $user->getId();   
         $recette = new Recette();
-        $recette->setEtat("desactivé");
+        $recette->setEtat("enabled");
         $recette->setIdUser($id);
         $form = $this->createForm(RecetteType::class, $recette);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ingredients = explode(',', $recette->getIdIngredients());
+            foreach ($ingredients as $ingredientId) {
+                $ingredient = $ingredientRepository->find($ingredientId);
+                $nutritionId = $ingredient->getIdNutrition();
+                $nutrition = $nutritionRepository->find($nutritionId);
+                if ($ingredient->getEtat() !== 'disabled' || !$nutrition) {
+                    $recette->setEtat('disabled');
+                break;
+            }
+        }
             $entityManager->persist($recette);
             $entityManager->flush();
 
