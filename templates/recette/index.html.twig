@@ -36,8 +36,8 @@
                 <td>{{ recette.image }}</td>
                 <td>
                     <a href="{{ path('app_recette_show', {'id': recette.id}) }}">show</a>
+                    <br>
                     <a href="{{ path('app_recette_edit', {'id': recette.id}) }}">edit</a>
-                    <a href="{{ path('app_recette_accordNutrition', {'id': recette.id}) }}">accord</a>
                 </td>
             </tr>
         {% else %}

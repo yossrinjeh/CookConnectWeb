@@ -6,6 +6,7 @@ use App\Entity\Ingredient;
 use App\Entity\Nutrition;
 use App\Form\IngredientType;
 use App\Form\IngredientNutritionType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,9 +40,13 @@ class IngredientController extends AbstractController
 
 
     #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
+        $email = $this->getUser()->getUserIdentifier();
+        $user = $userRepository->findOneByEmail($email);
+        $id = $user->getId();
         $ingredient = new Ingredient();
+        $ingredient->setUserId($id);
         $form = $this->createForm(IngredientType::class, $ingredient);
         $form->handleRequest($request);
 
@@ -91,10 +96,35 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_ingredient_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
-        $form = $this->createForm(IngredientType::class, $ingredient);
-        $form->handleRequest($request);
+
+        if($this->getUser()  && (in_array('CHEFMASTER', $this->getUser()->getRoles()))){
+            $form = $this->createForm(IngredientType::class, $ingredient);
+            $form->handleRequest($request);
+        }elseif($this->getUser()  && (in_array('CHEF', $this->getUser()->getRoles()))){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($id == $ingredient->getUserId()){
+                $form = $this->createForm(IngredientType::class, $ingredient);
+                $form->handleRequest($request);
+            }else{
+                $ingredientData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findall();
+                $form = $this->createForm(IngredientType::class, $ingredient);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to edit this ingredient.";
+                return $this->render('ingredient/index.html.twig', [
+                'ingredient' => $ingredientData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_login_index', [], Response::HTTP_SEE_OTHER);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredient->setImage((string)($ingredient->getImage()));
@@ -116,14 +146,44 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_ingredient_delete', methods: ['POST'])]
-    public function delete(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($ingredient);
-            $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        if($this->getUser()  && (in_array('CHEFMASTER', $this->getUser()->getRoles()))){
+            if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
+                $entityManager->remove($ingredient);
+                $entityManager->flush();
+            }
+    
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }elseif($this->getUser()  && (in_array('CHEF', $this->getUser()->getRoles()))){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($id == $ingredient->getUserId()){
+                if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
+                    $entityManager->remove($ingredient);
+                    $entityManager->flush();
+                }
+        
+                return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+            }else{
+                $ingredientData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findall();
+                $form = $this->createForm(IngredientType::class, $ingredient);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to delete this ingredient.";
+                return $this->render('ingredient/index.html.twig', [
+                'ingredient' => $ingredientData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+                ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_login_index', [], Response::HTTP_SEE_OTHER);
+        }
+        
     }
 
     #[Route('/{id}/accordNutrition', name: 'app_ingredient_nutrition_accord', methods:['GET','POST'])]

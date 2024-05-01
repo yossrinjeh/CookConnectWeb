@@ -40,9 +40,13 @@ class NutritionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_nutrition_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
+        $email = $this->getUser()->getUserIdentifier();
+        $user = $userRepository->findOneByEmail($email);
+        $id = $user->getId();
         $nutrition = new Nutrition();
+        $nutrition->setUserId($id);
         $form = $this->createForm(NutritionType::class, $nutrition);
         $form->handleRequest($request);
 
@@ -96,7 +100,7 @@ class NutritionController extends AbstractController
             }else{
                 $nutritionData =$entityManager
                 ->getRepository(Nutrition::class)
-                ->findAll();
+                ->findall();
                 $form = $this->createForm(NutritionType::class, $nutrition);
                 $form->handleRequest($request);
                 $error_message = "You are not authorized to edit this nutrition.";

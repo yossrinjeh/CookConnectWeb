@@ -51,4 +51,15 @@
     </table>
 
     <a href="{{ path('app_ingredient_new') }}">Create new</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if error_message is defined %}
+                const errorMessage = "{{ error_message }}";
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            {% endif %}
+        });
+    </script>
 {% endblock %}
