@@ -3,6 +3,11 @@
 {% block title %}Users List{% endblock %}
 
 {% block body %} 
+ {% for flashSuccess in app.flashes('success') %}
+      <div class="alert alert-success" id = "error-flash-success" >{{ flashSuccess }}
+        
+        </div>
+    {% endfor %}
  <section class="content">
       <div class="container-fluid">
         <div class="row">
