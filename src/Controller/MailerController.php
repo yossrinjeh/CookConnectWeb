@@ -51,5 +51,36 @@ class MailerController extends AbstractController
 
         return new Response('Email sent successfully!');
     }
+    public function sendEmailPassword(MailerInterface $mailer ,String $to, String $activationCode): Response
+    {
+        // Create a transport
+        $transport = Transport::fromDsn('smtp://karat6657@gmail.com:Jd0z7k2DxNbn6QZ8@smtp-relay.brevo.com:587');
 
+        // Create a Mailer
+        $mailer = new Mailer($transport);
+
+        // Create an Email object
+        $email = (new Email())
+            ->from('no-reply@cookConnect.tn')
+            ->to(new Address($to))
+            ->subject('Account Created');
+
+        // Set the HTML part using a Twig template
+        $email->html($this->renderView('mailer/create.html.twig', [
+            'username' => 'foo',
+            'address'=>$to,
+            'activationCode'=>$activationCode
+        ]));
+
+        // Alternatively, you can set the text part using a Twig template
+        // $email->text($this->renderView('emails/signup.txt.twig', [
+        //     'expiration_date' => new \DateTime('+7 days'),
+        //     'username' => 'foo',
+        // ]));
+
+        // Send the email
+        $mailer->send($email);
+
+        return new Response('Email sent successfully!');
+    }
 }
