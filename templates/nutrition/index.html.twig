@@ -53,4 +53,14 @@
     </table>
 
     <a href="{{ path('app_nutrition_new') }}">Create new</a>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorMessage = "{{ error_message }}";
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
 {% endblock %}

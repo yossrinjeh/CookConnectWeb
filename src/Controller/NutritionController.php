@@ -7,6 +7,7 @@ use App\Entity\Ingredient;
 use App\Entity\Recette;
 use App\Form\NutritionRecetteIngredientType;
 use App\Form\NutritionType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,17 +68,49 @@ class NutritionController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_nutrition_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
+
+        if($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            $form = $this->createForm(NutritionType::class, $nutrition);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_nutrition_index', [], Response::HTTP_SEE_OTHER);
+            }
+        }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($nutrition->getUserId()==$id){
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_nutrition_index', [], Response::HTTP_SEE_OTHER);
+            }
+            }else{
+                $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to edit this nutrition.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(NutritionType::class, $nutrition);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_nutrition_index', [], Response::HTTP_SEE_OTHER);
-        }
-
         return $this->renderForm('nutrition/edit.html.twig', [
             'nutrition' => $nutrition,
             'form' => $form,
