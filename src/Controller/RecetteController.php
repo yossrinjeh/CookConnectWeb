@@ -49,11 +49,14 @@ class RecetteController extends AbstractController
     }
 
     #[Route('/new', name: 'app_recette_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
+        $email = $this->getUser()->getUserIdentifier();
+        $user = $userRepository->findOneByEmail($email);
+        $id = $user->getId();   
         $recette = new Recette();
         $recette->setEtat("desactivé");
-        $recette->setIdUser(99);
+        $recette->setIdUser($id);
         $form = $this->createForm(RecetteType::class, $recette);
         $form->handleRequest($request);
 
@@ -79,10 +82,35 @@ class RecetteController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_recette_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Recette $recette, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
-        $form = $this->createForm(RecetteType::class, $recette);
-        $form->handleRequest($request);
+
+        if ($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            $form = $this->createForm(RecetteType::class, $recette);
+            $form->handleRequest($request);
+        }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId(); 
+            if($id == $recette->getId()){
+                $form = $this->createForm(RecetteType::class, $recette);
+                $form->handleRequest($request);
+            }else{
+                $nutritionData =$entityManager
+                ->getRepository(Recette::class)
+                ->findBy(['idUser' => $id]);
+                $form = $this->createForm(RecetteType::class, $recette);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to edit this recipe.";
+                return $this->render('recette/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
@@ -99,6 +127,7 @@ class RecetteController extends AbstractController
     #[Route('/{id}', name: 'app_recette_delete', methods: ['POST'])]
     public function delete(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
     {
+
         if ($this->isCsrfTokenValid('delete'.$recette->getId(), $request->request->get('_token'))) {
             $entityManager->remove($recette);
             $entityManager->flush();
