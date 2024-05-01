@@ -92,18 +92,18 @@ class RecetteController extends AbstractController
             $email = $this->getUser()->getUserIdentifier();
             $user = $userRepository->findOneByEmail($email);
             $id = $user->getId(); 
-            if($id == $recette->getId()){
+            if($id == $recette->getIdUser()){
                 $form = $this->createForm(RecetteType::class, $recette);
                 $form->handleRequest($request);
             }else{
-                $nutritionData =$entityManager
+                $recetteData =$entityManager
                 ->getRepository(Recette::class)
                 ->findBy(['idUser' => $id]);
                 $form = $this->createForm(RecetteType::class, $recette);
                 $form->handleRequest($request);
                 $error_message = "You are not authorized to edit this recipe.";
                 return $this->render('recette/index.html.twig', [
-                'nutrition' => $nutritionData,
+                'recette' => $recetteData,
                 'form' => $form->createView(),
                 'error_message' => $error_message,
         ]);
@@ -125,15 +125,42 @@ class RecetteController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_recette_delete', methods: ['POST'])]
-    public function delete(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Recette $recette, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
 
-        if ($this->isCsrfTokenValid('delete'.$recette->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($recette);
-            $entityManager->flush();
+
+        if($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            if ($this->isCsrfTokenValid('delete'.$recette->getId(), $request->request->get('_token'))) {
+                $entityManager->remove($recette);
+                $entityManager->flush();
+            }
+        }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($id==$recette->getIdUser()){
+                if ($this->isCsrfTokenValid('delete'.$recette->getId(), $request->request->get('_token'))) {
+                    $entityManager->remove($recette);
+                    $entityManager->flush();
+                }
+            }else{
+                $recetteData =$entityManager
+                ->getRepository(Recette::class)
+                ->findBy(['idUser' => $id]);
+                $form = $this->createForm(RecetteType::class, $recette);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to delette this recipe.";
+                return $this->render('recette/index.html.twig', [
+                'recette' => $recetteData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+                ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
+        
     }
 
     #[Route('/{id}/accordNutrition', name: 'app_recette_accordNutrition', methods: ['GET', 'POST'])]
