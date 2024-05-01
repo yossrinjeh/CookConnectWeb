@@ -107,7 +107,17 @@ class NutritionController extends AbstractController
         ]);
             }
         }else{
-            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to access this page.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
         }
         $form = $this->createForm(NutritionType::class, $nutrition);
         $form->handleRequest($request);
@@ -147,6 +157,18 @@ class NutritionController extends AbstractController
                 'error_message' => $error_message,
         ]);
             }
+        }else{
+            $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to access this page.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+        ]);
         }
 
         if ($this->isCsrfTokenValid('delete'.$nutrition->getId(), $request->request->get('_token'))) {
@@ -158,10 +180,44 @@ class NutritionController extends AbstractController
     }
 
     #[Route('/{id}/accordNutrition', name: 'app_nutrition_accordNutrition', methods: ['GET', 'POST'])]
-    public function accordNutrition(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager): Response
+    public function accordNutrition(Request $request, Nutrition $nutrition, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
-        $form = $this->createForm(NutritionRecetteIngredientType::class, $nutrition);
-        $form->handleRequest($request);
+        if($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
+            $form = $this->createForm(NutritionRecetteIngredientType::class, $nutrition);
+            $form->handleRequest($request);
+        }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
+            $email = $this->getUser()->getUserIdentifier();
+            $user = $userRepository->findOneByEmail($email);
+            $id = $user->getId();
+            if($nutrition->getId()==$id){
+                $form = $this->createForm(NutritionRecetteIngredientType::class, $nutrition);
+                $form->handleRequest($request);
+            }else{
+                $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to accord nutrition to this this nutrition.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+                ]);
+            }
+        }else{
+            $nutritionData =$entityManager
+                ->getRepository(Nutrition::class)
+                ->findAll();
+                $form = $this->createForm(NutritionType::class, $nutrition);
+                $form->handleRequest($request);
+                $error_message = "You are not authorized to access  this page.";
+                return $this->render('nutrition/index.html.twig', [
+                'nutrition' => $nutritionData,
+                'form' => $form->createView(),
+                'error_message' => $error_message,
+                ]);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $idIngredient = $nutrition->getIdIngredient();
