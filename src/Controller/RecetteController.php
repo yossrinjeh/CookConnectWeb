@@ -68,7 +68,7 @@ class RecetteController extends AbstractController
                 $ingredient = $ingredientRepository->find($ingredientId);
                 $nutritionId = $ingredient->getIdNutrition();
                 $nutrition = $nutritionRepository->find($nutritionId);
-                if ($ingredient->getEtat() !== 'disabled' || !$nutrition) {
+                if ($ingredient->getEtat() !== 'disabled' || !$nutrition ||$nutritionId==0) {
                     $recette->setEtat('disabled');
                 break;
             }
