@@ -107,8 +107,7 @@ $sessionNumber = $session->get('session_counter');
             return $this->render('frontOffice/403.html.twig');
         }
     }
-    #[Route('/run-python-script', name: 'app_back',methods:["POST"])]
-
+    #[Route('/run-python-script', name: 'app_run',methods:["POST"])]
     public function runPythonScript(Request $request): Response
     {
         // Execute the Python script
