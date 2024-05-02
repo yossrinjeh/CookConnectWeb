@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -30,7 +32,7 @@ class HomeController extends AbstractController
         return $this->render('frontOffice/contact.html.twig');
     }
     #[Route('/backoffice', name: 'app_back')]
-    public function back(UserRepository $userRepository): Response
+    public function back(UserRepository $userRepository,SessionInterface $session , Request $request): Response
     {
         if ($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
             $userCounts = [];
@@ -71,17 +73,31 @@ class HomeController extends AbstractController
             }
             
             //dd($activeUser ,$inactiveUser );
-            $sessionDir = ini_get('session.save_path');
+          /*  $sessionDir = ini_get('session.save_path');
 
             // Count session files
             $sessionFiles = glob($sessionDir . '/*');
-            $sessionCount = count($sessionFiles);
+            $sessionCount = count($sessionFiles);*/
+
+            $session = $request->getSession();
+
+// Check if the counter exists
+if (!$session->has('session_counter')) {
+    // Initialize the counter
+    $session->set('session_counter', 1);
+} else {
+    // Increment the counter
+    $session->set('session_counter', $session->get('session_counter') + 1);
+}
+
+// Get the current counter value
+$sessionNumber = $session->get('session_counter');
             
         return $this->render('BackOffice/base.html.twig', [
             'months' => array_values($monthLabels),
             'dataActive'=>$activeUser,
             'dataInactive'=>$inactiveUser,
-            'session'=>$sessionCount,
+            'session'=>$sessionNumber,
             'Actuser'=>$auser,
             'Inuser'=>$iuser,
             'cnumber'=>count($userRepository->findByRole("CLIENT"))
@@ -89,6 +105,22 @@ class HomeController extends AbstractController
         ]);
         }else{
             return $this->render('frontOffice/403.html.twig');
+        }
+    }
+    #[Route('/run-python-script', name: 'app_back',methods:["POST"])]
+
+    public function runPythonScript(Request $request): Response
+    {
+        // Execute the Python script
+        $output = [];
+        $returnValue = null;
+        exec('python G:\py\server.py', $output, $returnValue);
+
+        // Check if the script executed successfully
+        if ($returnValue === 0) {
+            return $this->json(['success' => true, 'message' => 'Images Updated ']);
+        } else {
+            return $this->json(['success' => false, 'message' => 'Failed to execute Python script']);
         }
     }
 }

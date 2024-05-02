@@ -15,9 +15,16 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Users List</h3>
+
               </div>
+
               <div class="row">
+              <div class="col-md-3">
+               <button id="run-python-button" class="btn btn-primary">Filter Images</button>
+
+              </div>
                 <div class="col-md-8 offset-md-2">
+                
                     <form action="/search-users" method="POST">
                         <div class="input-group">
                             <input type="search" id="searchValue" name="searchValue" class="form-control form-control-lg" placeholder="Type your keywords here">
@@ -39,7 +46,10 @@
                     <th>Last Name</th>
                     <th>Phone Number</th>
                     <th>Role</th>
+
                     <th>Status</th>
+                     <th>Image</th>
+
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -55,7 +65,12 @@
                      <td style="color: {{ user.isActive ? 'green' : 'red' }}">
                         {{ user.isActive ? 'Active' : 'Inactive' }}
                     </td>
+                  <td>
+                  <img src="{{ asset('/images/' ~ user.image) }}" alt="Profile Image" class="profile-image" style="border-radius: 50%; overflow: hidden; width: 100px; height: 100px;">
+              
+                   </td>
                    <td>
+                   
                         <a href="{{ path('toggle_user_active', {'id': user.id}) }}">
                             {% if user.isActive %}
                                 <i class="fa fa-lock" style="color: red;"></i>
@@ -73,7 +88,10 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Phone Number</th>
+                   <th>Role</th>
+
                     <th>Status</th>
+                     <th>Image</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -88,5 +106,25 @@
     </section>
 {% endblock %}
 {% block js %} 
+<script>
+document.getElementById('run-python-button').addEventListener('click', function() {
+    // Make AJAX request to execute the Python script
+    fetch('/run-python-script', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+        } else {
+            alert('Failed to execute Python script');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to execute Python script');
+    });
+});
+</script>
 
 {% endblock %}
