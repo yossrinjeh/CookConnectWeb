@@ -69,7 +69,6 @@ class IngredientController extends AbstractController
             }
 
             
-            $ingredient->setUserId(100);
             if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
                 $ingredient->setEtat("disabled");
             }else{
