@@ -168,13 +168,13 @@ class IngredientController extends AbstractController
                 return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
             }else{
                 $ingredientData =$entityManager
-                ->getRepository(Nutrition::class)
+                ->getRepository(Ingredient::class)
                 ->findall();
                 $form = $this->createForm(IngredientType::class, $ingredient);
                 $form->handleRequest($request);
                 $error_message = "You are not authorized to delete this ingredient.";
                 return $this->render('ingredient/index.html.twig', [
-                'ingredient' => $ingredientData,
+                'ingredients' => $ingredientData,
                 'form' => $form->createView(),
                 'error_message' => $error_message,
                 ]);
