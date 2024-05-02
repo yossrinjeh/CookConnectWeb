@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Poste;
 use App\Repository\PosteRepository;
+use App\Repository\CommentaireRepository;
+use App\Repository\LikesRepository;
 
 class FeedController extends AbstractController
 {
@@ -20,13 +22,26 @@ class FeedController extends AbstractController
     }
 
     #[Route('/feed', name: 'app_feed')]
-    public function index(): Response
+    public function index(PosteRepository $postRepository, CommentaireRepository $commentRepository, LikesRepository $likeRepository): Response
     {
-        $posts = $this->posteRepository->SelectAllPosts();
+        $posts = $postRepository->findAll();
+
+        $postsWithDetails = [];
+
+        foreach ($posts as $post) {
+            $comments = $commentRepository->selectCommentsByPostId($post->getId());
+
+            $likes = $likeRepository->selectLikesByPostId($post->getId());
+
+            $postsWithDetails[] = [
+                'post' => $post,
+                'comments' => $comments,
+                'likes' => $likes,
+            ];
+        }
 
         return $this->render('feed/index.html.twig', [
-            'posts' => $posts,
-            'controller_name' => "Feed",
+            'postsWithDetails' => $postsWithDetails,
         ]);
     }
 }

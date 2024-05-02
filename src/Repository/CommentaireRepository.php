@@ -5,6 +5,12 @@ namespace App\Repository;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\Commentaire;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
+use Doctrine\Persistence\ManagerRegistry;
+
+
+
 /**
  * @extends EntityRepository<Commentaire>
  *
@@ -14,8 +20,14 @@ use App\Entity\Commentaire;
  * @method Commentaire[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 
-class CommentaireRepository extends EntityRepository
+class CommentaireRepository extends ServiceEntityRepository
 {
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Commentaire::class);
+    }
+
     public function selectCommentById($commentId): ?Commentaire
     {
         return $this->createQueryBuilder('c')
@@ -28,7 +40,8 @@ class CommentaireRepository extends EntityRepository
     public function selectCommentsByPostId($postId)
     {
         return $this->createQueryBuilder('c')
-            ->where('c.id_poste = :postId')
+            ->join('c.poste', 'p')
+            ->where('p.id = :postId')
             ->setParameter('postId', $postId)
             ->getQuery()
             ->getResult();
@@ -37,7 +50,7 @@ class CommentaireRepository extends EntityRepository
     public function selectCommentsByUserId($userId)
     {
         return $this->createQueryBuilder('c')
-            ->where('c.id_user = :userId')
+            ->where('c.user = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getResult();
@@ -48,5 +61,13 @@ class CommentaireRepository extends EntityRepository
         return $this->createQueryBuilder('c')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getCommentCount(): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

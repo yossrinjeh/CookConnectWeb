@@ -50,4 +50,12 @@ class PosteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getPostCount(): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

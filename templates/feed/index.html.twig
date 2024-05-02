@@ -13,50 +13,6 @@
 {% block body %}
   
     <li><a href="{{path('app_poste_new')}}" class="new-post-button">New Post</a></li>
-    {% include 'feed/carousel/carousel.html.twig' with {'posts': posts} %}
+    {% include 'feed/carousel/carousel.html.twig' with {'postsWithDetails': postsWithDetails} %}
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {# <h1>Welcome to the Feed!</h1> #}
-    {# {% if posts is empty %}
-        <p>No posts available.</p>
-    {% else %}
-        {% for post in posts %}
-            <div class="post">
-                <h2>{{ post.titre }}</h2>
-                <p>{{ post.description }}</p>
-                {% if post.image is not null %}
-                    <img src="{{ post.image }}" alt="Post Image">
-                {% endif %}
-                {% if post.video is not null %}
-                    <video controls>
-                        <source src="{{ post.video }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                {% endif %}
-                <p>Posted on {{ post.date | date('F j, Y') }}</p>
-            </div>
-        {% endfor %}
-    {% endif %} #}
-
-    {# {% include 'feed/carousel/carousel.html.twig' %} #}

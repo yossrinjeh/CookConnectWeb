@@ -8,8 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Url;
-use Symfony\Component\Validator\Constraints\File;
+
+use MeteoConcept\HCaptchaBundle\Form\HCaptchaType;
 
 class PosteType extends AbstractType
 {
@@ -33,21 +33,14 @@ class PosteType extends AbstractType
                     new Length(['min' => 10, 'minMessage' => 'Description must be at least {{ limit }} characters long']),
                 ],
             ])
-            ->add('image', null, [
-                'constraints' => [
-                    new Url(['message' => 'Please enter a valid URL for the image']),
-                ],
-            ])
-            ->add('video', null, [
-                'constraints' => [
-                    new Url(['message' => 'Please enter a valid URL for the video']),
-                ],
-            ])
             ->add('date', null, [
                 'widget' => 'single_text',
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a date']),
                 ],
+            ])
+            ->add('captcha', HCaptchaType::class, [
+                'hcaptcha_site_key' => 'b31da35e-22c7-4b54-9311-405871c99d1c',
             ]);
     }
 

@@ -37,9 +37,9 @@
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
 
     <div class="carousel-inner" role="listbox">
-      {% for post in posts %}
+      {% for postWithDetails in postsWithDetails %}
         <div class="item {% if loop.first %}active{% endif %}">
-          {% include 'feed/postComponent/post_component.html.twig' with {'post': post} %}
+          {% include 'feed/postComponent/post_component.html.twig' with {'postWithDetails': postWithDetails} %}
         </div>
       {% endfor %}
     </div>
@@ -56,5 +56,25 @@
   </div>
 </div>
 
+{% block javascripts %}
+<script>
+  /*function fetchComments(post) {
+    var postId = post.id;
+    var comments = [];
+    $.ajax({
+      url: "{{ path('get_comments', {'id_post': 'POST_ID'}) }}".replace('POST_ID', postId),
+      method: 'GET',
+      async: false, // Make the request synchronous
+      success: function(response) {
+        comments = response;
+      },
+      error: function() {
+        console.error('Failed to fetch comments for post ID: ' + postId);
+      }
+    });
+    return comments;
+  }*/
+</script>
+{% endblock %}
 </body>
 </html>

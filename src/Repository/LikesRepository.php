@@ -5,6 +5,10 @@ namespace App\Repository;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\Likes;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
+use Doctrine\Persistence\ManagerRegistry;
+
 /**
  * @extends EntityRepository<Likes>
  *
@@ -14,12 +18,19 @@ use App\Entity\Likes;
  * @method Likes[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 
-class LikesRepository extends EntityRepository
+class LikesRepository extends ServiceEntityRepository
 {
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Likes::class);
+    }
+
     public function selectLikesByPostId($postId)
     {
-        return $this->createQueryBuilder('l')
-            ->where('l.poste_id = :postId')
+        return $this->createQueryBuilder('c')
+            ->join('c.poste', 'p')
+            ->where('p.id = :postId')
             ->setParameter('postId', $postId)
             ->getQuery()
             ->getResult();

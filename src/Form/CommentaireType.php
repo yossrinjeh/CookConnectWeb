@@ -15,8 +15,7 @@ class CommentaireType extends AbstractType
             ->add('user')
             ->add('poste')
             ->add('commentaire')
-            ->add('date')
-        ;
+            ->add('date');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -17,7 +17,7 @@
             flex-direction: row;
         }
         input[type="text"] {
-            width: 100%; 
+            width: 100%;
         }
         .form-container, .upload-container {
             flex: 1;
@@ -45,6 +45,21 @@
             color: red;
             font-size: 14px;
             margin-top: 5px;
+        }
+        .preview-image {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .custom-warning {
+            height: 60px;
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            border-radius: 0.25rem;
         }
     </style>
 {% endblock %}
@@ -76,22 +91,23 @@
             </div>
 
             <div class="form-group">
-                {{ form_label(form.image) }}
-                {{ form_widget(form.image) }}
-                <div class="error-message">{{ form_errors(form.image) }}</div>
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.video) }}
-                {{ form_widget(form.video) }}
-                <div class="error-message">{{ form_errors(form.video) }}</div>
-            </div>
-
-            <div class="form-group">
                 {{ form_label(form.date) }}
                 {{ form_widget(form.date) }}
                 <div class="error-message">{{ form_errors(form.date) }}</div>
             </div>
+
+            <div class="form-group">
+                {{ form_widget(form.captcha) }}
+                <div class="error-message">{{ form_errors(form.captcha) }}</div>
+            </div>
+
+            {% if app.flashes('warning') %}
+                <div class="warning">
+                    {% for message in app.flashes('warning') %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
 
             <button type="submit" class="btn btn-primary">Submit</button>
             {{ form_end(form) }}
@@ -99,13 +115,15 @@
             <a href="{{ path('app_poste_index') }}" class="back-link">Back to List</a>
         </div>
         <div class="upload-container">
-            <div>
-                <img src="{{ asset('placeholder.jpg') }}" alt="Placeholder" style="max-width: 100%;">
+            <div id="previewContainer">
+                <img id="previewImage" src="{{ asset('placeholder.jpg') }}" alt="Preview" class="preview-image" style="display: none;">
             </div>
             <input type="file" id="fileInput" style="display: none;">
-            <button class="upload-button" id="uploadButton">Upload Image/Video</button>
+            <button class="upload-button" id="uploadButton">Upload File</button>
         </div>
     </div>
+
+    <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -117,22 +135,20 @@
             $('#fileInput').change(function(event) {
                 const file = event.target.files[0];
                 if (file) {
-                    const formData = new FormData();
-                    formData.append('media', file);
-
-                    $.ajax({
-                        url: '/new',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            window.location.href = '/feed';
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Failed to upload file');
-                        }
-                    });
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#previewImage').attr('src', e.target.result);
+                            $('#previewImage').show();
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (extension === 'mp4' || extension === 'mov' || extension === 'avi') {
+                        // You can add similar functionality for video preview here if needed
+                        console.log('Video file selected');
+                    } else {
+                        console.log('Unsupported file type');
+                    }
                 }
             });
         });

@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Poste;
 use App\Entity\Commentaire;
+use App\Repository\PosteRepository;
 use App\Repository\CommentaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,118 +16,76 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+use Knp\Component\Pager\PaginatorInterface;
+
 
 class SocialMediaAdminController extends AbstractController
 {
 
-
     // #[Route('/backoffice/socialMedia', name: 'app_social_media_admin')]
-    // public function index(EntityManagerInterface $entityManager): Response
+    // public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     // {
-    //     return $this->render('social_media_admin/index.html.twig');
+    //     $postsQuery = $entityManager
+    //         ->getRepository(Poste::class)
+    //         ->createQueryBuilder('p')
+    //         ->getQuery();
+
+    //     $posts = $paginator->paginate(
+    //         $postsQuery,
+    //         $request->query->getInt('page', 1), // Current page number, default to 1
+    //         5 // Number of items per page
+    //     );
+
+    //     return $this->render('social_media_admin/index.html.twig', [
+    //         'posts' => $posts,
+    //     ]);
     // }
-
-    // #[Route('/backoffice/posts/data', name: 'app_posts_data')]
-    // public function getPostsData(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    // {
-    //     // Retrieve the necessary parameters from the request
-    //     $draw = $request->get('draw');
-    //     $start = $request->get('start');
-    //     $length = $request->get('length');
-    //     $searchValue = $request->get('search')['value'];
-
-    //     // Fetch the posts from the database based on the search value and pagination
-    //     $repository = $entityManager->getRepository(Poste::class);
-    //     $queryBuilder = $repository->createQueryBuilder('p');
-
-    //     // Apply the search filter if a search value is provided
-    //     if (!empty($searchValue)) {
-    //         $queryBuilder->andWhere('p.titre LIKE :searchValue OR p.description LIKE :searchValue')
-    //             ->setParameter('searchValue', '%' . $searchValue . '%');
-    //     }
-
-    //     // Get the total count of posts (without pagination)
-    //     $totalCount = $queryBuilder->select('COUNT(p)')->getQuery()->getSingleScalarResult();
-
-    //     // Apply pagination
-    //     $queryBuilder->setFirstResult($start)
-    //         ->setMaxResults($length);
-
-    //     // Fetch the posts
-    //     $posts = $queryBuilder->getQuery()->getResult();
-
-    //     // Format the data for the datatable response
-    //     $data = [];
-    //     foreach ($posts as $post) {
-    //         $data[] = [
-    //             'id' => $post->getId(),
-    //             'titre' => $post->getTitre(),
-    //             'description' => $post->getDescription(),
-    //             // Add other fields as needed
-    //         ];
-    //     }
-
-    //     // Prepare the response
-    //     $response = [
-    //         'draw' => $draw,
-    //         'recordsTotal' => $totalCount,
-    //         'recordsFiltered' => $totalCount, // For simplicity, we assume all records are filtered here
-    //         'data' => $data,
-    //     ];
-
-    //     return new JsonResponse($response);
-    // }
-
 
     #[Route('/backoffice/socialMedia', name: 'app_social_media_admin')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
-        $posts = $entityManager
+        $searchQuery = $request->query->get('search');
+
+        $postsQuery = $entityManager
             ->getRepository(Poste::class)
-            ->findAll();
+            ->createQueryBuilder('p');
+
+        // Filter by search query
+        if ($searchQuery) {
+            $postsQuery
+                ->andWhere('p.id LIKE :search')
+                ->orWhere('p.titre LIKE :search')
+                ->orWhere('p.description LIKE :search')
+                ->setParameter('search', '%' . $searchQuery . '%');
+        }
+
+        $postsQuery = $postsQuery->getQuery();
+
+        $posts = $paginator->paginate(
+            $postsQuery,
+            $request->query->getInt('page', 1), // Current page number, default to 1
+            5 // Number of items per page
+        );
 
         return $this->render('social_media_admin/index.html.twig', [
             'posts' => $posts,
         ]);
     }
 
-    // #[Route('/backoffice/socialMedia', name: 'app_social_media_admin')]
-    // public function index(): Response
-    // {
-    //     return $this->render('social_media_admin/index.html.twig');
-    // }
+    #[Route('/chart_data', name: 'chart_data', methods: ['GET'])]
+    public function chartData(PosteRepository $posteRepository, CommentaireRepository $commentaireRepository): JsonResponse
+    {
+        $postCount = $posteRepository->getPostCount();
+        $commentCount = $commentaireRepository->getCommentCount();
 
-    // #[Route('/backoffice/posts', name: 'app_posts')]
-    // public function getPosts(EntityManagerInterface $entityManager): JsonResponse
-    // {
-    //     $posts = $entityManager
-    //         ->getRepository(Poste::class)
-    //         ->findAll();
+        $data = [
+            'post_count' => $postCount,
+            'comment_count' => $commentCount,
+        ];
 
-    //     $postData = [];
-    //     foreach ($posts as $post) {
-    //         $postData[] = [
-    //             'id' => $post->getId(),
-    //             'titre' => $post->getTitre(),
-    //             'description' => $post->getDescription(),
-    //             // Add other fields as needed
-    //         ];
-    //     }
+        return $this->json($data);
+    }
 
-    //     return new JsonResponse($postData);
-    // }
-
-    // #[Route('/backoffice/posts', name: 'app_posts')]
-    // public function getPosts(EntityManagerInterface $entityManager): Response
-    // {
-    //     $posts = $entityManager
-    //         ->getRepository(Poste::class)
-    //         ->findAll();
-
-    //     return $this->render('backOffice/posts.html.twig', [
-    //         'posts' => $posts,
-    //     ]);
-    // }
 
     #[Route('/backoffice/delete-post/{id}', name: 'app_delete_post')]
     public function deletePost(EntityManagerInterface $entityManager, Poste $post): Response
@@ -173,5 +132,19 @@ class SocialMediaAdminController extends AbstractController
         }
 
         return new JsonResponse($serializedComments);
+    }
+
+    #[Route('/backoffice/socialMedia/get-comments-by-post-id', name: 'get_comments_by_post_id')]
+    public function getCommentsByPostId(Request $request, CommentaireRepository $commentRepository): JsonResponse
+    {
+        $postId = $request->query->get('postId');
+        $comments = $commentRepository->findBy(['postId' => $postId]);
+
+        $formattedComments = [];
+        foreach ($comments as $comment) {
+            $formattedComments[] = ['text' => $comment->getCommentaire()];
+        }
+
+        return new JsonResponse(['comments' => $formattedComments]);
     }
 }
