@@ -110,13 +110,13 @@ class IngredientController extends AbstractController
                 $form->handleRequest($request);
             }else{
                 $ingredientData =$entityManager
-                ->getRepository(Nutrition::class)
+                ->getRepository(Ingredient::class)
                 ->findall();
                 $form = $this->createForm(IngredientType::class, $ingredient);
                 $form->handleRequest($request);
                 $error_message = "You are not authorized to edit this ingredient.";
                 return $this->render('ingredient/index.html.twig', [
-                'ingredient' => $ingredientData,
+                'ingredients' => $ingredientData,
                 'form' => $form->createView(),
                 'error_message' => $error_message,
         ]);
