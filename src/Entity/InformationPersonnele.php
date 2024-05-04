@@ -25,56 +25,56 @@ class InformationPersonnele
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=300, nullable=false)
+     * @ORM\Column(name="nom", type="string", length=300, nullable=true)
      */
     private $nom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="prenom", type="string", length=300, nullable=false)
+     * @ORM\Column(name="prenom", type="string", length=300, nullable=true)
      */
     private $prenom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sexe", type="string", length=300, nullable=false)
+     * @ORM\Column(name="sexe", type="string", length=300, nullable=true)
      */
     private $sexe;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="taille", type="string", length=300, nullable=false)
+     * @ORM\Column(name="taille", type="string", length=300, nullable=true)
      */
     private $taille;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="poids", type="string", length=300, nullable=false)
+     * @ORM\Column(name="poids", type="string", length=300, nullable=true)
      */
     private $poids;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="maladie", type="string", length=300, nullable=false)
+     * @ORM\Column(name="maladie", type="string", length=300, nullable=true)
      */
     private $maladie;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="num_tel", type="string", length=300, nullable=false)
+     * @ORM\Column(name="num_tel", type="string", length=300, nullable=true)
      */
     private $numTel;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="adresse", type="string", length=300, nullable=false)
+     * @ORM\Column(name="adresse", type="string", length=300, nullable=true)
      */
     private $adresse;
 

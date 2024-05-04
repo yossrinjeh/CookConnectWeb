@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\InformationPersonnele;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\AppCustomAuthenticator;
@@ -38,7 +39,17 @@ class RegistrationController extends AbstractController
             $user->setVerificationCode($activationCode);
             $entityManager->persist($user);
             $entityManager->flush();
-            
+            $userInfo = new InformationPersonnele();
+            $userInfo->setUser($user);
+            $userInfo->setNom("");
+            $userInfo->setPrenom("");
+            $userInfo->setSexe("Male");
+            $userInfo->setPoids(0);
+            $userInfo->setTaille(0);
+            $userInfo->setNumTel(0);
+            $userInfo->setAdresse("");
+            $entityManager->persist($userInfo);
+            $entityManager->flush();
             // do anything else you need here, like send an email
 
             return $userAuthenticator->authenticateUser(

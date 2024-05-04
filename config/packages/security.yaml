@@ -2,6 +2,7 @@ security:
     encoders:
         App\Entity\User:
             algorithm: bcrypt
+            cost: 13
 
     # Enable the authenticator manager
     enable_authenticator_manager: true
