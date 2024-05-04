@@ -16,11 +16,11 @@ class PosteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('user', null, [
-                'constraints' => [
-                    new NotBlank(['message' => 'Please enter a user']),
-                ],
-            ])
+            // ->add('user', null, [
+            //     'constraints' => [
+            //         new NotBlank(['message' => 'Please enter a user']),
+            //     ],
+            // ])
             ->add('titre', null, [
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a title']),

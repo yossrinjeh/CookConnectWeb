@@ -22,21 +22,33 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use Symfony\Component\String\UnicodeString;
 use Snipe\BanBuilder\CensorWords;
-
+use Symfony\Component\Security\Core\Security;
 
 
 #[Route('/poste')]
 class PosteController extends AbstractController
 {
+
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+
     #[Route('/', name: 'app_poste_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, Security $security): Response
     {
         $postes = $entityManager
             ->getRepository(Poste::class)
             ->findAll();
 
+        $user = $security->getUser();
+
         return $this->render('poste/index.html.twig', [
             'postes' => $postes,
+            'user' => $user,
         ]);
     }
 
@@ -47,6 +59,9 @@ class PosteController extends AbstractController
         $post = new Poste();
         $form = $this->createForm(PosteType::class, $post);
         $form->handleRequest($request);
+
+        $user = $this->security->getUser();
+        $post->setUser($user);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($this->containsProfanity($post)) {

@@ -50,7 +50,6 @@ class SocialMediaAdminController extends AbstractController
             ->getRepository(Poste::class)
             ->createQueryBuilder('p');
 
-        // Filter by search query
         if ($searchQuery) {
             $postsQuery
                 ->andWhere('p.id LIKE :search')

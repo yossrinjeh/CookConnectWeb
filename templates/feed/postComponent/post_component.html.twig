@@ -142,6 +142,7 @@
 <body>
 
   <div class="container" data-post="{{ postWithDetails.post.id }}">
+    <span id="POSTE-ID">{{ postWithDetails.post.id }}</span>
     <div class="container-md-flex-row">
       {# <div class="item-left"> #}
         {# <img src="public/images/4.jpg" alt="Video Content"> #}
@@ -182,7 +183,15 @@
               <span class="likes-count">1.5k</span>
           </div>
         </div>
+        {# <input type="text" class="comment-input" placeholder="Add comment..."> #}
+        {# <input type="text" class="comment-input" id="commentInput" placeholder="Add comment..."> #}
+        {# <button type="button" class="btn btn-primary" id="postCommentBtn">>></button> #}
+
+        {# <input type="text" id="commentInput" class="comment-input" placeholder="Add comment...">
+        <button id="postCommentBtn">Post Comment</button> #}
+
         <input type="text" class="comment-input" placeholder="Add comment...">
+        <button class="post-comment-btn">Post Comment</button>
 
         <div class="comments" style="height: 400px; overflow-y: auto; border: 1px solid black">
           {% for comment in postWithDetails.comments %}
@@ -190,9 +199,15 @@
                   <div class="user-info">
                       <div class="user-comment-info">
                           <img src="{{ comment.user.getImage() }}" alt="User Avatar">
-                          <div class="comment-username">{{ comment.user.getInformationPersonnelle().nom ~ ' ' ~ comment.user.getInformationPersonnelle().prenom }}</div>
+                          <div class="comment-username">{{ comment.user.getInformationPersonnelle().nom() ~ ' ' ~ comment.user.getInformationPersonnelle().prenom }}</div>
                       </div>
                       <div>{{ comment.commentaire }}</div>
+                      {% if app.user and comment.user.id == app.user.id %}
+                        <div class="comment-actions">
+                          <button class="edit-comment-btn" data-comment-id="{{ comment.id }}">Edit</button>
+                          <button class="delete-comment-btn" data-comment-id="{{ comment.id }}">Delete</button>
+                        </div>
+                      {% endif %}
                   </div>
                   <div class="comment-info">
                       <span>{{ comment.date|date("Y-m-d H:i:s") }}</span>
@@ -205,6 +220,105 @@
       </div>
     </div>
   </div>
+
+  {# <script>
+    $(document).on('click', '.edit-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      var commentText = $(this).closest('.comment').find('.user-info > div:eq(1)').text().trim();
+      
+      var textareaHtml = '<textarea class="edit-comment-textarea">' + commentText + '</textarea>';
+      $(this).closest('.comment').find('.user-comment-info').append(textareaHtml);
+
+      $(this).replaceWith('<button class="save-comment-btn" data-comment-id="' + commentId + '">Save</button>');
+    });
+
+    $(document).on('click', '.save-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      var editedCommentText = $(this).closest('.comment').find('.edit-comment-textarea').val();
+
+      $.ajax({
+          url: "{{ path('app_commentaire_edit', {'id': 'COMMENT_ID'}) }}".replace('COMMENT_ID', commentId),
+          type: "POST",
+          data: {
+              _method: "POST",
+              _token: "{{ csrf_token('commentaire') }}",
+              commentaire: {
+                  commentaire: editedCommentText
+              }
+          },
+          success: function(data) {
+              console.log("Comment updated successfully.");
+              // Optionally, update the comment text in the UI
+              // $(this).closest('.comment').find('.user-info > div:eq(1)').text(editedCommentText);
+          },
+          error: function(xhr, status, error) {
+              console.error("Error updating comment:", error);
+          }
+      });
+    });
+
+    $(document).on('click', '.delete-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      
+      if (confirm("Are you sure you want to delete this comment?")) {
+          $.ajax({
+              url: "{{ path('app_commentaire_delete', {'id': 'COMMENT_ID'}) }}".replace('COMMENT_ID', commentId),
+              type: "POST",
+              data: {
+                  _method: "POST",
+                  _token: "{{ csrf_token('delete') }}" 
+              },
+              success: function(data) {
+                  console.log("Comment deleted successfully.");
+                  // Optionally, remove the comment from the UI
+                  // $(this).closest('.comment').remove();
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error deleting comment:", error);
+              }
+          });
+      }
+    });
+  </script> #}
+  
+  {# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          $("#postCommentBtn").click(function() {
+              var postId = $("#POSTE-ID").text().trim();
+              var commentText = $("#commentInput").val().trim();
+  
+              if (commentText === "") {
+                  alert("Please enter a comment.");
+                  return;
+              }
+  
+              var requestData = {
+                  postId: postId,
+                  comment: commentText
+              };
+  
+              $.ajax({
+                  url: "{{ path('app_commentaire_new') }}",
+                  type: "POST",
+                  data: requestData, // Send data in form format
+                  success: function(data) {
+                      if (data.success) {
+                          // Optionally, reload the page or update the comments section dynamically
+                          console.log("Comment posted successfully.");
+                      } else {
+                          console.error("Failed to post comment.");
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error("Error:", error);
+                  }
+              });
+          });
+      });
+  </script> #}
+  
+
 
 </body>
 </html>

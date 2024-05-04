@@ -26,6 +26,15 @@ class PosteRepository extends ServiceEntityRepository
         parent::__construct($registry, Poste::class);
     }
 
+    public function findPostById($postId)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.id = :postId')
+            ->setParameter('postId', $postId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function selectPostById($postId): ?Poste
     {
         return $this->createQueryBuilder('p')

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commentaire;
+use App\Entity\Poste;
 use App\Form\CommentaireType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,8 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\CommentaireRepository;
+use App\Repository\PosteRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
+use DateTime;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -24,10 +28,12 @@ class CommentaireController extends AbstractController
 {
 
     private $logger;
+    private $security;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, Security $security)
     {
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     #[Route('/', name: 'app_commentaire_index', methods: ['GET'])]
@@ -42,24 +48,38 @@ class CommentaireController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_commentaire_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'app_commentaire_new', methods: ['POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, PosteRepository $posteRepository): Response
     {
-        $commentaire = new Commentaire();
-        $form = $this->createForm(CommentaireType::class, $commentaire);
-        $form->handleRequest($request);
+        $user = $this->security->getUser();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($commentaire);
-            $entityManager->flush();
+        // Retrieve data directly from the request object
+        $postId = $request->request->get('postId');
+        $commentText = $request->request->get('comment');
 
-            return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
+        if (!$postId || !$commentText) {
+            // Return a response with a bad request status if any data is missing
+            return new Response('Missing data', Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->renderForm('commentaire/new.html.twig', [
-            'commentaire' => $commentaire,
-            'form' => $form,
-        ]);
+        $post = $posteRepository->selectPostById($postId);
+
+        if (!$post) {
+            // Return a response with a not found status if the post is not found
+            return new Response('Post not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $commentaire = new Commentaire();
+        $commentaire->setPoste($post);
+        $commentaire->setUser($user);
+        $commentaire->setCommentaire($commentText);
+        $commentaire->setDate(new \DateTime());
+
+        $entityManager->persist($commentaire);
+        $entityManager->flush();
+
+        // Return a simple success response
+        return new Response('Success', Response::HTTP_OK);
     }
 
     #[Route('/show/{id}', name: 'app_commentaire_show', methods: ['GET'])]
@@ -70,9 +90,10 @@ class CommentaireController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_commentaire_edit', methods: ['GET', 'POST'])]
+    #[Route('/commentaire/{id}/edit', name: 'app_commentaire_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
     {
+
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
 
@@ -87,6 +108,7 @@ class CommentaireController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/delete/{id}', name: 'app_commentaire_delete', methods: ['POST'])]
     public function delete(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response

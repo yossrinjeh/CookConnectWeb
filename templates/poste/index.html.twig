@@ -5,6 +5,15 @@
 {% block body %}
     <h1>Poste index</h1>
 
+    {% if user %}
+        <p>User is not null</p>
+        <p>User ID: {{ user.getId() }}</p>
+        {# <p>User Nom: {{ user.getInformationPersonnelle().getNom() }}</p> #}
+        {# <p>User Nom: {{ user.getInformationPersonnelle().getPrenom() }}</p> #}
+    {% else %}
+        <p>User is null</p>
+    {% endif %}
+
     <table class="table">
         <thead>
             <tr>
