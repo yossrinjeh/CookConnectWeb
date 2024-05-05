@@ -29,9 +29,9 @@ class Nutrition
     private $userId;
 
     /**
-     * @var int
+     * @var int|null
      *
-     * @ORM\Column(name="id_ingredient", type="integer", nullable=false)
+     * @ORM\Column(name="id_ingredient", type="integer", nullable=true)
      */
     private $idIngredient;
 
@@ -216,5 +216,8 @@ class Nutrition
         return $this;
     }
 
-
+    public function __toString()
+    {
+        return $this->id;
+    }
 }

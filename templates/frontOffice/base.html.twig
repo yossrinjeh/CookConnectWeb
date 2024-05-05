@@ -79,7 +79,7 @@
                                             <li><a href="about.html">About Us</a></li>
                                             <li><a href="blog-post.html">Blog Post</a></li>
                                             <li><a href="receipe-post.html">Receipe Post</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="{{ path('app_repas_index') }}">Gestion de repas</a></li>
                                             <li><a href="elements.html">Elements</a></li>
                                             <li><a href="#">Dropdown</a>
                                                 <ul class="dropdown">
@@ -141,6 +141,7 @@
                                         </div>
                                     </li> !-->
                                     <li><a href="#">Receipies</a></li>
+                                    <li><a href="{{path('app_feed')}}">Feed</a></li>
                                     <li><a href="{{path('app_about')}}">About</a></li>
                                     <li><a href="#">Contact</a></li>
                                     {% if   app.user == false %}
@@ -270,9 +271,9 @@
                 </div>
             </div>
 
-            <div class="row">
+           <div class="row">
                 <!-- Single Best Receipe Area -->
-                <div class="col-12 col-sm-6 col-lg-4">
+                <div class=" col-12 col-sm-6 col-lg-4">
                     <div class="single-best-receipe-area mb-30">
                         <img src="img/bg-img/r1.jpg" alt="">
                         <div class="receipe-content">

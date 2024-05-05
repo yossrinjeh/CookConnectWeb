@@ -1,0 +1,23 @@
+{# <h1>Post: {{ comments[0].poste.getTitre() }}</h1> #}
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>USER_ID</th>
+                <th>POST_ID</th>
+                <th>TEXT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.id }}</td>
+                    <td>{{ comment.user.getId() }}</td>
+                    <td>{{ comment.poste.getId() }}</td>
+                    <td>{{ comment.commentaire }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>

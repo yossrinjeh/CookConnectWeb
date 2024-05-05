@@ -5,86 +5,74 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * PlanAlim
- *
  * @ORM\Table(name="plan_alim", indexes={@ORM\Index(name="id_regime", columns={"id_regime"})})
  * @ORM\Entity
  */
 class PlanAlim
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_nut", type="integer", nullable=false)
+   /**
+ * @ORM\ManyToOne(targetEntity="App\Entity\Nutrition")
+ * @ORM\JoinColumn(name="nut_id", referencedColumnName="id", nullable=false)
+ */
+    private $nutrition;
+
+   /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
-    private $idNut;
+    private $user;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Regime")
+     * @ORM\JoinColumn(name="id_regime", referencedColumnName="id", nullable=false)
      */
-    private $idUser;
-
-    /**
-     * @var \Regime
-     *
-     * @ORM\ManyToOne(targetEntity="Regime")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_regime", referencedColumnName="id")
-     * })
-     */
-    private $idRegime;
+    private $regime;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdNut(): ?int
+    public function getNutrition(): ?Nutrition
     {
-        return $this->idNut;
+        return $this->nutrition;
     }
-
-    public function setIdNut(int $idNut): static
+  
+    public function setNutrition(?Nutrition $nutrition): self
     {
-        $this->idNut = $idNut;
+        $this->nutrition = $nutrition;
 
         return $this;
     }
 
-    public function getIdUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
-
-    public function setIdUser(int $idUser): static
+    
+    public function setUser(?User $user): self
     {
-        $this->idUser = $idUser;
-
+        $this->user = $user;
+    
         return $this;
     }
 
-    public function getIdRegime(): ?Regime
+    public function getRegime(): ?Regime
     {
-        return $this->idRegime;
+        return $this->regime;
     }
 
-    public function setIdRegime(?Regime $idRegime): static
+    public function setRegime(?Regime $regime): self
     {
-        $this->idRegime = $idRegime;
+        $this->regime = $regime;
 
         return $this;
     }
-
-
 }

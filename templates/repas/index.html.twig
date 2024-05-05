@@ -1,0 +1,163 @@
+{% extends 'backOffice/base.html.twig' %}
+
+{% block title %}Repas{% endblock %}
+
+{% block body %}
+<head>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('info') %}
+        <div class="alert alert-warning">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('del') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repas index</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    
+
+<input class="form-control" id="search" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+
+                        <button class="btn btn-success btn-export-pdf">Export PDF</button>
+    <a href="{{ path('triespc') }}"><i class="btn btn-danger" data-feather="arrow-down"></i>Nom Ascendant</a>
+    <a href="{{ path('triespcDESC') }}"><i class="btn btn-danger" data-feather="arrow-down"></i>Nom Desendent</a>
+
+    <table id="tableBodyPlaceholder" class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IdRecette</th>
+                <th>IdUser</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repa in repas %}
+                <tr>
+                    <td>{{ repa.id }}</td>
+                    <td>{{ repa.getRecette.id }}</td>
+                    <td>{{ repa.getUser.id }}</td>
+                    <td>{{ repa.nom }}</td>
+                    <td>{{ repa.type }}</td>
+                    <td>{{ repa.tags }}</td>
+                    <td>{{ repa.email }}</td>
+                    <td class="actions">
+                        <a href="{{ path('app_repas_show', {'id': repa.id}) }}">Show</a>
+                        <a href="{{ path('app_repas_edit', {'id': repa.id}) }}">Edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_repas_new') }}">Create new</a>
+
+    <script src="{{ asset('https://code.jquery.com/jquery-3.5.1.min.js') }}"></script>
+  <script>
+ $(document).ready(function() {
+    $('#search').on('keyup', function() {
+        var query = $(this).val().toLowerCase();
+        
+        // Parcourir chaque ligne du tableau
+        $('#tableBodyPlaceholder tbody tr').each(function() {
+            var rowText = $(this).text().toLowerCase();
+            // Vérifier si la ligne contient le texte de la recherche
+            if (rowText.indexOf(query) === -1) {
+                $(this).hide(); // Masquer la ligne si elle ne correspond pas
+            } else {
+                $(this).show(); // Afficher la ligne si elle correspond
+            }
+        });
+
+        // Si la chaîne de recherche est vide, afficher toutes les lignes
+        if (query === '') {
+            $('#tableBodyPlaceholder tbody tr').show();
+        }
+    });
+});
+</script>
+<script>document.addEventListener('DOMContentLoaded', function() {
+    const exportPdfBtns = document.querySelectorAll('.btn-export-pdf');
+    exportPdfBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/export-pdf', true); // Route for exporting PDF content
+            xhr.responseType = 'blob';
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const blobUrl = URL.createObjectURL(xhr.response);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = 'booking_details.pdf'; // Set the filename as needed
+                    a.click();
+
+                    // Send request to upload PDF to Dropbox
+                    const uploadXhr = new XMLHttpRequest();
+                    uploadXhr.open('POST', '/upload_pdf_to_dropbox', true); // Route for uploading PDF content to Dropbox
+                    uploadXhr.setRequestHeader('Content-Type', 'application/pdf');
+                    uploadXhr.onload = function() {
+                        if (uploadXhr.status === 200) {
+                            console.log('PDF uploaded to Dropbox successfully');
+                        } else {
+                            console.error('Upload PDF to Dropbox failed:', uploadXhr.status, uploadXhr.statusText);
+                        }
+                    };
+                    uploadXhr.onerror = function() {
+                        console.error('Upload PDF to Dropbox request failed');
+                    };
+                    uploadXhr.send(xhr.response);
+                } else {
+                    console.error('Export PDF request failed:', xhr.status, xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Export PDF request failed');
+            };
+            xhr.send();
+        });
+    });
+});
+</script>
+      <a href="{{ path('statistics') }}" class="btn btn-success">Statistiques</a>
+</body>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

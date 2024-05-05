@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajoutingredientrequest{% endblock %}
+
+{% block body %}
+    <h1>Ajoutingredientrequest</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ ajoutingredientrequest.id }}</td>
+        </tr>
+        <tr>
+            <th>IdChef</th>
+            <td>{{ ajoutingredientrequest.idChef }}</td>
+        </tr>
+        <tr>
+            <th>NomIngredient</th>
+            <td>{{ ajoutingredientrequest.nomIngredient }}</td>
+        </tr>
+        <tr>
+            <th>NomRecette</th>
+            <td>{{ ajoutingredientrequest.nomRecette }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ ajoutingredientrequest.description }}</td>
+        </tr>
+        <tr>
+            <th>Etat</th>
+            <td>{{ ajoutingredientrequest.etat }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ajoutingredientrequest_index') }}">back to list</a>
+
+    <a href="{{ path('app_ajoutingredientrequest_edit', {'id': ajoutingredientrequest.id}) }}">edit</a>
+
+    {{ include('ajoutingredientrequest/_delete_form.html.twig') }}
+{% endblock %}

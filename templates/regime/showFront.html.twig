@@ -1,0 +1,54 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block title %}Regime{% endblock %}
+
+{% block body %}
+<style>
+    /* Styles CSS personnalisés */
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        color: #007bff; /* Bleu */
+        text-align: center;
+    }
+
+    .table {
+        width: 50%;
+        margin: 20px auto;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2; /* Gris clair */
+    }
+</style>
+
+<h1>Regime</h1>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ regime.id }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ regime.date ? regime.date|date('Y-m-d') : '' }}</td>
+        </tr>
+        <!-- Ajoutez d'autres champs du régime ici si nécessaire -->
+    </tbody>
+</table>
+
+<a href="{{ path('app_regime_in') }}" class="button">Back to List</a>
+{% endblock %}
+
+{% block js %}
+{% endblock %}

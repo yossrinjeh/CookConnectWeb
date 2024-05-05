@@ -1,0 +1,62 @@
+{% extends 'backOffice/base.html.twig' %}
+
+{% block title %}New Nutrition{% endblock %}
+
+{% block body %}
+    <h1>Create new Nutrition</h1>
+
+
+
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.calories, 'Calories') }}
+                    {{ form_widget(form.calories, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.calories) }}</div>
+                    {{ form_errors(form.calories) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.carbs, 'Carbs') }}
+                    {{ form_widget(form.carbs, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.carbs) }}</div>
+                    {{ form_errors(form.carbs) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.fat, 'Fat') }}
+                    {{ form_widget(form.fat, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.fat) }}</div>
+                    {{ form_errors(form.fat) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.fiber, 'Fiber') }}
+                    {{ form_widget(form.fiber, {'attr': {'class': 'form-control'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.fiber) }}</div>
+                    {{ form_errors(form.fiber) }}
+                   
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.protein, 'Protein') }}
+                    {{ form_widget(form.protein, {'attr': {'class': 'form-control-file'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.protein) }}</div>
+                    {{ form_errors(form.protein) }}
+            
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.vitamines, 'Vitamines') }}
+                    {{ form_widget(form.vitamines, {'attr': {'class': 'form-control-file'}}) }}
+                    <div class="error-message-new-Ingredient">{{ form_errors(form.vitamines) }}</div>
+                    {{ form_errors(form.vitamines) }}
+            
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a href="{{ path('app_nutrition_index') }}">back to list</a>
+
+
+
+{% endblock %}

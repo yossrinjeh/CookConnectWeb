@@ -1,0 +1,41 @@
+{% extends '/backOffice/base.html.twig' %}
+{% block title %}Repas{% endblock %}
+{% block body %}
+    <title>PlanAlim index</title>
+
+    <h1>PlanAlim index</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">IdNut</th>
+                    <th scope="col">IdUser</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan_alim in plan_alims %}
+                <tr>
+                    <td>{{ plan_alim.id }}</td>
+                    <td>{{ plan_alim.getNutrition.id }}</td>
+                    <td>{{ plan_alim.getUser.id }}</td>
+                    <td>
+                        <a href="{{ path('app_plan_alim_show', {'id': plan_alim.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('app_plan_alim_edit', {'id': plan_alim.id}) }}" class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">No records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ path('app_plan_alim_new') }}" class="btn btn-success">Create new</a>
+{% endblock %}
+{% block js %}
+{% endblock %}
