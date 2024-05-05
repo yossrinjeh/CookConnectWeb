@@ -73,7 +73,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="date", type="datetime", nullable=true, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $date ;
+    private $date;
 
     public function getId(): ?int
     {
@@ -185,15 +185,15 @@ class User implements UserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-    public function getIdentifier():string
+    public function getIdentifier(): string
     {
         return $this->email;
     }
-    public function getUserIdentifier():string
+    public function getUserIdentifier(): string
     {
         return $this->email;
     }
-     /**
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\InformationPersonnele", mappedBy="user")
      */
     private $informationPersonnelle;
@@ -203,4 +203,9 @@ class User implements UserInterface
         return $this->informationPersonnelle;
     }
 
+
+    public function __toString(): string
+    {
+        return $this->email;
+    }
 }

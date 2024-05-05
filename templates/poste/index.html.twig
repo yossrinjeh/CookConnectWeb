@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<title>Poste index</title>
+
+{% block body %}
+    <h1>Poste index</h1>
+
+    {% if user %}
+        <p>User is not null</p>
+        <p>User ID: {{ user.getId() }}</p>
+        {# <p>User Nom: {{ user.getInformationPersonnelle().getNom() }}</p> #}
+        {# <p>User Nom: {{ user.getInformationPersonnelle().getPrenom() }}</p> #}
+    {% else %}
+        <p>User is null</p>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IdUser</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Video</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for poste in postes %}
+            <tr>
+                <td>{{ poste.id }}</td>
+                <td>{{ poste.user.id }}</td>
+                <td>{{ poste.titre }}</td>
+                <td>{{ poste.description }}</td>
+                <td>{{ poste.image }}</td>
+                <td>{{ poste.video }}</td>
+                <td>{{ poste.date ? poste.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_poste_show', {'id': poste.id}) }}">show</a>
+                    <a href="{{ path('app_poste_edit', {'id': poste.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_poste_new') }}">Create new</a>
+{% endblock %}

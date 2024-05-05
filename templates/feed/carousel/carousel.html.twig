@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dynamic Carousel</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    /* Your CSS styles here */
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <br>
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+    <div class="carousel-inner" role="listbox">
+      {% for postWithDetails in postsWithDetails %}
+        <div class="item {% if loop.first %}active{% endif %}">
+          {% include 'feed/postComponent/post_component.html.twig' with {'postWithDetails': postWithDetails} %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+
+{% block javascripts %}
+<script>
+  $(document).ready(function() {
+      // Event listener for posting comments
+      $(".post-comment-btn").click(function() {
+          var postId = $(this).closest(".container").data("post");
+          var commentText = $(this).siblings(".comment-input").val().trim();
+
+          if (commentText === "") {
+              alert("Please enter a comment.");
+              return;
+          }
+
+          var requestData = {
+              postId: postId,
+              comment: commentText
+          };
+
+          $.ajax({
+              url: "{{ path('app_commentaire_new') }}",
+              type: "POST",
+              data: requestData, // Send data in form format
+              success: function(data) {
+                  if (data.success) {
+                      // Optionally, reload the page or update the comments section dynamically
+                      console.log("Comment posted successfully.");
+                  } else {
+                      console.error("Failed to post comment.");
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error:", error);
+              }
+          });
+      });
+  });
+
+  $(document).on('click', '.edit-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      var commentText = $(this).closest('.comment').find('.user-info > div:eq(1)').text().trim();
+      
+      var textareaHtml = '<textarea class="edit-comment-textarea">' + commentText + '</textarea>';
+      $(this).closest('.comment').find('.user-comment-info').append(textareaHtml);
+
+      $(this).replaceWith('<button class="save-comment-btn" data-comment-id="' + commentId + '">Save</button>');
+    });
+
+    $(document).on('click', '.save-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      var editedCommentText = $(this).closest('.comment').find('.edit-comment-textarea').val();
+
+      $.ajax({
+          url: "{{ path('app_commentaire_edit', {'id': 'COMMENT_ID'}) }}".replace('COMMENT_ID', commentId),
+          type: "POST",
+          data: {
+              _method: "POST",
+              _token: "{{ csrf_token('commentaire') }}",
+              commentaire: {
+                  commentaire: editedCommentText
+              }
+          },
+          success: function(data) {
+              console.log("Comment updated successfully.");
+              // Optionally, update the comment text in the UI
+              // $(this).closest('.comment').find('.user-info > div:eq(1)').text(editedCommentText);
+          },
+          error: function(xhr, status, error) {
+              console.error("Error updating comment:", error);
+          }
+      });
+    });
+
+    $(document).on('click', '.delete-comment-btn', function() {
+      var commentId = $(this).data('comment-id');
+      
+      if (confirm("Are you sure you want to delete this comment?")) {
+          $.ajax({
+              url: "{{ path('app_commentaire_delete', {'id': 'COMMENT_ID'}) }}".replace('COMMENT_ID', commentId),
+              type: "POST",
+              data: {
+                  _method: "POST",
+                  _token: "{{ csrf_token('delete') }}" 
+              },
+              success: function(data) {
+                  console.log("Comment deleted successfully.");
+                  // Optionally, remove the comment from the UI
+                  // $(this).closest('.comment').remove();
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error deleting comment:", error);
+              }
+          });
+      }
+    });
+</script>
+{% endblock %}
+</body>
+</html>

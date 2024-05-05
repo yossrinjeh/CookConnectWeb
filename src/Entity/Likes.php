@@ -22,19 +22,35 @@ class Likes
      */
     private $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="user_id", type="integer", nullable=false)
-     */
-    private $userId;
+    // /**
+    //  * @var int
+    //  *
+    //  * @ORM\Column(name="user_id", type="integer", nullable=false)
+    //  */
+    // private $userId;
+
+    // /**
+    //  * @var int
+    //  *
+    //  * @ORM\Column(name="poste_id", type="integer", nullable=false)
+    //  */
+    // private $posteId;
 
     /**
-     * @var int
+     * * @var \User
      *
-     * @ORM\Column(name="poste_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $posteId;
+    private $user;
+
+    /**
+     * * @var \Poste
+     *
+     * @ORM\ManyToOne(targetEntity="Poste")
+     * @ORM\JoinColumn(name="poste_id", referencedColumnName="id")
+     */
+    private $poste;
 
     /**
      * @var \DateTime
@@ -48,27 +64,49 @@ class Likes
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    // public function getUserId(): ?int
+    // {
+    //     return $this->userId;
+    // }
+
+    // public function setUserId(int $userId): static
+    // {
+    //     $this->userId = $userId;
+
+    //     return $this;
+    // }
+
+    // public function getPosteId(): ?int
+    // {
+    //     return $this->posteId;
+    // }
+
+    // public function setPosteId(int $posteId): static
+    // {
+    //     $this->posteId = $posteId;
+
+    //     return $this;
+    // }
+
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(int $userId): static
+    public function setUser(?User $user): self
     {
-        $this->userId = $userId;
-
+        $this->user = $user;
         return $this;
     }
 
-    public function getPosteId(): ?int
+    public function getPoste(): ?Poste
     {
-        return $this->posteId;
+        return $this->poste;
     }
 
-    public function setPosteId(int $posteId): static
+    public function setPoste(?Poste $poste): self
     {
-        $this->posteId = $posteId;
-
+        $this->poste = $poste;
         return $this;
     }
 
@@ -83,6 +121,4 @@ class Likes
 
         return $this;
     }
-
-
 }

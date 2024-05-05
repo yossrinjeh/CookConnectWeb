@@ -5,6 +5,10 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Entity\User;
+use App\Entity\Poste;
+
+
 /**
  * Commentaire
  *
@@ -22,19 +26,35 @@ class Commentaire
      */
     private $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
-     */
-    private $idUser;
+    // /**
+    //  * @var int
+    //  *
+    //  * @ORM\Column(name="id_user", type="integer", nullable=false)
+    //  */
+    // private $idUser;
+
+    // /**
+    //  * @var int
+    //  *
+    //  * @ORM\Column(name="id_poste", type="integer", nullable=false)
+    //  */
+    // private $idPoste;
 
     /**
-     * @var int
+     * @var \App\Entity\User
      *
-     * @ORM\Column(name="id_poste", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
      */
-    private $idPoste;
+    private $user;
+
+    /**
+     * @var \App\Entity\Poste
+     * 
+     * @ORM\ManyToOne(targetEntity="App\Entity\Poste")
+     * @ORM\JoinColumn(name="id_poste", referencedColumnName="id")
+     */
+    private $poste;
 
     /**
      * @var string
@@ -48,34 +68,56 @@ class Commentaire
      *
      * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private ?\DateTimeInterface $date;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdUser(): ?int
+    // public function getIdUser(): ?int
+    // {
+    //     return $this->idUser;
+    // }
+
+    // public function setIdUser(int $idUser): static
+    // {
+    //     $this->idUser = $idUser;
+
+    //     return $this;
+    // }
+
+    // public function getIdPoste(): ?int
+    // {
+    //     return $this->idPoste;
+    // }
+
+    // public function setIdPoste(int $idPoste): static
+    // {
+    //     $this->idPoste = $idPoste;
+
+    //     return $this;
+    // }
+
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
 
-    public function setIdUser(int $idUser): static
+    public function setUser(?User $user): self
     {
-        $this->idUser = $idUser;
-
+        $this->user = $user;
         return $this;
     }
 
-    public function getIdPoste(): ?int
+    public function getPoste(): ?Poste
     {
-        return $this->idPoste;
+        return $this->poste;
     }
 
-    public function setIdPoste(int $idPoste): static
+    public function setPoste(?Poste $poste): self
     {
-        $this->idPoste = $idPoste;
-
+        $this->poste = $poste;
         return $this;
     }
 
@@ -102,6 +144,4 @@ class Commentaire
 
         return $this;
     }
-
-
 }
