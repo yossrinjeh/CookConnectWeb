@@ -5,9 +5,6 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Entity\User;
-
-
 /**
  * Poste
  *
@@ -25,20 +22,12 @@ class Poste
      */
     private $id;
 
-    // /**
-    //  * @var int
-    //  *
-    //  * @ORM\Column(name="id_user", type="integer", nullable=false)
-    //  */
-    // private $idUser;
-
     /**
-     * @var \App\Entity\User
+     * @var int
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
+     * @ORM\Column(name="id_user", type="integer", nullable=false)
      */
-    private $user;
+    private $idUser;
 
     /**
      * @var string
@@ -69,37 +58,26 @@ class Poste
     private $video;
 
     /**
-     * @var \DateTimeInterface
+     * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $date;
+    private $date = 'CURRENT_TIMESTAMP';
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    // public function getIdUser(): ?int
-    // {
-    //     return $this->idUser;
-    // }
-
-    // public function setIdUser(int $idUser): static
-    // {
-    //     $this->idUser = $idUser;
-
-    //     return $this;
-    // }
-
-    public function getUser(): ?User
+    public function getIdUser(): ?int
     {
-        return $this->user;
+        return $this->idUser;
     }
 
-    public function setUser(?User $user): self
+    public function setIdUser(int $idUser): static
     {
-        $this->user = $user;
+        $this->idUser = $idUser;
+
         return $this;
     }
 
@@ -163,8 +141,5 @@ class Poste
         return $this;
     }
 
-    public function __toString(): string
-    {
-        return $this->titre;
-    }
+
 }

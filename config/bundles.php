@@ -21,4 +21,5 @@ return [
     OpenAI\Symfony\OpenAIBundle::class => ['all' => true],
     MeteoConcept\HCaptchaBundle\MeteoConceptHCaptchaBundle::class => ['all' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
+
 ];
