@@ -1,0 +1,9 @@
+parameters:
+  hcaptcha_site_key: "b31da35e-22c7-4b54-9311-405871c99d1c"
+  hcaptcha_secret: "ES_c9d32c403fd640748fb7eca52a68583f"
+
+meteo_concept_h_captcha:
+  hcaptcha:
+    site_key: "b31da35e-22c7-4b54-9311-405871c99d1c"
+    secret: "ES_c9d32c403fd640748fb7eca52a68583f"
+  validation: "strict" # this is the default
