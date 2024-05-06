@@ -59,4 +59,13 @@ class AddUsersByAdminController extends AbstractController
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         return substr(str_shuffle($chars), 0, $length);
     }
+
+
+    #[Route('/sendemailmobile/{email}/{name}', name: 'app_sendemail')]
+    public function sendemailmobile(Request $request,String $email,String $name,MailerController $mailer,MailerInterface $test): Response
+    {
+        $mailer->sendEmailMobile($test, $email, $name);
+        return $this->redirectToRoute('app_home');
+
+    }
 }
