@@ -1,0 +1,52 @@
+{% extends 'frontOffice/base.html.twig' %}
+
+{% block body %}
+    <h1>Our Repas</h1>
+    <!-- Search form for repas -->
+    <form id="searchForm" class="form-inline my-2 my-lg-0">
+        <input id="repasSearch" class="form-control mr-sm-2" type="search" placeholder="Search by Repas Name" aria-label="Search">
+    </form>
+    <br>
+    <a href="{{ path('app_commande_client_index') }}">My Commande</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repas in repas %}
+                <tr>
+                    <td>{{ repas.nom }}</td>
+                    <td>{{ repas.type }}</td>
+                    <td>{{ repas.tags }}</td>
+                    <td>
+                        <form action="{{ path('commandeset', {'id': repas.id}) }}" method="post">
+                            <input type="hidden" name="adresse" value="123 Main St">
+                            <button type="submit" class="btn btn-primary">Commander</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">No repas found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#repasSearch").on("keyup", function() {
+                var searchQuery = $(this).val().toLowerCase();
+                // Filter the rows based on the repas name column only
+                $("tbody tr").filter(function() {
+                    $(this).toggle($(this).find('td:eq(0)').text().toLowerCase().indexOf(searchQuery) > -1);
+                });
+            });
+        });
+    </script>
+{% endblock %}

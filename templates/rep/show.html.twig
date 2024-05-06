@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<title>Repas</title>
+
+{% block body %}
+    <h1>Repas</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ repa.id }}</td>
+            </tr>
+            <tr>
+                <th>IdRecette</th>
+                <td>{{ repa.idRecette }}</td>
+            </tr>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ repa.idUser }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ repa.nom }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ repa.type }}</td>
+            </tr>
+            <tr>
+                <th>Tags</th>
+                <td>{{ repa.tags }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ repa.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_rep_index') }}">back to list</a>
+
+    <a href="{{ path('app_rep_edit', {'id': repa.id}) }}">edit</a>
+
+    {{ include('rep/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<title>Repas index</title>
+
+{% block body %}
+    <h1>Repas index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IdRecette</th>
+                <th>IdUser</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for repa in repas %}
+            <tr>
+                <td>{{ repa.id }}</td>
+                <td>{{ repa.idRecette }}</td>
+                <td>{{ repa.idUser }}</td>
+                <td>{{ repa.nom }}</td>
+                <td>{{ repa.type }}</td>
+                <td>{{ repa.tags }}</td>
+                <td>{{ repa.email }}</td>
+                <td>
+                    <a href="{{ path('app_rep_show', {'id': repa.id}) }}">show</a>
+                    <a href="{{ path('app_rep_edit', {'id': repa.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_rep_new') }}">Create new</a>
+{% endblock %}
