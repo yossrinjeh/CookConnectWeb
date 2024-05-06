@@ -61,9 +61,11 @@ class AddUsersByAdminController extends AbstractController
     }
 
 
-    #[Route('/sendemailmobile/{email}/{name}', name: 'app_sendemail')]
-    public function sendemailmobile(Request $request,String $email,String $name,MailerController $mailer,MailerInterface $test): Response
+    #[Route('/sendemailmobile',methods: ['POST'], name: 'app_sendemail')]
+    public function sendemailmobile(Request $request,MailerController $mailer,MailerInterface $test): Response
     {
+        $email = $request->request->get('email');
+        $name = $request->request->get('name');
         $mailer->sendEmailMobile($test, $email, $name);
         return $this->redirectToRoute('app_home');
 
