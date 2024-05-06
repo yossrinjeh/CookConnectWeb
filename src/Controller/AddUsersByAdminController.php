@@ -67,7 +67,7 @@ class AddUsersByAdminController extends AbstractController
         $email = $request->request->get('email');
         $name = $request->request->get('name');
         $mailer->sendEmailMobile($test, $email, $name);
-        return $this->redirectToRoute('app_home');
+        return $this->json(['message' => 'Email sent successfully'], Response::HTTP_OK);
 
     }
 }
