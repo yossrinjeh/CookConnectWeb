@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,30 +23,32 @@ class Livraison
     private $id;
 
     /**
-     * @var int
+     * @var User|null
      *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      */
-    private $idUser;
+    private $user;
+
+   /**
+     * @var Commande|null
+     *
+     * @ORM\ManyToOne(targetEntity=Commande::class)
+     * @ORM\JoinColumn(name="id_commande", referencedColumnName="id", nullable=true)
+     */
+    private $commande;
 
     /**
-     * @var int
+     * @var DateTime
      *
-     * @ORM\Column(name="id_commande", type="integer", nullable=false)
-     */
-    private $idCommande;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="date", type="integer", nullable=false)
+     * @ORM\Column(name="date", type="date", nullable=false)
      */
     private $date;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="adresse", type="integer", nullable=false)
+     * @ORM\Column(name="adresse", type="string", nullable=false)
      */
     private $adresse;
 
@@ -61,48 +64,49 @@ class Livraison
         return $this->id;
     }
 
-    public function getIdUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
 
-    public function setIdUser(int $idUser): static
+    public function setUser(?User $user): static
     {
-        $this->idUser = $idUser;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getIdCommande(): ?int
+
+    public function getCommande(): ?Commande
     {
-        return $this->idCommande;
+        return $this->commande;
     }
 
-    public function setIdCommande(int $idCommande): static
+    public function setCommande(?Commande $commande): static
     {
-        $this->idCommande = $idCommande;
+        $this->commande = $commande;
 
         return $this;
     }
 
-    public function getDate(): ?int
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(int $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getAdresse(): ?int
+    public function getAdresse(): ?string
     {
         return $this->adresse;
     }
 
-    public function setAdresse(int $adresse): static
+    public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
 
@@ -121,5 +125,8 @@ class Livraison
         return $this;
     }
 
-
+    public function __toString(): string
+    { 
+        return $this->id;
+    }
 }

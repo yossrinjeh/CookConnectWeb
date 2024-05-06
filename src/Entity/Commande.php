@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,12 +22,14 @@ class Commande
      */
     private $id;
 
+    
     /**
-     * @var int
+     * @var User|null
      *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      */
-    private $idUser;
+    private $user;
 
     /**
      * @var string
@@ -43,25 +46,26 @@ class Commande
     private $etat;
 
     /**
-     * @var string
+     * @var Repas|null
      *
-     * @ORM\Column(name="id_repas", type="string", length=300, nullable=false)
+     * @ORM\ManyToOne(targetEntity=Repas::class)
+     * @ORM\JoinColumn(name="repas_id", referencedColumnName="id", nullable=true)
      */
-    private $idRepas;
+    private $repas;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
-
-    public function setIdUser(int $idUser): static
+    
+    public function setUser(?User $user): static
     {
-        $this->idUser = $idUser;
+        $this->user = $user;
 
         return $this;
     }
@@ -90,17 +94,22 @@ class Commande
         return $this;
     }
 
-    public function getIdRepas(): ?string
+    public function getRepas(): ?Repas
     {
-        return $this->idRepas;
+        return $this->repas;
     }
 
-    public function setIdRepas(string $idRepas): static
+    public function setRepas(?Repas $repas): static
     {
-        $this->idRepas = $idRepas;
+        $this->repas = $repas;
 
         return $this;
     }
 
+    public function __toString(): string
+    {
+       
+        return $this->id;
+    }
 
 }
