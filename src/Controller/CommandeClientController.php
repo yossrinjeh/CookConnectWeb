@@ -29,6 +29,7 @@ class CommandeClientController extends AbstractController
     #[Route('/', name: 'app_commande_client_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  ){
         $commandes = $entityManager
             ->getRepository(Commande::class)
             ->findAll();
@@ -42,11 +43,16 @@ class CommandeClientController extends AbstractController
             'commandes' => $commandes,
             'repas' => $repas, // Pass the fetched Repas entities to the template
         ]);
+     } else{
+            return $this->redirectToRoute('app_login');
+
+        }
     }
 
     #[Route('/new', name: 'app_commande_client_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  ){
         $commande = new Commande();
         $form = $this->createForm(Commande1Type::class, $commande);
         $form->handleRequest($request);
@@ -62,9 +68,13 @@ class CommandeClientController extends AbstractController
             'commande' => $commande,
             'form' => $form,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
-    #[Route('/repas', name: 'app_commande_client_show', methods: ['GET'])]
+    /*#[Route('/repas', name: 'app_commande_client_show', methods: ['GET'])]
     public function show(EntityManagerInterface $entityManager): Response
     {
         $repas = $entityManager
@@ -79,10 +89,11 @@ class CommandeClientController extends AbstractController
             'repas' => $repas,
         ]);
     }
-
+*/
     #[Route('/{id}/edit', name: 'app_commande_client_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  ){
         $form = $this->createForm(Commande1Type::class, $commande);
         $form->handleRequest($request);
 
@@ -96,17 +107,26 @@ class CommandeClientController extends AbstractController
             'commande' => $commande,
             'form' => $form,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
     #[Route('/{id}', name: 'app_commande_client_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  ){
         if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->request->get('_token'))) {
             $entityManager->remove($commande);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_commande_client_index', [], Response::HTTP_SEE_OTHER);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
 
@@ -118,6 +138,7 @@ class CommandeClientController extends AbstractController
     #[Route('/{id}/send-confirmation-email', name: 'app_send_confirmation_email', methods: ['POST'])]
 public function sendConfirmationEmail(Commande $commande): Response
 {
+    if($this->getUser()  ){
     // Check if the order status is "En cours"
     if ($commande->getEtat() === 'En cours') {
         // Generate a random 6-digit verification code
@@ -186,15 +207,24 @@ public function sendConfirmationEmail(Commande $commande): Response
         // Redirect back to the order index page
         return $this->redirectToRoute('app_commande_client_index');
     }
+}else{
+    return $this->redirectToRoute('app_login');
+
+}
 }
 
 #[Route('/{id}/confirm-order-verification/{verificationCode}', name: 'app_confirm_order_verification', methods: ['GET'])]
 public function confirmOrderVerification(Commande $commande, $verificationCode): Response
 {
+    if($this->getUser()  ){
     return $this->render('commande_client/new.html.twig', [
         'commande' => $commande,
         'verificationCode' => $verificationCode,
     ]);
+}else{
+    return $this->redirectToRoute('app_login');
+
+}
 }
 /*
 #[Route('/{id}/confirmorder', name: 'app_confirm_order', methods: ['POST'])]
@@ -234,6 +264,7 @@ public function confirmOrder(Request $request, Commande $commande): Response
 #[Route('/commandeset/{id}', name: 'commandeset', methods: ['POST'])]
 public function createCommandeAndLivraison(int $id, Request $request, EntityManagerInterface $entityManager): Response
 {        
+    if($this->getUser()  ){
     // Find the repas based on the provided ID
     $repas = $entityManager->getRepository(Repas::class)->find($id);
 
@@ -286,11 +317,16 @@ $commande->setRepas($repas); // Set the repas object
 
     // Redirect the user to the appropriate page
     return $this->redirectToRoute('app_commande_client_show');
+}else{
+    return $this->redirectToRoute('app_login');
+
+}
 }
 
 #[Route('/{id}/confirmorder', name: 'app_confirm_order', methods: ['POST'])]
 public function confirmOrder(Request $request, Commande $commande): Response
 {
+    if($this->getUser()  ){
     $verificationCode = $request->request->get('verificationCode');
     $storedVerificationCode = $request->request->get('storedVerificationCode');
     $adresse = $request->request->get('adresse');
@@ -339,6 +375,10 @@ public function confirmOrder(Request $request, Commande $commande): Response
             'verificationCode' => $verificationCode,
         ]);
     }
+}else{
+    return $this->redirectToRoute('app_login');
+
+}
 }
 
 
