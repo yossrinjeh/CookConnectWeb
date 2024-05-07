@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Recette;
 use App\Entity\Ingredient;
+use App\Entity\Nutrition;
 use App\Form\RecetteNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -64,15 +65,41 @@ class RecetteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredients = explode(',', $recette->getIdIngredients());
-            foreach ($ingredients as $ingredientId) {
+            $quantites = explode(',', $recette->getquantiteIngredients());
+            $calories = 0;
+            $carbs = 0;
+            $fiber = 0;
+            $fat = 0;
+            $protein =0;
+            $test=true;
+            foreach ($ingredients as $key=> $ingredientId) {
                 $ingredient = $ingredientRepository->find($ingredientId);
                 $nutritionId = $ingredient->getIdNutrition();
                 $nutrition = $nutritionRepository->find($nutritionId);
                 if ($ingredient->getEtat() == 'disabled' || !$nutrition ||$nutritionId==0) {
                     $recette->setEtat('disabled');
+                    $test=false;
                 break;
             }
+                $id = $ingredient->getNutrition();
+                $nutrition = $nutritionRepository->find($id);
+                $quantite = $quantites[$key];
+                $calories = $calories*$quantite;
+                $carbs = $carbs*$quantite;
+                $fiber = $fiber*$quantite;
+                $fat = $fat*$quantite;
+                $protein = $protein*$quantite;
+
         }
+            if($test){
+                $nutritionfinale = new Nutrition();
+                $nutritionfinale->setCalories($calories);
+                $nutritionfinale->setCarbs($carbs);
+                $nutritionfinale->setFat($fat);
+                $nutritionfinale->setFiber($fiber);
+                $nutritionfinale->setProtein($protein);
+                $entityManager->persist($nutrition);
+            }
             $entityManager->persist($recette);
             $entityManager->flush();
 
