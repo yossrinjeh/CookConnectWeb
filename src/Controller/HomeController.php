@@ -113,7 +113,7 @@ $sessionNumber = $session->get('session_counter');
         // Execute the Python script
         $output = [];
         $returnValue = null;
-        exec('python G:\py\server.py', $output, $returnValue);
+        exec('python server.py', $output, $returnValue);
 
         // Check if the script executed successfully
         if ($returnValue === 0) {
