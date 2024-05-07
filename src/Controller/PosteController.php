@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\InformationPersonnele;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\InformationPersonneleRepository;
+use App\Repository\UserRepository;
 // use PosteType as GlobalPosteType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -54,13 +55,14 @@ class PosteController extends AbstractController
 
 
     #[Route('/new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager , UserRepository $ur): Response
     {
+        if($this->getUser()  ){
+
         $post = new Poste();
         $form = $this->createForm(PosteType::class, $post);
         $form->handleRequest($request);
-
-        $user = $this->security->getUser();
+        $user =$ur->findOneByEmail($this->getUser()->getUserIdentifier());
         $post->setUser($user);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -102,6 +104,10 @@ class PosteController extends AbstractController
         return $this->render('poste/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
 
