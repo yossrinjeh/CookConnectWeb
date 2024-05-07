@@ -93,7 +93,7 @@ if (!$session->has('session_counter')) {
 // Get the current counter value
 $sessionNumber = $session->get('session_counter');
             
-        return $this->render('BackOffice/base.html.twig', [
+        return $this->render('backOffice/base.html.twig', [
             'months' => array_values($monthLabels),
             'dataActive'=>$activeUser,
             'dataInactive'=>$inactiveUser,
