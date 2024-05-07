@@ -114,7 +114,7 @@ class CommandeClientController extends AbstractController
 
 
 
-
+//---------------------------------------------send mail
     #[Route('/{id}/send-confirmation-email', name: 'app_send_confirmation_email', methods: ['POST'])]
 public function sendConfirmationEmail(Commande $commande): Response
 {
@@ -123,7 +123,10 @@ public function sendConfirmationEmail(Commande $commande): Response
         // Generate a random 6-digit verification code
         $verificationCode = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
+
+        //get the user who is logged in
         $user = $this->getUser();
+        //gets the mail
         $userEmail = $user->getEmail();
 
 
