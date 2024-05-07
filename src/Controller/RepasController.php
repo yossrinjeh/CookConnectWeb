@@ -50,6 +50,7 @@ class RepasController extends AbstractController
     #[Route('/', name: 'app_repas_index', methods: ['GET'])]
     public function index(RepasRepository $repasRepository): Response
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         // Fetch all Repas entities using selectAllRepas method
         $repas = $repasRepository->selectAllRepas();
 
@@ -57,6 +58,10 @@ class RepasController extends AbstractController
         return $this->render('repas/index.html.twig', [
             'repas' => $repas,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
     
 

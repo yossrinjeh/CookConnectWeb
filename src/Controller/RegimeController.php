@@ -16,6 +16,7 @@ class RegimeController extends AbstractController
     #[Route('/', name: 'app_regime_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         $regimes = $entityManager
             ->getRepository(Regime::class)
             ->findAll();
@@ -23,10 +24,15 @@ class RegimeController extends AbstractController
         return $this->render('regime/index.html.twig', [
             'regimes' => $regimes, // Assurez-vous que la variable regime est correctement transmise
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
        #[Route('/regime', name: 'app_regime_in', methods: ['GET'])]
     public function inRegime(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         // Récupérer tous les régimes depuis le repository
         $regimeRepository = $entityManager->getRepository(Regime::class);
         $regimeQuery = $regimeRepository->findAll();
@@ -41,11 +47,16 @@ class RegimeController extends AbstractController
         return $this->render('regime/regimeFront.html.twig', [
             'pagination' => $pagination,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
     
     #[Route('/new', name: 'app_regime_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         $regime = new Regime();
         $form = $this->createForm(RegimeType::class, $regime);
         $form->handleRequest($request);
@@ -61,26 +72,41 @@ class RegimeController extends AbstractController
             'regime' => $regime,
             'form' => $form,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
     #[Route('/{id}', name: 'app_regime_show', methods: ['GET'])]
     public function show(Regime $regime): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         return $this->render('regime/show.html.twig', [
             'regime' => $regime,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
     #[Route('/{id}', name: 'app_regime_showf', methods: ['GET'])]
     public function showf(Regime $regime): Response
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         return $this->render('regime/showFront.html.twig', [
             'regime' => $regime,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
     #[Route('/{id}/edit', name: 'app_regime_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         $regime = $entityManager->getRepository(regime::class)->find($id);
         if (!$regime) {
             throw $this->createNotFoundException('The regime does not exist');
@@ -99,11 +125,16 @@ class RegimeController extends AbstractController
             'regime' => $regime,
             'form' => $form,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 
     #[Route('/{id}', name: 'app_regime_delete', methods: ['POST'])]
     public function delete(Request $request, $id, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()  && in_array('NUTRITIONIST', $this->getUser()->getRoles())){
         $regime = $entityManager->getRepository(regime::class)->find($id);
     
         if (!$regime) {
@@ -116,5 +147,9 @@ class RegimeController extends AbstractController
         }
     
         return $this->redirectToRoute('app_regime_index');
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 }
