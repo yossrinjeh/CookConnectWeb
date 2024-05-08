@@ -67,7 +67,7 @@ class NutritionRecetteIngredientType extends AbstractType
     
 
 
-    if (($ingredientId!=null or $ingredientId!=0) && ($recetteId!=null or $recetteId!=0)) {
+    if (($ingredientId!=null || $ingredientId!=0) && ($recetteId!=null || $recetteId!=0)) {
         $context->buildViolation('Choose either Ingredient ID or Recipe ID, not both.')
             ->atPath('idIngredient')
             ->addViolation();

@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\RecetteAccordNutritionType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/recette')]
 class RecetteController extends AbstractController
@@ -65,6 +67,22 @@ class RecetteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $image */
+            $image = $form['image']->getData();
+
+            if ($image) {
+                $fileName = uniqid() . '.' . $image->guessExtension();
+
+                try {
+                    $image->move($this->getParameter('image_dir'), $fileName); // Move the uploaded file to the configured directory
+                } catch (FileException $e) {
+                    // Handle file exception
+                    // You might want to log the error or show an error message to the user
+                    return new Response('Failed to upload the image.', Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+
+                $recette->setImage($fileName);
+            }
             $ingredients = explode(',', $recette->getIdIngredients());
             $quantites = explode(',', $recette->getquantiteIngredients());
             $finalCalories = 0;
@@ -216,6 +234,7 @@ class RecetteController extends AbstractController
             $nutrition = $entityManager->getRepository(Nutrition::class)->find($idNutrition);
             $nutrition->setIdIngredient(0);
             $nutrition->setIdRecette($recette->getId());
+            $nutrition->setImage($recette->getImage());
             $entityManager->persist($nutrition);
         
             $entityManager->flush();
