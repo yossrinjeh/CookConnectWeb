@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/repas')]
 class RepasController extends AbstractController
 {
+
     private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -68,6 +69,9 @@ class RepasController extends AbstractController
     #[Route('/new', name: 'app_repas_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+        
         $repas = new Repas();
         $form = $this->createForm(RepasType::class, $repas);
         $form->handleRequest($request);
@@ -92,6 +96,18 @@ class RepasController extends AbstractController
             'repas' => $repas,
             'form' => $form,
         ]);
+    }else{
+       
+            return $this->redirectToRoute('app_login');
+    
+        
+    }
+}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
     }
         private function envoyerSms(): void
         {
@@ -151,6 +167,9 @@ class RepasController extends AbstractController
     #[Route('/export-pdf', name: 'export_pdf')]
     public function exportPdf(RepasRepository $repasRepository): Response
     {
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+        
         // Fetch all bookings from the database
         $repas = $repasRepository->findAll();
     
@@ -190,6 +209,16 @@ class RepasController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ]);
+    }else{
+            return $this->redirectToRoute('app_login');
+    
+        }
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
 
@@ -201,6 +230,9 @@ private function generateBase64Image($imagePath) {
  #[Route('/repas/{id}', name: 'app_repas_show', methods: ['GET'])]
     public function show(Repas $repas): Response
     {
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+        
         if (!$repas) {
             throw new NotFoundHttpException('Repas not found');
         }
@@ -208,10 +240,23 @@ private function generateBase64Image($imagePath) {
         return $this->render('repas/show.html.twig', [
             'repas' => $repas,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }}else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
+
     }
     #[Route('/repass/{id}', name: 'app_repas_showf', methods: ['GET'])]
     public function showf(Repas $repas): Response
     {
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+        
         if (!$repas) {
             throw new NotFoundHttpException('Repas not found');
         }
@@ -219,11 +264,23 @@ private function generateBase64Image($imagePath) {
          return $this->render('repas/showFront.html.twig', [
             'repas' => $repas,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }}else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
         #[Route('/{id}/edit', name: 'app_repas_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, $id, EntityManagerInterface $entityManager): Response
 {
+    if($this->getUser()){
+        if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+    
     $repas = $entityManager->getRepository(Repas::class)->find($id);
     if (!$repas) {
         throw $this->createNotFoundException('The repas does not exist');
@@ -246,6 +303,15 @@ public function edit(Request $request, $id, EntityManagerInterface $entityManage
         'repas' => $repas,
         'form' => $form,
     ]);
+}else{
+    return $this->redirectToRoute('app_login');
+
+}}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
 }
 // #[Route('/read', name: 'app_repas_i', methods: ['GET'])]
 //     public function read(): Response
@@ -260,6 +326,9 @@ public function edit(Request $request, $id, EntityManagerInterface $entityManage
 #[Route('/{id}', name: 'app_repas_delete', methods: ['POST'])]
 public function delete(Request $request, $id, EntityManagerInterface $entityManager): Response
 {
+    if($this->getUser()){
+        if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+    
     $repas = $entityManager->getRepository(Repas::class)->find($id);
 
     if (!$repas) {
@@ -276,6 +345,15 @@ public function delete(Request $request, $id, EntityManagerInterface $entityMana
     }
 
     return $this->redirectToRoute('app_repas_index');
+}else{
+    return $this->redirectToRoute('app_login');
+
+}}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
 }
 // #[Route('/statistics', name: 'app_statistics', methods: ['GET'])]
 // public function statistics(RepasRepository $repasRepository): Response
@@ -291,6 +369,8 @@ public function delete(Request $request, $id, EntityManagerInterface $entityMana
 #[Route('/statistics', name: 'statistics', methods: ['GET'])]
     public function statistics(): Response
     {
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
         $clientCount = $this->countGenderForEvents('client');
         $adminCount = $this->countGenderForEvents('admin');
       
@@ -309,9 +389,21 @@ public function delete(Request $request, $id, EntityManagerInterface $entityMana
            
             'jsonData' => $jsonData
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
+    
+    }else{
+        return $this->redirectToRoute('app_login');
+
+    }
     }
 private function countGenderForEvents(string $type): int
 {
+    if($this->getUser()){
+        if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+    
     $entityManager = $this->entityManager;
 
     // Query the database to count events based on gender
@@ -324,11 +416,22 @@ private function countGenderForEvents(string $type): int
     $result = $query->getSingleResult();
     
     return $result['repasCount'];
+}else{
+    return $this->redirectToRoute('app_login');
+
+}}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
 }
 #[Route("/upload_pdf_to_dropbox", name: "upload_pdf_to_dropbox", methods: ["POST"])]    
 public function uploadPdfToDropbox(Request $request): Response
 {
   
+    if($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+
         // Get the PDF content from the request
         $pdfContent = $request->getContent();
         
@@ -375,6 +478,10 @@ public function uploadPdfToDropbox(Request $request): Response
 
     // Return a success response
     return new JsonResponse(['success' => true]);
+}else{
+    return $this->redirectToRoute('app_login');
+
+}
 }
 
 

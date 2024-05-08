@@ -210,7 +210,9 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
          
-         
+          {% if app.user == true  %}
+            
+          
         
         
         
@@ -355,6 +357,8 @@
             </ul>
           </li>
           {% endif %}
+          {% endif %}
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
