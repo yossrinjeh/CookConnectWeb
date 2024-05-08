@@ -21,6 +21,7 @@ class LivraisonController extends AbstractController
     #[Route('/livraisons', name: 'app_commande')]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         $livraisons = $entityManager
         ->getRepository(Livraison::class)
         ->findAll();
@@ -28,12 +29,19 @@ class LivraisonController extends AbstractController
             'controller_name' => 'LivraisonController',
             'livraisons'=> $livraisons
         ]);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
 
     #[Route('/livraisons', name: 'livraisons', methods: ['POST'])]
     public function create(Request $request,EntityManagerInterface $entityManager): Response
     { 
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
 
         $livraison = new Livraison();
         $user = $this->getUser();
@@ -50,7 +58,12 @@ class LivraisonController extends AbstractController
         $entityManager->flush();
 
         return new Response('Livraison created!', Response::HTTP_CREATED);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
     
+}
 }
 
 
@@ -63,6 +76,8 @@ class LivraisonController extends AbstractController
 #[Route('/livraisons/pdf', name: 'app_livraison_pdf', methods: ['GET'])]
 public function generatePdf(EntityManagerInterface $entityManager): Response
 {
+    if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
+
     // Fetch livraison information from the repository
     $livraisons = $entityManager
         ->getRepository(Livraison::class)
@@ -96,5 +111,11 @@ public function generatePdf(EntityManagerInterface $entityManager): Response
             'Content-Type' => 'application/pdf',
         ]
     );
+}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
 }
 }
