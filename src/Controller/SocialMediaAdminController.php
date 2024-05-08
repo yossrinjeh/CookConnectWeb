@@ -44,6 +44,7 @@ class SocialMediaAdminController extends AbstractController
     #[Route('/backoffice/socialMedia', name: 'app_social_media_admin')]
     public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         $searchQuery = $request->query->get('search');
 
         $postsQuery = $entityManager
@@ -69,11 +70,15 @@ class SocialMediaAdminController extends AbstractController
         return $this->render('social_media_admin/index.html.twig', [
             'posts' => $posts,
         ]);
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 
     #[Route('/chart_data', name: 'chart_data', methods: ['GET'])]
     public function chartData(PosteRepository $posteRepository, CommentaireRepository $commentaireRepository): JsonResponse
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         $postCount = $posteRepository->getPostCount();
         $commentCount = $commentaireRepository->getCommentCount();
 
@@ -83,12 +88,16 @@ class SocialMediaAdminController extends AbstractController
         ];
 
         return $this->json($data);
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 
 
     #[Route('/backoffice/delete-post/{id}', name: 'app_delete_post')]
     public function deletePost(EntityManagerInterface $entityManager, Poste $post): Response
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         try {
             $entityManager->remove($post);
             $entityManager->flush();
@@ -99,11 +108,15 @@ class SocialMediaAdminController extends AbstractController
             // Log::error($e->getMessage());
         }
         return $this->redirectToRoute('app_social_media_admin');
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 
     #[Route('/backoffice/delete-comment/{id}', name: 'app_delete_comment')]
     public function deleteComment(EntityManagerInterface $entityManager, Commentaire $comment): Response
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         try {
             $entityManager->remove($comment);
             $entityManager->flush();
@@ -114,12 +127,16 @@ class SocialMediaAdminController extends AbstractController
             // Log::error($e->getMessage());
         }
         return $this->redirectToRoute('app_social_media_admin');
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 
 
     #[Route('/backoffice/socialMedia/{postId}/comments', name: 'app_social_media_comments')]
     public function getCommentsForPost(int $postId, CommentaireRepository $commentaireRepository): JsonResponse
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         $comments = $commentaireRepository->selectCommentsByPostId($postId);
 
         $serializedComments = [];
@@ -131,11 +148,15 @@ class SocialMediaAdminController extends AbstractController
         }
 
         return new JsonResponse($serializedComments);
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 
     #[Route('/backoffice/socialMedia/get-comments-by-post-id', name: 'get_comments_by_post_id')]
     public function getCommentsByPostId(Request $request, CommentaireRepository $commentRepository): JsonResponse
     {
+        if($this->getUser()  && in_array('ADMIN', $this->getUser()->getRoles())){
         $postId = $request->query->get('postId');
         $comments = $commentRepository->findBy(['postId' => $postId]);
 
@@ -145,5 +166,8 @@ class SocialMediaAdminController extends AbstractController
         }
 
         return new JsonResponse(['comments' => $formattedComments]);
+    }else{
+        return $this->redirectToRoute('app_login');
+    }
     }
 }
