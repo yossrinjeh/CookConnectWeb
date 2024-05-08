@@ -264,7 +264,7 @@
         
         
         
-         
+         {% if   app.user.role == "ADMIN" %}
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user"></i>
@@ -288,6 +288,8 @@
               </li>
             </ul>
           </li>
+          {% endif %}
+           {% if   app.user.role == "CHEF" or app.user.role == "CHEFMASTER" or app.user.role == "ADMIN" %}
           <li class="nav-item">
           <a href="/ingredient" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -300,18 +302,22 @@
             <p>Recettes</p>
           </a>
           </li>
+           {% endif %}
+           {% if    app.user.role == "CHEF" %}
           <li class="nav-item">
           <a href="/nutrition" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>Nutritions</p>
           </a>
           </li>
+           {% endif %}
           <li class="nav-item">
           <a href="/logout" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>Logout</p>
           </a>
         </li>
+          {% if   app.user.role == "ADMIN" %}
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user"></i>
@@ -329,6 +335,26 @@
               </li>
             </ul>
           </li>
+          {% endif %}
+           {% if   app.user.role == "CHEF" or app.user.role == "CHEFMASTER" or app.user.role == "ADMIN" %}
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Repas
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{path('app_repas_index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Posts List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% endif %}
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
