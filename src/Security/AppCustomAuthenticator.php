@@ -66,6 +66,14 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             // Redirect admin users to the admin dashboard
             return new  RedirectResponse ($this->urlGenerator->generate('app_back'));
         }
+        if ($token->getUser() && in_array('CHEF', $token->getUser()->getRoles())) {
+            // Redirect admin users to the admin dashboard
+            return new  RedirectResponse ($this->urlGenerator->generate('app_back'));
+        }
+        if ($token->getUser() && in_array('CHEFMASTER', $token->getUser()->getRoles())) {
+            // Redirect admin users to the admin dashboard
+            return new  RedirectResponse ($this->urlGenerator->generate('app_back'));
+        }
         
         // Check if the user has ROLE_USER
         if ($token->getUser() && in_array('USER', $token->getUser()->getRoles())) {
