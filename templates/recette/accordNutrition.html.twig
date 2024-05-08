@@ -12,3 +12,15 @@
     
 
 {% endblock %}
+{% block js %}
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if error_message is defined %}
+                const errorMessage = "{{ error_message }}";
+                if (errorMessage) {
+                    alert(errorMessage);
+                }
+            {% endif %}
+        });
+    </script>
+{% endblock %}
