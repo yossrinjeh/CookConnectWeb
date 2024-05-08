@@ -195,6 +195,7 @@ class IngredientController extends AbstractController
             $idNutrition = $ingredient->getIdNutrition();
             $nutrition = $entityManager->getRepository(Nutrition::class)->find($idNutrition);
             $nutrition->setIdIngredient($ingredient->getId());
+            $nutrition->setIdRecette(0);
             $entityManager->persist($nutrition);
             $entityManager->flush();
             return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);

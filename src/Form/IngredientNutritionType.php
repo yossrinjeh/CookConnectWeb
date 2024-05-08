@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class IngredientNutritionType extends AbstractType
 {
@@ -44,14 +45,22 @@ class IngredientNutritionType extends AbstractType
 
     public function nutritionExist($data, ExecutionContextInterface $context): void
     {
-        $nutritionId = $data;
+        $formData = $context->getRoot()->getData();
+        $nutritionId = $formData->getIdNutrition();
         $nutrition = $this->nutritionRpository->find($nutritionId);
 
-        if(!$nutrition){
-            $context->buildViolation('Nutrition with ID {{ id }} does not exist.')
-                ->setParameter('{{ id }}', (string)$nutritionId)
-                ->atPath('idIngredient')
-                ->addViolation();
-        }
+        if($nutrition){
+            if(!$nutrition){
+                $context->buildViolation('Nutrition with ID {{ id }} does not exist.')
+                    ->setParameter('{{ id }}', (string)$nutritionId)
+                    ->atPath('idIngredient')
+                    ->addViolation();   
+            }
+        }else{
+            $context->buildViolation('This field is required.')
+                    ->atPath('idIngredient')
+                    ->addViolation();
+
     }
+}
 }
