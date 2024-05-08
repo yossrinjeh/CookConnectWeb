@@ -66,16 +66,41 @@ class RecetteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredients = explode(',', $recette->getIdIngredients());
-            foreach ($ingredients as $ingredientId) {
+            $quantites = explode(',', $recette->getquantiteIngredients());
+            $finalCalories = 0;
+            $finalProtein = 0;
+            $finalCarbs = 0;
+            $finalFat = 0;
+            $finalFiber = 0;
+            foreach ($ingredients as $key => $ingredientId) {
                 $ingredient = $ingredientRepository->find($ingredientId);
                 $nutritionId = $ingredient->getIdNutrition();
                 $nutrition = $nutritionRepository->find($nutritionId);
                 if ($ingredient->getEtat() == 'disabled' || !$nutrition ||$nutritionId==0) {
                     $recette->setEtat('disabled');
                 break;
+                }else{
+                    $calories=$nutrition->getCalories();
+                    $protein = $nutrition->getProtein();
+                    $carbs = $nutrition->getCarbs();
+                    $fats = $nutrition->getFat();
+                    $fiber = $nutrition->getFiber();
+                    $quantite = $quantites[$key]; 
+                    $finalCalories = $finalCalories + $calories*$quantite;
+                    $finalProtein = $finalProtein + $protein*$quantite;
+                    $finalCarbs = $finalCarbs + $carbs*$quantite;
+                    $finalFiber = $finalFiber + $fiber*$quantite;
+                    $finalFat = $finalFat + $fats*$quantite;
+                }
             }
-        }
+            $newNutrition = new Nutrition();
+            $newNutrition->setProtein($finalProtein);
+            $newNutrition->setCalories($finalCalories);
+            $newNutrition->setFat($finalFat);
+            $newNutrition->setFiber($finalFiber);
+            $newNutrition->setCarbs($finalCarbs);
             $entityManager->persist($recette);
+            $entityManager->persist($newNutrition);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
