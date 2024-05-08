@@ -14,7 +14,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-
+/public/server.py
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
