@@ -51,8 +51,9 @@ class RepasController extends AbstractController
     #[Route('/', name: 'app_repas_index', methods: ['GET'])]
     public function index(RepasRepository $repasRepository): Response
     {
-        if($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
-        // Fetch all Repas entities using selectAllRepas method
+        if($this->getUser()){
+            if( in_array('CHEF', $this->getUser()->getRoles()) || in_array('ADMIN', $this->getUser()->getRoles()) || in_array('CHEFMASTER', $this->getUser()->getRoles())){
+                // Fetch all Repas entities using selectAllRepas method
         $repas = $repasRepository->selectAllRepas();
 
         // Render the template and pass the repas data to it
@@ -63,6 +64,12 @@ class RepasController extends AbstractController
         return $this->redirectToRoute('app_login');
 
     }
+}else{
+       
+    return $this->redirectToRoute('app_login');
+
+
+}
     }
     
 
