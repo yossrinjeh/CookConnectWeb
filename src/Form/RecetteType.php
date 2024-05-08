@@ -94,9 +94,6 @@ class RecetteType extends AbstractType
                 'mapped' => false, // Set to false if you're handling file upload separately
                 'required' => false, // Set to true if the image is required
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please select an Image',
-                    ]),
                     new Image([
                         'maxSize' => '5M',
                         'mimeTypes' => [

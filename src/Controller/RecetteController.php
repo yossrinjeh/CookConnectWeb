@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Recette;
 use App\Entity\Ingredient;
 use App\Entity\Nutrition;
-use App\Form\RecetteNutritionType;
+use App\Form\RecetteAccordNutritionType;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NutritionRepository;
@@ -205,12 +205,17 @@ class RecetteController extends AbstractController
     #[Route('/{id}/accordNutrition', name: 'app_recette_accordNutrition', methods: ['GET', 'POST'])]
     public function accordNutrition(Request $request, Recette $recette, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(RecetteNutritionType::class, $recette);
-
-
+        $form = $this->createForm(RecetteAccordNutritionType::class, $recette);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $idNutrition = $recette->getIdNutrition();
+            $nutrition = $entityManager->getRepository(Nutrition::class)->find($idNutrition);
+            $nutrition->setIdIngredient(0);
+            $nutrition->setIdRecette($recette->getId());
+            $entityManager->persist($nutrition);
+        
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);

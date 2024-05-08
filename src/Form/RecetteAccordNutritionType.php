@@ -2,18 +2,19 @@
 
 namespace App\Form;
 
-use App\Entity\Ingredient;
+use App\Entity\Recette;
 use App\Repository\NutritionRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class IngredientNutritionType extends AbstractType
+class RecetteAccordNutritionType extends AbstractType
 {
+
 
     private $nutritionRpository;
 
@@ -22,25 +23,24 @@ class IngredientNutritionType extends AbstractType
         $this->nutritionRpository = $nutritionRepository;
     }
 
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            
-            ->add('idNutrition', IntegerType::class, [
+            ->add('idNutrition', IntegerType::class,[
                 'label' => 'Nutrition ID', 
                 'constraints' => [
                     new NotBlank(['message'=>'this field is required',]),
                     new Callback([$this, 'nutritionExist']),
                 ],
             ])
-            
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Ingredient::class,
+            'data_class' => Recette::class,
         ]);
     }
 
@@ -63,7 +63,5 @@ class IngredientNutritionType extends AbstractType
                     ->atPath('idIngredient')
                     ->addViolation();
         }
-
-        
     }
 }
