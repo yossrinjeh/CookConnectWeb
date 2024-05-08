@@ -6,6 +6,8 @@ use App\Entity\Ingredient;
 use App\Entity\Nutrition;
 use App\Form\IngredientType;
 use App\Form\IngredientNutritionType;
+use App\Repository\IngredientRepository;
+use App\Repository\NutritionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,12 +97,19 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_ingredient_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager,UserRepository $userRepository, NutritionRepository $nutritionRepository): Response
     {
 
         if($this->getUser()  && (in_array('CHEFMASTER', $this->getUser()->getRoles()))){
             $form = $this->createForm(IngredientType::class, $ingredient);
             $form->handleRequest($request);
+            $image = $ingredient->getImage();
+            $idNutrition = $ingredient->getIdNutrition();
+            if($idNutrition){
+                $nutrition = $nutritionRepository->find($idNutrition);
+                $nutrition->setImage($image);
+                $entityManager->persist($nutrition);
+            }
         }elseif($this->getUser()  && (in_array('CHEF', $this->getUser()->getRoles()))){
             $email = $this->getUser()->getUserIdentifier();
             $user = $userRepository->findOneByEmail($email);
@@ -108,6 +117,13 @@ class IngredientController extends AbstractController
             if($id == $ingredient->getUserId()){
                 $form = $this->createForm(IngredientType::class, $ingredient);
                 $form->handleRequest($request);
+                $image = $ingredient->getImage();
+                $idNutrition = $ingredient->getIdNutrition();
+            if($idNutrition){
+                $nutrition = $nutritionRepository->find($idNutrition);
+                $nutrition->setImage($image);
+                $entityManager->persist($nutrition);
+            }
             }else{
                 $ingredientData =$entityManager
                 ->getRepository(Ingredient::class)

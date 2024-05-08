@@ -111,14 +111,21 @@ class RecetteController extends AbstractController
                     $finalFat = $finalFat + $fats*$quantite;
                 }
             }
-            $newNutrition = new Nutrition();
-            $newNutrition->setProtein($finalProtein);
-            $newNutrition->setCalories($finalCalories);
-            $newNutrition->setFat($finalFat);
-            $newNutrition->setFiber($finalFiber);
-            $newNutrition->setCarbs($finalCarbs);
+            if($recette->getEtat()=="enabled"){
+                $newNutrition = new Nutrition();
+                $newNutrition->setProtein($finalProtein);
+                $newNutrition->setCalories($finalCalories);
+                $newNutrition->setFat($finalFat);
+                $newNutrition->setFiber($finalFiber);
+                $newNutrition->setCarbs($finalCarbs);
+                $newNutrition->setVitamines("VITAMINES");
+                $newNutrition->setUserId($id);      
+                $entityManager->persist($newNutrition); 
+            }
+                 
             $entityManager->persist($recette);
-            $entityManager->persist($newNutrition);
+            
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
@@ -139,12 +146,19 @@ class RecetteController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_recette_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Recette $recette, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    public function edit(Request $request, Recette $recette, EntityManagerInterface $entityManager, UserRepository $userRepository,NutritionRepository $nutritionRepository): Response
     {
 
         if ($this->getUser()  && in_array('CHEFMASTER', $this->getUser()->getRoles())){
             $form = $this->createForm(RecetteType::class, $recette);
             $form->handleRequest($request);
+            $image = $recette->getImage();
+            $idNutrition = $recette->getIdNutrition();
+            if($idNutrition){
+                $nutrition = $nutritionRepository->find($idNutrition);
+                $nutrition->setImage($image);
+                $entityManager->persist($nutrition);
+            }
         }elseif($this->getUser()  && in_array('CHEF', $this->getUser()->getRoles())){
             $email = $this->getUser()->getUserIdentifier();
             $user = $userRepository->findOneByEmail($email);
@@ -152,6 +166,13 @@ class RecetteController extends AbstractController
             if($id == $recette->getIdUser()){
                 $form = $this->createForm(RecetteType::class, $recette);
                 $form->handleRequest($request);
+                $image = $recette->getImage();
+            $idNutrition = $recette->getIdNutrition();
+            if($idNutrition){
+                $nutrition = $nutritionRepository->find($idNutrition);
+                $nutrition->setImage($image);
+                $entityManager->persist($nutrition);
+            }
             }else{
                 $recetteData =$entityManager
                 ->getRepository(Recette::class)
@@ -165,6 +186,7 @@ class RecetteController extends AbstractController
                 'error_message' => $error_message,
         ]);
             }
+            $entityManager->flush();
         }else{
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
@@ -226,8 +248,6 @@ class RecetteController extends AbstractController
         $form = $this->createForm(RecetteAccordNutritionType::class, $recette);
         $form->handleRequest($request);
 
-
-        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $idNutrition = $recette->getIdNutrition();

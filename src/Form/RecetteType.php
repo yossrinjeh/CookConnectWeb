@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Nutrition;
 use App\Entity\Recette;
 use Symfony\Component\Form\AbstractType;
 use App\Repository\NutritionRepository;
@@ -35,7 +36,6 @@ class RecetteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Assuming idUser is set dynamically in the controller
             ->add('nom', TextType::class, [
                 'label' => 'Name',
                 'constraints' => [
@@ -60,17 +60,6 @@ class RecetteType extends AbstractType
                     ]),
                 ],
             ])
-            //ingredients, quantites et nutrition dans un autre form 
-            
-            
-            
-            /*->add('idNutrition', IntegerType::class, [
-                'label' => 'Nutrition ID',
-            ])*/
-            //etat auto assigned to unaactive, will be activated when ingredieents qte et nutrition are assigned.
-            /*->add('etat', TextType::class, [
-                'label' => 'State',
-            ])*/
             ->add('idIngredients', TextType::class, [
                 'constraints' => [
                     new NotBlank([
@@ -91,8 +80,8 @@ class RecetteType extends AbstractType
             ])
             ->add('image', FileType::class, [
                 'label' => 'Image',
-                'mapped' => false, // Set to false if you're handling file upload separately
-                'required' => false, // Set to true if the image is required
+                'mapped' => false,
+                'required' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please select an Image',
@@ -133,7 +122,19 @@ class RecetteType extends AbstractType
                         ->setParameter('{{ id }}',$id)
                         ->atPath('idIngredients')
                         ->addViolation();
-                }
+                }/*else{
+                    
+
+                    try {
+                        $idNutrition = $ingredient->getIdNutrition();
+                        $nutrition = $this->nutritionRepository->find($idNutrition);
+                    } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                        $context->buildViolation('The ingredient {{ id }} does not have a nutrition.')
+                            ->setParameter('{{ id }}',$id)
+                            ->atPath('idIngredients')
+                            ->addViolation();
+                    }
+                }*/
             }
         }
 
