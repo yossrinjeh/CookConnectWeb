@@ -9,7 +9,7 @@
 /vendor/
 /public/server.py
 ###< symfony/framework-bundle ###
-
+/.env
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
