@@ -23,6 +23,8 @@ class CommandeAdminController extends AbstractController
     #[Route('/', name: 'app_commande_admin_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
+        
         $commandes = $entityManager
             ->getRepository(Commande::class)
             ->findAll();
@@ -30,12 +32,18 @@ class CommandeAdminController extends AbstractController
         return $this->render('commande_admin/index.html.twig', [
             'commandes' => $commandes,
         ]);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
     #[Route('/new', name: 'app_commande_admin_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         $commande = new Commande();
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
@@ -53,19 +61,33 @@ class CommandeAdminController extends AbstractController
             'commande' => $commande,
             'form' => $form,
         ]);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
     #[Route('/{id}', name: 'app_commande_admin_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         return $this->render('commande_admin/show.html.twig', [
             'commande' => $commande,
         ]);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
     #[Route('/{id}/edit', name: 'app_commande_admin_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
 
@@ -81,17 +103,30 @@ class CommandeAdminController extends AbstractController
             'commande' => $commande,
             'form' => $form,
         ]);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
     #[Route('/{id}', name: 'app_commande_admin_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->request->get('_token'))) {
             $entityManager->remove($commande);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_commande_admin_index', [], Response::HTTP_SEE_OTHER);
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
 
@@ -108,6 +143,7 @@ class CommandeAdminController extends AbstractController
     #[Route('/commande/pdf', name: 'app_commande_pdf', methods: ['GET'])]
     public function generatePdf(CommandeRepository $commandeRepository): Response
     {
+        if($this->getUser() &&  in_array('ADMIN', $this->getUser()->getRoles()) ){
         // Fetch command information from the repository
         $commandes = $commandeRepository->findAll();
         // Render the commandes into a PDF using a template
@@ -133,6 +169,12 @@ class CommandeAdminController extends AbstractController
                 'Content-Type' => 'application/pdf',
             ]
         );
+    }else{
+       
+        return $this->redirectToRoute('app_login');
+
+    
+}
     }
 
 }
