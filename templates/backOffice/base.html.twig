@@ -339,23 +339,84 @@
           </li>
           {% endif %}
            {% if   app.user.role == "CHEF" or app.user.role == "CHEFMASTER" or app.user.role == "ADMIN" %}
-          <li class="nav-item">
+            <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+
+        <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
-              <p>
-                Repas
-                <i class="fas fa-angle-left right"></i>
-              </p>
+                <i class="nav-icon fas fa-utensils"></i> <!-- Changed icon to utensils -->
+                <p>
+                    PlanAlimanteur <!-- Changed text to PlanAlimanteur -->
+                    <i class="fas fa-angle-left right"></i>
+                </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{path('app_repas_index')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Repas List</p>
-                </a>
-              </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_plan_alim_index') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>plan_alim</p>
+                    </a>
+                </li>
             </ul>
-          </li>
+        </li>
+
+    </ul>
+</nav>
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-apple-alt"></i> <!-- Changed icon to apple-alt -->
+                <p>
+                    Regime <!-- Changed text to Regime -->
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_regime_index') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>regime</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+</nav>
+
+
+      <!-- Sidebar Menu -->
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+
+        <!-- Other menu items -->
+
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-utensils"></i>
+                <p>
+                    Repas
+                    <!-- <i class="fas fa-angle-left right"></i> -->
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ path('app_repas_index') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Repas</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Other menu items -->
+    </ul>
+</nav>
           {% endif %}
           {% endif %}
 
