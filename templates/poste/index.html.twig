@@ -38,7 +38,7 @@
                 <td>{{ poste.video }}</td>
                 <td>{{ poste.date ? poste.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_poste_show', {'id': poste.id}) }}">show</a>
+                    {# <a href="{{ path('app_poste_show', {'id': poste.id}) }}">show</a> #}
                     <a href="{{ path('app_poste_edit', {'id': poste.id}) }}">edit</a>
                 </td>
             </tr>
