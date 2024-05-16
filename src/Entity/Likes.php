@@ -10,9 +10,19 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="likes", indexes={@ORM\Index(name="fk_id_poste", columns={"poste_id"}), @ORM\Index(name="fk_id_user_like", columns={"user_id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Likes
 {
+
+    /**
+     * Constructor to initialize the date property.
+     */
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
+
     /**
      * @var int
      *
@@ -55,9 +65,10 @@ class Likes
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="date", type="datetime", nullable=false)
      */
-    private $date = 'CURRENT_TIMESTAMP';
+    private $date;
+
 
     public function getId(): ?int
     {
@@ -110,12 +121,12 @@ class Likes
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(\DateTime $date): static
     {
         $this->date = $date;
 

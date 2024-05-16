@@ -1,3 +1,6 @@
+{% extends '/frontOffice/base.html.twig' %}
+
+{% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +40,6 @@
 </div>
 
 {% block javascripts %}
-
 <script>
   $(document).ready(function() {
       // Event listener for posting comments
@@ -131,31 +133,9 @@
           });
       }
     });
-
-    $(document).ready(function() {
-      $('.like-btn').click(function() {
-          var postId = $(this).data('postId');
-          $.ajax({
-              url: '/poste/like/' + postId,
-              type: 'POST',
-              headers: {
-                  'X-Requested-With': 'XMLHttpRequest'
-              },
-              success: function(response) {
-                  if (response.message === 'Post liked') {
-                      $(this).text('Liked');
-                      $(this).prop('disabled', true);
-                  } else {
-                      console.error('Failed to like post');
-                  }
-              }.bind(this),
-              error: function(xhr, status, error) {
-                  console.error('Error:', error);
-              }
-          });
-      });
-  });
 </script>
 {% endblock %}
 </body>
 </html>
+
+{% endblock %}

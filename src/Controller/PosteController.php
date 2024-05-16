@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Poste;
+use App\Entity\User;
 use App\Form\PosteType;
+use App\Form\LikesType;
+use App\Entity\Likes;
+use DateTime;
 
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +20,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\InformationPersonnele;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\InformationPersonneleRepository;
+use App\Repository\PosteRepository;
+use App\Repository\CommentaireRepository;
+use App\Repository\LikesRepository;
 use App\Repository\UserRepository;
 // use PosteType as GlobalPosteType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -31,10 +38,12 @@ class PosteController extends AbstractController
 {
 
     private $security;
+    private $posteRepository;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, PosteRepository $posteRepository)
     {
         $this->security = $security;
+        $this->posteRepository = $posteRepository;
     }
 
 
@@ -55,59 +64,58 @@ class PosteController extends AbstractController
 
 
     #[Route('/new')]
-    public function new(Request $request, EntityManagerInterface $entityManager , UserRepository $ur): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $ur): Response
     {
-        if($this->getUser()  ){
+        if ($this->getUser()) {
 
-        $post = new Poste();
-        $form = $this->createForm(PosteType::class, $post);
-        $form->handleRequest($request);
-        $user =$ur->findOneByEmail($this->getUser()->getUserIdentifier());
-        $post->setUser($user);
+            $post = new Poste();
+            $form = $this->createForm(PosteType::class, $post);
+            $form->handleRequest($request);
+            $user = $ur->findOneByEmail($this->getUser()->getUserIdentifier());
+            $post->setUser($user);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->containsProfanity($post)) {
-                $this->addFlash('warning', 'Your post contains inappropriate content. Please review and try again.');
-            } else {
-                /** @var UploadedFile $file */
-                $file = $request->files->get('media');
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($this->containsProfanity($post)) {
+                    $this->addFlash('warning', 'Your post contains inappropriate content. Please review and try again.');
+                } else {
+                    /** @var UploadedFile $file */
+                    $file = $request->files->get('media');
 
-                if ($file instanceof UploadedFile) {
-                    $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                    if ($file instanceof UploadedFile) {
+                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
 
-                    $file->move(
-                        $this->getParameter('your_images_directory'),
-                        $fileName
-                    );
+                        $file->move(
+                            $this->getParameter('your_images_directory'),
+                            $fileName
+                        );
 
-                    $fileExtension = $file->guessExtension();
-                    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
-                        $fileUrl = 'images/' . $fileName;
-                        $post->setImage($fileUrl);
-                        $post->setVideo(null);
-                    } elseif (in_array($fileExtension, ['mp4', 'avi', 'mov', 'mkv'])) {
-                        $fileUrl = 'images/' . $fileName;
-                        $post->setVideo($fileUrl);
-                        $post->setImage(null);
-                    } else {
-                        throw new \Exception('Invalid file type. Please upload either an image or a video.');
+                        $fileExtension = $file->guessExtension();
+                        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                            $fileUrl = 'images/' . $fileName;
+                            $post->setImage($fileUrl);
+                            $post->setVideo(null);
+                        } elseif (in_array($fileExtension, ['mp4', 'avi', 'mov', 'mkv'])) {
+                            $fileUrl = 'images/' . $fileName;
+                            $post->setVideo($fileUrl);
+                            $post->setImage(null);
+                        } else {
+                            throw new \Exception('Invalid file type. Please upload either an image or a video.');
+                        }
                     }
+
+                    $entityManager->persist($post);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_poste_index');
                 }
-
-                $entityManager->persist($post);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_poste_index');
             }
+
+            return $this->render('poste/new.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        } else {
+            return $this->redirectToRoute('app_login');
         }
-
-        return $this->render('poste/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }else{
-        return $this->redirectToRoute('app_login');
-
-    }
     }
 
 
@@ -231,13 +239,75 @@ class PosteController extends AbstractController
     // }
 
 
-    #[Route('/{id}', name: 'app_poste_show', methods: ['GET'])]
-    public function show(Poste $poste): Response
+    // #[Route('/{id}', name: 'app_poste_show', methods: ['GET'])]
+    // public function show(Poste $poste): Response
+    // {
+    //     return $this->render('poste/show.html.twig', [
+    //         'poste' => $poste,
+    //     ]);
+    // }
+
+    // #[Route('/my-posts', name: 'my_posts', methods: ['GET'])]
+    // public function myPosts(PosteRepository $postRepository, CommentaireRepository $commentRepository, LikesRepository $likeRepository, UserRepository $userRepository, Security $security): Response
+    // {
+    //     $current_user = $security->getUser();
+    //     $user = $userRepository->findOneByEmail($current_user->getUserIdentifier());
+    //     $userPosts = $postRepository->selectPostsByUserId($user->getId());
+
+    //     $postsWithDetails = [];
+
+    //     foreach ($userPosts as $post) {
+    //         $comments = $commentRepository->selectCommentsByPostId($post->getId());
+    //         $likes = $likeRepository->selectLikesByPostId($post->getId());
+
+    //         $postsWithDetails[] = [
+    //             'post' => $post,
+    //             'comments' => $comments,
+    //             'likes' => $likes,
+    //         ];
+    //     }
+
+    //     return $this->render('myPosts/my_posts.html.twig', [
+    //         'postsWithDetails' => $postsWithDetails,
+    //     ]);
+    // }
+
+    #[Route('/my_posts', name: 'app_my_posts', methods: ['GET'])]
+    public function myPosts(PosteRepository $postRepository, CommentaireRepository $commentRepository, LikesRepository $likeRepository, UserRepository $userRepository, Security $security): Response
     {
-        return $this->render('poste/show.html.twig', [
-            'poste' => $poste,
-        ]);
+        $current_user = $security->getUser();
+
+        if ($current_user) {
+            // $userId = $current_user->getId();
+            $user = $userRepository->find($current_user);
+
+            if ($user) {
+                $userPosts = $postRepository->selectPostsByUserId($user->getId());
+
+                $postsWithDetails = [];
+
+                foreach ($userPosts as $post) {
+                    $comments = $commentRepository->selectCommentsByPostId($post->getId());
+                    $likes = $likeRepository->selectLikesByPostId($post->getId());
+
+                    $postsWithDetails[] = [
+                        'post' => $post,
+                        'comments' => $comments,
+                        'likes' => $likes,
+                    ];
+                }
+
+                return $this->render('poste/myPosts/my_posts.html.twig', [
+                    'postsWithDetails' => $postsWithDetails,
+                ]);
+            }
+        }
+
+        return $this->redirectToRoute('app_login');
     }
+
+
+
 
     #[Route('/{id}/edit', name: 'app_poste_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Poste $poste, EntityManagerInterface $entityManager): Response
@@ -248,7 +318,7 @@ class PosteController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_poste_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_my_posts', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('poste/edit.html.twig', [
@@ -265,7 +335,7 @@ class PosteController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_poste_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_my_posts', [], Response::HTTP_SEE_OTHER);
     }
 
 
@@ -284,5 +354,43 @@ class PosteController extends AbstractController
         } else {
             return new JsonResponse(['username' => 'Unknown User']);
         }
+    }
+
+    #[Route('/like/{postId}', name: 'app_post_like', methods: ['POST'])]
+    public function likePost(Request $request, int $postId, EntityManagerInterface $entityManager): Response
+    {
+        $like = new Likes();
+        $form = $this->createForm(LikesType::class, $like);
+
+        // Handle the form submission
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Check if the user is authenticated
+            $user = $this->getUser();
+            if (!$user) {
+                return new JsonResponse(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Get the post from the database
+            $post = $entityManager->getRepository(Poste::class)->find($postId);
+            if (!$post) {
+                return new JsonResponse(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Set additional data for the like entity
+            $like->setUser($user);
+            $like->setPoste($post);
+            $like->setDate(new DateTime());
+
+            // Persist the like entity
+            $entityManager->persist($like);
+            $entityManager->flush();
+
+            return new JsonResponse(['message' => 'Post liked'], Response::HTTP_OK);
+        }
+
+        // If the form is not submitted or not valid, return a response indicating an error
+        return new JsonResponse(['message' => 'Invalid form submission'], Response::HTTP_BAD_REQUEST);
     }
 }

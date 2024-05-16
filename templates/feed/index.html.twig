@@ -13,6 +13,7 @@
 {% block body %}
   
     <li><a href="{{path('app_poste_new')}}" class="new-post-button">New Post</a></li>
+    <li><a href="{{path('app_my_posts')}}" class="new-post-button">My Posts</a></li>
     {% include 'feed/carousel/carousel.html.twig' with {'postsWithDetails': postsWithDetails} %}
 
 {% endblock %}

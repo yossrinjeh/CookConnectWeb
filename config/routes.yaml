@@ -3,13 +3,13 @@
 #    controller: App\Controller\DefaultController::index
 # config/routes.yaml
 export_pdf:
-    path: /export-pdf
-    controller: App\Controller\RepasController::exportPdf
-    methods: ['GET']
+  path: /export-pdf
+  controller: App\Controller\RepasController::exportPdf
+  methods: ["GET"]
 upload_pdf_to_dropbox:
-    path: /upload_pdf_to_dropbox
-    controller: App\Controller\RepasController::uploadPdfToDropbox
-    methods: ['POST']
+  path: /upload_pdf_to_dropbox
+  controller: App\Controller\RepasController::uploadPdfToDropbox
+  methods: ["POST"]
 
 # routes.yaml
 app_social_media_admin:
@@ -51,3 +51,16 @@ app_get_comments:
 app_get_comments_pdf:
   path: /commentaire/get_comments_pdf
   controller: App\Controller\CommentaireController::getCommentsForPDF
+
+app_my_posts:
+  path: /poste/my_posts
+  controller: App\Controller\PosteController::myPosts
+
+app_poste_delete:
+  path: /poste/{id}
+  controller: App\Controller\PosteController::delete
+
+app_post_like:
+  path: /poste/like/{postId}
+  controller: App\Controller\PosteController::likePost
+  methods: ["POST"]
