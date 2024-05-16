@@ -192,15 +192,30 @@ class RecetteController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+        if ($imageFile) {
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+            try {
+                $imageFile->move(
+                    $this->getParameter('image_dir'),
+                    $newFilename
+                );
+                // Update the image path in the entity
+                $recette->setImage($newFilename);
+            } catch (FileException $e) {
+                // Handle the exception
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recette_index', [], Response::HTTP_SEE_OTHER);
-        }
+        }}
 
         return $this->renderForm('recette/edit.html.twig', [
             'recette' => $recette,
             'form' => $form,
         ]);
+        
     }
 
     #[Route('/{id}', name: 'app_recette_delete', methods: ['POST'])]

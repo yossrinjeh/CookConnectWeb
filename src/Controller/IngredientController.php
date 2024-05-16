@@ -142,7 +142,27 @@ class IngredientController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $ingredient->setImage((string)($ingredient->getImage()));
+            
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                try {
+                    $imageFile->move(
+                        $this->getParameter('image_dir'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+                $ingredient->setImage($newFilename);
+
+                $idNutrition = $ingredient->getIdNutrition();
+                if ($idNutrition) {
+                    $nutrition = $nutritionRepository->find($idNutrition);
+                    $nutrition->setImage($newFilename);
+                    $entityManager->persist($nutrition);
+                }
+            }
             if($ingredient->getQte()<$ingredient->getQuantiteThreshold()){
                 $ingredient->setEtat("disabled");
             }else{
